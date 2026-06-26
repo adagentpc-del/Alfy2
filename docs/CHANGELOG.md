@@ -4,6 +4,27 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — AI Organization + CRO/Revenue Command (native features, LIVE)
+- **AI Organization / Chain of Command** (`AiOrgEngine`) — turns the agent set into an accountable
+  AI company. Seeds **78 role cards** (4 executives, 11 department leaders, 63 employees) across 12
+  departments, each with mission, responsibilities, operating loop, allowed actions, approval rules,
+  inputs/outputs, tools, KPIs, failure signals, escalation rules, review cadence, **permission scope**
+  (observe-only → admin-disabled), and reports-to chain. Enforces: delegation packets (an agent can't
+  start work without one — `startWork` throws), report-backs, escalation ladder (specialist → employee
+  → leader → executive → Alyssa), accountability records, department reports (daily/weekly/monthly),
+  and `validateChainOfCommand`. Contract `ai-org.ts`, migration `0227` (6 tables + RLS, live).
+- **CRO / Revenue Command** (`RevenueCommandEngine`) — the Chief Revenue Officer brain. Scores every
+  revenue opportunity 0–100 across 10 factors (revenue, speed-to-cash, effort, risk, confidence,
+  founder-time, strategic value, repeatability, margin, close probability) → 7 statuses
+  (pursue_now/nurture/automate/delegate/reprice/pause/kill); builds a daily Revenue Command Center
+  (top money actions, hottest leads, blockers); reviews offers (flags underpricing / missing payment
+  link / unpaid consulting); seeds 6 business revenue missions (Move Mi, Divini Procure, Divini
+  Partners, StrataLogic, FounderOS, Black Flag); high-risk money actions require approval. Contract
+  `revenue-command.ts`, migration `0228` (6 tables + RLS, live). Built by two parallel build-agents,
+  integrated + verified by the orchestrator (fixed a `RevenueCommandOptions` collision with the
+  existing RevenueCommandSystem; full `tsc -b` green, both smokes pass). Database now **197 tables,
+  all RLS-on**.
+
 ### Added — People Operations + Department OS (native features, LIVE)
 - **People Operations + Hiring Lifecycle** (`PeopleOpsEngine`) — the full 13-stage hiring/team loop
   for humans OR AI employees: role-need detection → role design → **Billion-Dollar Hiring Standard

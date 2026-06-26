@@ -122,7 +122,9 @@
     "db:smoke": "tsx scripts/db-smoke.mts",
     "brainstorm:smoke": "tsx scripts/build-from-brainstorm-smoke.mts",
     "peopleops:smoke": "tsx scripts/people-ops-smoke.mts",
-    "deptos:smoke": "tsx scripts/department-os-smoke.mts"
+    "deptos:smoke": "tsx scripts/department-os-smoke.mts",
+    "aiorg:smoke": "tsx scripts/ai-org-smoke.mts",
+    "revenue:smoke": "tsx scripts/revenue-command-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

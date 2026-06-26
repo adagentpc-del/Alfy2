@@ -1639,3 +1639,7 @@ export {
 // (All exports uniquely prefixed by their contracts; verified collision-free.)
 export * from "./contracts/people-ops.js";
 export * from "./contracts/department-os.js";
+
+// AI Organization / Chain of Command, and CRO / Revenue Command. (Uniquely prefixed; collision-free.)
+export * from "./contracts/ai-org.js";
+export * from "./contracts/revenue-command.js";

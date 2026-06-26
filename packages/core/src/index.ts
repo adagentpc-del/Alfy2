@@ -740,3 +740,20 @@ export {
   type CreateAiEmployeeInput,
   type RecordKpiInput,
 } from "./department-os/engine.js";
+
+// AI Organization / Chain of Command (78 role cards, delegation, reports, escalation, accountability)
+export {
+  AiOrgEngine,
+  DEFAULT_ROLE_CARDS,
+  type AiOrgEngineOptions,
+  type AddRoleCardInput,
+  type ListRoleCardsFilter,
+  type IssueDelegationPacketInput,
+  type SubmitReportInput,
+  type RaiseEscalationInput,
+  type RecordAccountabilityInput,
+  type ReviewDecision,
+} from "./ai-org/engine.js";
+
+// CRO / Revenue Command (portfolio opportunity scoring, command center, business missions)
+export { RevenueCommandEngine, type RevenueCommandEngineOptions } from "./revenue-command/engine.js";
