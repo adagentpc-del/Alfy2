@@ -4,6 +4,7 @@
   "references": [
     { "path": "packages/shared" },
     { "path": "packages/config" },
-    { "path": "packages/core" }
+    { "path": "packages/core" },
+    { "path": "packages/db" }
   ]
 }

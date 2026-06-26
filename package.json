@@ -118,10 +118,12 @@
     "governance:smoke": "tsx scripts/governance-smoke.mts",
     "execteam:smoke": "tsx scripts/exec-team-smoke.mts",
     "readmodels:smoke": "tsx scripts/readmodels-smoke.mts",
-    "connections:smoke": "tsx scripts/connections-smoke.mts"
+    "connections:smoke": "tsx scripts/connections-smoke.mts",
+    "db:smoke": "tsx scripts/db-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
+    "@alfy2/db": "workspace:*",
     "@alfy2/shared": "workspace:*",
     "@types/node": "^20.14.0",
     "tsx": "^4.19.1",

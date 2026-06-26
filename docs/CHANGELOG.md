@@ -4,6 +4,18 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — Phase 2 runtime layer (persistence, brick 1)
+- **`@alfy2/db`** — the first real persistence adapter package. `Db.withTenant(tenantId, fn)` opens a
+  Postgres transaction and sets `app.tenant_id` (+ optional `app.business_id`) as a **LOCAL GUC**, so
+  the schema's RLS policies (`current_setting('app.tenant_id', true)`) enforce isolation per
+  connection. `PgMemoryRepository` implements the existing `MemoryRepository` port over the
+  `memories`/`memory_links` tables (upsert, tenant-scoped get/search/all, links, cascade-safe
+  cleanup) — the proven pattern the remaining engines will follow. `pg` is isolated to this package
+  so `@alfy2/core` stays infrastructure-free. New `DATABASE_URL` config secret (optional, redacted)
+  + `.env.example` docs. Verified: full `tsc -b` green across shared → config → core → db under
+  strict settings; `scripts/db-smoke.mts` drives the real `MemoryEngine` through Postgres end-to-end
+  when `DATABASE_URL` is set and skips cleanly otherwise (`pnpm run db:smoke`).
+
 ### Deployed
 - **DATABASE IS LIVE** (2026-06-26) — all **223 migrations applied** to the Supabase project
   `oxromxpjoiifvamxjluz` (ALFY2 org) via the Management API. Verified: **157 tables, all 157 with

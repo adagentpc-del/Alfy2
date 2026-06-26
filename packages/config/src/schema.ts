@@ -24,6 +24,10 @@ export const ConfigSchema = z.object({
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // Direct Postgres connection string (Supabase pooler) used by @alfy2/db for the RLS GUC pattern.
+  // Optional so config still loads before the persistence layer is wired; the Db factory throws a
+  // clear error if it is needed but missing.
+  DATABASE_URL: z.string().min(1).optional(),
 
   // --- AI controls (off by default) ---
   AI_ENABLED: boolFromEnv.default(false),
@@ -47,5 +51,6 @@ export type Config = z.infer<typeof ConfigSchema>;
 export const SECRET_KEYS = [
   "SUPABASE_SERVICE_ROLE_KEY",
   "SUPABASE_ANON_KEY",
+  "DATABASE_URL",
   "AI_PROVIDER_API_KEY",
 ] as const satisfies ReadonlyArray<keyof Config>;
