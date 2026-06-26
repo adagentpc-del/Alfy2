@@ -10981,6 +10981,478 @@ class BrainstormChangelogEntry(BaseModel):
     next_recommended_actions: list[str] = Field(default_factory=list)
 
 
+# ===========================================================================
+# People Operations + Hiring Lifecycle (mirror of people-ops.ts)
+# ===========================================================================
+
+PeopleOpsWorkerKind = Literal["human", "ai_employee"]
+RoleNeedTrigger = Literal[
+    "repeating_work", "founder_bottleneck", "needs_human_judgment", "ai_can_handle",
+    "delegation_opportunity", "capacity_gap", "skill_gap", "growth_demand",
+]
+RoleHandlerKind = Literal[
+    "keep_with_founder", "delegate_to_human", "delegate_to_ai", "automate", "eliminate",
+]
+RoleLifecycleStage = Literal[
+    "need_detected", "role_designed", "job_posted", "pipeline_open", "interviewing",
+    "offer_extended", "onboarding", "access_setup", "training", "active",
+    "performance_review", "offboarding", "closed",
+]
+RoleTimeCommitment = Literal[
+    "full_time", "part_time", "contract", "fractional", "project_based", "always_on_ai",
+]
+CandidateInterviewStatus = Literal[
+    "applied", "screening", "interviewing", "test_task", "reference_check", "offer",
+    "hired", "rejected", "withdrawn",
+]
+CandidateSource = Literal[
+    "referral", "job_board", "outreach", "inbound", "agency", "internal", "ai_marketplace",
+]
+OnboardingDocStatus = Literal[
+    "not_started", "sent", "in_progress", "signed", "received", "verified", "waived",
+]
+OnboardingDocKind = Literal[
+    "nda", "contractor_agreement", "w9", "payment_info", "role_description",
+    "code_of_conduct", "access_policy", "sop_packet", "tool_access_checklist",
+]
+AccessSystem = Literal[
+    "email", "slack", "google_drive", "project_mgmt", "github", "supabase",
+    "platform", "password_vault",
+]
+PeopleOpsAccessGrantStatus = Literal[
+    "requested", "approval_pending", "granted", "denied", "revoked",
+]
+AccessPermissionLevel = Literal["none", "read", "write", "admin", "owner"]
+PeopleOpsSeverity = Literal["low", "medium", "high", "critical"]
+PeopleOpsRating = Literal["excellent", "strong", "meets", "below", "at_risk"]
+DelegationTaskStatus = Literal[
+    "drafted", "assigned", "in_progress", "blocked", "submitted", "approved",
+    "rejected", "completed",
+]
+OffboardingStepStatus = Literal["pending", "in_progress", "done", "skipped"]
+OffboardingStepKind = Literal[
+    "revoke_access", "rotate_credentials", "collect_files", "transfer_ownership",
+    "archive_docs", "document_status", "final_payment", "confidentiality_reminder",
+]
+
+
+class RoleNeed(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    description: str = Field(min_length=1)
+    trigger: RoleNeedTrigger
+    founder_work_absorbed: list[str] = Field(default_factory=list)
+    recommended_handler: RoleHandlerKind = "delegate_to_human"
+    worker_kind: PeopleOpsWorkerKind = "human"
+    frequency_per_week: int = Field(default=0, ge=0)
+    severity: PeopleOpsSeverity = "medium"
+    role_recommended: bool = False
+    notes: str = ""
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class DetectRoleNeedInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business_id: UUID | None = None
+    description: str = Field(min_length=1)
+    trigger: RoleNeedTrigger | None = None
+    frequency_per_week: int = Field(default=0, ge=0)
+    worker_kind: PeopleOpsWorkerKind = "human"
+    founder_work_absorbed: list[str] = Field(default_factory=list)
+
+
+class RoleDesign(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    need_id: UUID | None = None
+    worker_kind: PeopleOpsWorkerKind = "human"
+    title: str = Field(min_length=1)
+    mission: str = ""
+    responsibilities: list[str] = Field(default_factory=list)
+    outcomes: list[str] = Field(default_factory=list)
+    required_skills: list[str] = Field(default_factory=list)
+    tools_used: list[str] = Field(default_factory=list)
+    business_or_project: str = ""
+    time_commitment: RoleTimeCommitment = "contract"
+    compensation_range: str = ""
+    success_metrics: list[str] = Field(default_factory=list)
+    access_required: list[AccessSystem] = Field(default_factory=list)
+    stage: RoleLifecycleStage = "role_designed"
+    standard_passed: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class DesignRoleInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    need_id: UUID | None = None
+    worker_kind: PeopleOpsWorkerKind = "human"
+    title: str = Field(min_length=1)
+    mission: str = ""
+    responsibilities: list[str] = Field(default_factory=list)
+    outcomes: list[str] = Field(default_factory=list)
+    required_skills: list[str] = Field(default_factory=list)
+    tools_used: list[str] = Field(default_factory=list)
+    business_or_project: str = ""
+    time_commitment: RoleTimeCommitment = "contract"
+    compensation_range: str = ""
+    success_metrics: list[str] = Field(default_factory=list)
+    access_required: list[AccessSystem] = Field(default_factory=list)
+
+
+class HiringStandardEvaluation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    removes_work_from_founder: bool = False
+    creates_revenue_capacity: bool = False
+    reduces_bottlenecks: bool = False
+    clearly_scoped: bool = False
+    success_measurable: bool = False
+    has_sop: bool = False
+    access_limited: bool = False
+    ip_protected: bool = False
+    confidentiality_protected: bool = False
+    operates_without_handholding: bool = False
+    passed: bool = False
+    failed_criteria: list[str] = Field(default_factory=list)
+    recommendation: str = ""
+    created_at: datetime
+
+
+class JobScreeningQuestion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    question: str = Field(min_length=1)
+    knockout: bool = False
+
+
+class JobScorecardCriterion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    criterion: str = Field(min_length=1)
+    weight: float = Field(default=0.2, ge=0, le=1)
+
+
+class JobPost(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    job_description: str = ""
+    contractor_post: str = ""
+    referral_ask: str = ""
+    candidate_outreach: str = ""
+    screening_questions: list[JobScreeningQuestion] = Field(default_factory=list)
+    scorecard: list[JobScorecardCriterion] = Field(default_factory=list)
+    created_at: datetime
+
+
+class Candidate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    applicant: str = Field(min_length=1)
+    source: CandidateSource = "inbound"
+    resume_profile: str = ""
+    skills: list[str] = Field(default_factory=list)
+    fit_score: float = Field(default=0, ge=0, le=1)
+    interview_status: CandidateInterviewStatus = "applied"
+    notes: str = ""
+    red_flags: list[str] = Field(default_factory=list)
+    next_step: str = ""
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class AddCandidateInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    role_id: UUID
+    applicant: str = Field(min_length=1)
+    source: CandidateSource = "inbound"
+    resume_profile: str = ""
+    skills: list[str] = Field(default_factory=list)
+    fit_score: float = Field(default=0, ge=0, le=1)
+
+
+class InterviewScorecardItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    criterion: str = Field(min_length=1)
+    rating: PeopleOpsRating = "meets"
+    notes: str = ""
+
+
+class InterviewProcess(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID
+    questions: list[str] = Field(default_factory=list)
+    test_task: str = ""
+    evaluation_scorecard: list[InterviewScorecardItem] = Field(default_factory=list)
+    culture_values_screen: list[str] = Field(default_factory=list)
+    technical_skills_screen: list[str] = Field(default_factory=list)
+    reference_check_checklist: list[str] = Field(default_factory=list)
+    recommended: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class OfferProcess(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID
+    offer_letter: str = ""
+    contractor_agreement_checklist: list[str] = Field(default_factory=list)
+    compensation_terms: str = ""
+    scope: str = ""
+    start_date: str | None = None
+    confidentiality_ip_clauses: list[str] = Field(default_factory=list)
+    access_rules: list[str] = Field(default_factory=list)
+    accepted: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class OnboardingDocument(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    kind: OnboardingDocKind
+    status: OnboardingDocStatus = "not_started"
+    link: str = ""
+    notes: str = ""
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class AccessGrant(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    system: AccessSystem
+    permissions_level: AccessPermissionLevel = "read"
+    approval_required: bool = True
+    status: PeopleOpsAccessGrantStatus = "requested"
+    granted_at: datetime | None = None
+    revoked_at: datetime | None = None
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class TrainingPlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    onboarding_plan: list[str] = Field(default_factory=list)
+    first_day_checklist: list[str] = Field(default_factory=list)
+    first_week_checklist: list[str] = Field(default_factory=list)
+    sops_to_review: list[str] = Field(default_factory=list)
+    business_briefing: str = ""
+    role_training: list[str] = Field(default_factory=list)
+    sample_tasks: list[str] = Field(default_factory=list)
+    quality_standards: list[str] = Field(default_factory=list)
+    escalation_rules: list[str] = Field(default_factory=list)
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class NurtureCheckIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    check_ins: list[str] = Field(default_factory=list)
+    performance: PeopleOpsRating = "meets"
+    blockers: list[str] = Field(default_factory=list)
+    workload: PeopleOpsRating = "meets"
+    morale: PeopleOpsRating = "meets"
+    training_needs: list[str] = Field(default_factory=list)
+    feedback: str = ""
+    promotion_eligibility: bool = False
+    retention_risk: PeopleOpsSeverity = "low"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class PerformanceReview(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    deliverables: PeopleOpsRating = "meets"
+    timeliness: PeopleOpsRating = "meets"
+    quality: PeopleOpsRating = "meets"
+    communication: PeopleOpsRating = "meets"
+    reliability: PeopleOpsRating = "meets"
+    sop_adherence: PeopleOpsRating = "meets"
+    improvement_notes: list[str] = Field(default_factory=list)
+    access_risk: PeopleOpsSeverity = "low"
+    compensation_review: str = ""
+    overall: PeopleOpsRating = "meets"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class DelegationTask(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    task: str = Field(min_length=1)
+    context: str = ""
+    sop: str = ""
+    expected_output: str = ""
+    deadline: str | None = None
+    quality_checklist: list[str] = Field(default_factory=list)
+    files_needed: list[str] = Field(default_factory=list)
+    approval_path: list[str] = Field(default_factory=list)
+    escalation_rule: str = ""
+    status: DelegationTaskStatus = "drafted"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class DelegateTaskInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    role_id: UUID
+    candidate_id: UUID | None = None
+    task: str = Field(min_length=1)
+    context: str = ""
+    sop: str = ""
+    expected_output: str = ""
+    deadline: str | None = None
+    quality_checklist: list[str] = Field(default_factory=list)
+    files_needed: list[str] = Field(default_factory=list)
+    approval_path: list[str] = Field(default_factory=list)
+    escalation_rule: str = ""
+
+
+class OffboardingStep(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: OffboardingStepKind
+    status: OffboardingStepStatus = "pending"
+    notes: str = ""
+
+
+class OffboardingProcess(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    role_id: UUID
+    candidate_id: UUID | None = None
+    reason: str = ""
+    steps: list[OffboardingStep] = Field(default_factory=list)
+    access_revoked: bool = False
+    completed: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+# ===========================================================================
+# Department Operating System + AI Employee KPI (mirror of department-os.ts)
+# ===========================================================================
+
+DeptRiskLevel = Literal["low", "medium", "high", "critical"]
+DeptReviewCadence = Literal["daily", "weekly", "monthly"]
+AiEmployeeStatus = Literal[
+    "active", "testing", "needs_improvement", "paused", "retired",
+]
+KpiOwnerKind = Literal["department", "ai_employee"]
+DeptGovernanceViolationKind = Literal[
+    "ai_employee_without_department", "department_without_operating_loop",
+    "department_without_kpis", "kpi_without_business_outcome",
+]
+
+
+class Department(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    key: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    mission: str = ""
+    operating_loop: list[str] = Field(default_factory=list)
+    responsibilities: list[str] = Field(default_factory=list)
+    inputs: list[str] = Field(default_factory=list)
+    outputs: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    review_cadence: DeptReviewCadence = "weekly"
+    approval_rules: list[str] = Field(default_factory=list)
+    escalation_rules: list[str] = Field(default_factory=list)
+    failure_signals: list[str] = Field(default_factory=list)
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class AiEmployee(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    department_key: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    mission: str = ""
+    businesses_used_by: list[str] = Field(default_factory=list)
+    allowed_actions: list[str] = Field(default_factory=list)
+    requires_approval_for: list[str] = Field(default_factory=list)
+    inputs: list[str] = Field(default_factory=list)
+    outputs: list[str] = Field(default_factory=list)
+    tools_integrations: list[str] = Field(default_factory=list)
+    risk_level: DeptRiskLevel = "low"
+    kpis: list[str] = Field(default_factory=list)
+    metrics: dict[str, float] = Field(default_factory=dict)
+    review_cadence: DeptReviewCadence = "weekly"
+    status: AiEmployeeStatus = "active"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class KpiRecord(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    owner_kind: KpiOwnerKind
+    owner_key: str = Field(min_length=1)
+    kpi_name: str = Field(min_length=1)
+    value: float
+    period: str = Field(min_length=1)
+    business_outcome: str = Field(min_length=1)
+    created_at: datetime
+
+
+class DeptGovernanceViolation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: DeptGovernanceViolationKind
+    subject: str
+    detail: str = ""
+
+
+class DeptGovernanceReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    tenant_id: UUID
+    ok: bool
+    violations: list[DeptGovernanceViolation] = Field(default_factory=list)
+    departments_checked: int = Field(default=0, ge=0)
+    ai_employees_checked: int = Field(default=0, ge=0)
+    kpis_checked: int = Field(default=0, ge=0)
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -11841,4 +12313,55 @@ __all__ = [
     "QaCheck",
     "QaResult",
     "BrainstormChangelogEntry",
+    # People Operations + Hiring Lifecycle
+    "PeopleOpsWorkerKind",
+    "RoleNeedTrigger",
+    "RoleHandlerKind",
+    "RoleLifecycleStage",
+    "RoleTimeCommitment",
+    "CandidateInterviewStatus",
+    "CandidateSource",
+    "OnboardingDocStatus",
+    "OnboardingDocKind",
+    "AccessSystem",
+    "PeopleOpsAccessGrantStatus",
+    "AccessPermissionLevel",
+    "PeopleOpsSeverity",
+    "PeopleOpsRating",
+    "DelegationTaskStatus",
+    "OffboardingStepStatus",
+    "OffboardingStepKind",
+    "RoleNeed",
+    "DetectRoleNeedInput",
+    "RoleDesign",
+    "DesignRoleInput",
+    "HiringStandardEvaluation",
+    "JobScreeningQuestion",
+    "JobScorecardCriterion",
+    "JobPost",
+    "Candidate",
+    "AddCandidateInput",
+    "InterviewScorecardItem",
+    "InterviewProcess",
+    "OfferProcess",
+    "OnboardingDocument",
+    "AccessGrant",
+    "TrainingPlan",
+    "NurtureCheckIn",
+    "PerformanceReview",
+    "DelegationTask",
+    "DelegateTaskInput",
+    "OffboardingStep",
+    "OffboardingProcess",
+    # Department Operating System + AI Employee KPI
+    "DeptRiskLevel",
+    "DeptReviewCadence",
+    "AiEmployeeStatus",
+    "KpiOwnerKind",
+    "DeptGovernanceViolationKind",
+    "Department",
+    "AiEmployee",
+    "KpiRecord",
+    "DeptGovernanceViolation",
+    "DeptGovernanceReport",
 ]
