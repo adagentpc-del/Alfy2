@@ -1655,3 +1655,9 @@ export * from "./contracts/review-cadence.js";
 export * from "./contracts/expert-council.js";
 export * from "./contracts/org-health.js";
 export * from "./contracts/incentive-ecosystem.js";
+
+// Knowledge Ops, Lifecycle+Growth, Market Intel, Oversight. (Uniquely prefixed; collision-free.)
+export * from "./contracts/knowledge-ops.js";
+export * from "./contracts/lifecycle-growth.js";
+export * from "./contracts/market-intel.js";
+export * from "./contracts/oversight.js";

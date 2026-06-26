@@ -818,3 +818,43 @@ export {
 
 // Incentive Alignment + Referral Ecosystem + Value Exchange (protect business first; approve money)
 export { IncentiveEcosystemEngine, type IncentiveEcosystemEngineOptions } from "./incentive-ecosystem/engine.js";
+
+// Knowledge Ops (expert source library + Operator Digest + Adaptation Filter + governance + experiments)
+export {
+  KnowledgeOpsEngine,
+  type KnowledgeOpsEngineOptions,
+  type AddSourceInput,
+  type ListSourcesFilter,
+  type DigestItemInput,
+  type GenerateDigestInput,
+  type AdaptationFilterInput,
+  type ClassifyInput,
+  type SimulateScenariosInput,
+  type DesignExperimentInput,
+  type RecordExperimentResultInput,
+} from "./knowledge-ops/engine.js";
+
+// Lifecycle + Growth Architecture (8-stage lifecycle, growth loops, trust flywheel, white-glove)
+export {
+  LifecycleGrowthEngine,
+  LifecycleGrowthEngineError,
+  type LifecycleGrowthEngineOptions,
+} from "./lifecycle-growth/engine.js";
+
+// Market Intelligence (voice-of-customer, market gaps, AI-search/AEO visibility)
+export {
+  MarketIntelEngine,
+  WEAK_SIGNAL_THRESHOLD,
+  type MarketIntelEngineOptions,
+} from "./market-intel/engine.js";
+
+// Oversight (leadership blind-spot detector, recursive optimizer, billion-dollar standard checker)
+export {
+  OversightEngine,
+  STANDARD_BLIND_SPOT_QUESTIONS,
+  type OversightEngineOptions,
+  type BlindSpotQuestion,
+  type DetectBlindSpotsInput,
+  type RunRecursiveDiagnosisInput,
+  type RunBillionDollarCheckInput,
+} from "./oversight/engine.js";

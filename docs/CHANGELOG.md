@@ -1,3 +1,11 @@
+### Added — Knowledge Ops, Lifecycle+Growth, Market Intel, Oversight (4 engines, migrations 0235–0238)
+- **Knowledge Ops** (`KnowledgeOpsEngine`): expert source library + pipeline (added→archived), weekly Elite Operator Digest (surfaces only likely-leverage), Alyssa Adaptation Filter (pass only if fits model/brand/energy + leverage + cheaply testable + not generic/too-manual), knowledge taxonomy + company-stage/business-model fit warnings, 6-lens scenario simulator, experiment design + learning repository. Tables `knowops_*` (6).
+- **Lifecycle + Growth** (`LifecycleGrowthEngine`): 8-stage lifecycle (attention→advocacy) per business+stakeholder, growth-loop designer (referral/content/marketplace/review/donor), trust-asset audit, first-impression audit (8-point score), white-glove journey designer. Tables `lifecycle_maps`, `growth_loops`, `trust_asset_audits`, `first_impression_audits`, `white_glove_journeys`.
+- **Market Intel** (`MarketIntelEngine`): voice-of-customer extraction, market-gap detector, AI-search/AEO + public-reputation visibility scoring (0–100). Tables `market_*` (3).
+- **Oversight** (`OversightEngine`): leadership blind-spot detector, recursive system optimizer, billion-dollar standard checker (passes only if all 9 criteria hold; else revisions_needed). Tables `oversight_*` (3).
+- DB now **237 tables, 0 without RLS**. Full `tsc -b` green; 4 new smokes pass; **622 Python contract tests** passing.
+- Consolidation: **docs/ALFIE2_OPERATIONS_ARCHITECTURE.md** master blueprint (27 sections).
+
 # Changelog
 
 All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog.com/).

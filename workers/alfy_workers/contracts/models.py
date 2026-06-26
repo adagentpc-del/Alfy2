@@ -12458,6 +12458,443 @@ class WinWinWinReviewInput(BaseModel):
     creates_referrals: bool = False
 
 
+# ===========================================================================
+# Knowledge Ops (mirror of knowledge-ops.ts)
+# ===========================================================================
+
+KnowledgeSourceKind = Literal[
+    "youtube", "podcast", "blog", "book", "newsletter", "social",
+    "course", "transcript", "interview",
+]
+SourcePipelineStatus = Literal[
+    "added", "summarized", "extracted", "mapped", "tested", "archived",
+]
+KnowEffort = Literal["low", "medium", "high"]
+KnowMagnitude = Literal["low", "medium", "high"]
+CompanyStage = Literal[
+    "idea", "validation", "first_revenue", "repeatable_revenue",
+    "scaling", "mature", "enterprise", "acquisition_ready",
+]
+KnowBusinessModel = Literal[
+    "saas", "marketplace", "local_service", "advisory", "nonprofit",
+    "procurement", "event_platform", "health_wellness", "ai_software",
+    "media_personal_brand", "subscription", "transaction_fee",
+    "referral_model", "sponsorship_model",
+]
+KnowDiscipline = Literal[
+    "sales", "marketing", "offers", "pricing", "funnels", "social_media",
+    "finance", "investing", "operations", "hiring", "leadership",
+    "psychology", "negotiation", "product", "growth", "fundraising",
+    "customer_success", "brand", "pr", "ai_search",
+]
+ScenarioKind = Literal[
+    "fastest_cash", "highest_margin", "lowest_effort",
+    "best_long_term_asset", "best_brand", "highest_automation",
+]
+KnowExperimentStatus = Literal[
+    "untested", "testing", "validated", "adapted", "rejected", "archived",
+]
+
+
+class KnowledgeSource(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    source_name: str = Field(min_length=1)
+    expert: str = ""
+    kind: KnowledgeSourceKind
+    url_ref: str = ""
+    date_added: str = ""
+    summarized: bool = False
+    principles_extracted: bool = False
+    mapped_to_businesses: bool = False
+    tested: bool = False
+    status: SourcePipelineStatus = "added"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class OperatorDigestItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    week: str = Field(min_length=1)
+    source: str = ""
+    principle: str = Field(min_length=1)
+    why_it_matters: str = ""
+    business_it_applies_to: str = ""
+    recommended_test: str = ""
+    effort: KnowEffort = "medium"
+    upside: KnowMagnitude = "medium"
+    risk: KnowMagnitude = "medium"
+    surfaced: bool = False
+    created_at: datetime
+
+
+class AdaptationFilterResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    principle: str = Field(min_length=1)
+    business_key: str = Field(min_length=1)
+    fits_model: bool = False
+    fits_brand: bool = False
+    fits_energy: bool = False
+    protects_trust: bool = False
+    creates_leverage: bool = False
+    risks_generic: bool = False
+    too_manual: bool = False
+    ai_automatable: bool = False
+    cheaply_testable: bool = False
+    passed: bool = False
+    recommendation: str = ""
+    created_at: datetime
+
+
+class KnowledgeTaxonomyEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    insight: str = Field(min_length=1)
+    discipline: KnowDiscipline
+    business_function: str = ""
+    funnel_stage: str = ""
+    company_stage: CompanyStage
+    business_model: KnowBusinessModel
+    audience_type: str = ""
+    risk_level: KnowMagnitude = "medium"
+    implementation_difficulty: KnowEffort = "medium"
+    expected_roi: KnowMagnitude = "medium"
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    source_quality: KnowMagnitude = "medium"
+    freshness: str = ""
+    created_at: datetime
+
+
+class ScenarioOption(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: ScenarioKind
+    upside: str = ""
+    effort: KnowEffort = "medium"
+    risk: KnowMagnitude = "medium"
+    timeline: str = ""
+    required_agents: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    recommendation: str = ""
+
+
+class KnowledgeScenario(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    strategy: str = Field(min_length=1)
+    business_key: str = Field(min_length=1)
+    scenarios: list[ScenarioOption] = Field(default_factory=list)
+    created_at: datetime
+
+
+class KnowledgeExperiment(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    hypothesis: str = Field(min_length=1)
+    business_key: str = Field(min_length=1)
+    audience: str = ""
+    asset: str = ""
+    channel: str = ""
+    timeline: str = ""
+    expected_result: str = ""
+    kpi: str = ""
+    success_threshold: str = ""
+    failure_threshold: str = ""
+    next_if_works: str = ""
+    next_if_fails: str = ""
+    status: KnowExperimentStatus = "untested"
+    result_notes: str = ""
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+# ===========================================================================
+# Lifecycle + Growth Architecture (mirror of lifecycle-growth.ts)
+# ===========================================================================
+
+LifecycleStage = Literal[
+    "attention", "interest", "trust", "conversion", "activation",
+    "retention", "expansion", "advocacy",
+]
+StakeholderKind = Literal[
+    "customer", "referral_partner", "vendor", "developer", "investor",
+    "venue", "sponsor", "clinic", "consumer", "buyer", "donor",
+    "volunteer", "user", "employee", "contractor",
+]
+GrowthLoopKind = Literal[
+    "referral", "content", "marketplace", "review", "donor", "custom",
+]
+FirstImpressionTouchpoint = Literal[
+    "job_post", "cold_email", "social_post", "landing_page", "website",
+    "onboarding_email", "signup_flow", "proposal", "donation_page",
+    "vendor_invite", "developer_invite", "dm_reply", "support_response",
+]
+
+
+class LifecycleStageSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    stage: LifecycleStage
+    audience_mindset: str = ""
+    pain_point: str = ""
+    message: str = ""
+    asset: str = ""
+    cta: str = ""
+    channel: str = ""
+    owner_agent: str = ""
+    kpi: str = ""
+    friction: str = ""
+    follow_up: str = ""
+    automation: str = ""
+    failure_signal: str = ""
+
+
+class LifecycleMap(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    stakeholder: StakeholderKind
+    stages: list[LifecycleStageSpec] = Field(default_factory=list)
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class GrowthLoopStep(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    trigger: str = ""
+    participant: str = ""
+    action: str = ""
+    reward_value: str = ""
+    metric: str = ""
+    friction: str = ""
+    automation: str = ""
+    failure_point: str = ""
+
+
+class GrowthLoop(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    kind: GrowthLoopKind
+    steps: list[GrowthLoopStep] = Field(default_factory=list)
+    improvement_plan: str = ""
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class TrustAssetAudit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    existing_assets: list[str] = Field(default_factory=list)
+    missing_assets: list[str] = Field(default_factory=list)
+    easiest_to_create: str = ""
+    highest_value_proof: str = ""
+    trust_blockers: list[str] = Field(default_factory=list)
+    reputation_risks: list[str] = Field(default_factory=list)
+    next_action: str = ""
+    created_at: datetime
+
+
+class FirstImpressionAudit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    touchpoint: FirstImpressionTouchpoint
+    sets_expectations: bool = False
+    reduces_anxiety: bool = False
+    explains_value: bool = False
+    attracts_right: bool = False
+    repels_wrong: bool = False
+    credible: bool = False
+    creates_next_action: bool = False
+    matches_brand: bool = False
+    score: float = Field(ge=0, le=1)
+    recommendations: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class WhiteGloveStage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    stage_name: str = Field(min_length=1)
+    objective: str = ""
+    pain_addressed: str = ""
+    communication: str = ""
+    asset: str = ""
+    owner: str = ""
+    kpi: str = ""
+    failure_signal: str = ""
+    improvement: str = ""
+
+
+class WhiteGloveJourney(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    stakeholder: StakeholderKind
+    stages: list[WhiteGloveStage] = Field(default_factory=list)
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+# ===========================================================================
+# Market Intelligence (mirror of market-intel.ts)
+# ===========================================================================
+
+VocSourceKind = Literal[
+    "email", "comment", "dm", "review", "sales_call", "support_ticket",
+    "forum", "competitor_review", "social_post", "survey", "interview",
+    "lost_deal",
+]
+
+
+class VoiceOfCustomerInsight(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    source: VocSourceKind
+    pain_points: list[str] = Field(default_factory=list)
+    customer_language: list[str] = Field(default_factory=list)
+    objections: list[str] = Field(default_factory=list)
+    desires: list[str] = Field(default_factory=list)
+    trust_barriers: list[str] = Field(default_factory=list)
+    feature_requests: list[str] = Field(default_factory=list)
+    pricing_friction: list[str] = Field(default_factory=list)
+    emotional_triggers: list[str] = Field(default_factory=list)
+    competitor_complaints: list[str] = Field(default_factory=list)
+    improves: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class MarketGap(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    market: str = Field(min_length=1)
+    gap: str = Field(min_length=1)
+    why_exists: str = ""
+    who_feels_it: str = ""
+    opportunity: str = ""
+    mvp_solution: str = ""
+    revenue_model: str = ""
+    speed_to_market_plan: str = ""
+    created_at: datetime
+
+
+class AiVisibilitySignals(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    website_clarity: float = Field(ge=0, le=1)
+    entity_consistency: float = Field(ge=0, le=1)
+    name_consistency: float = Field(ge=0, le=1)
+    category_clarity: float = Field(ge=0, le=1)
+    schema_markup: float = Field(ge=0, le=1)
+    faq_quality: float = Field(ge=0, le=1)
+    comparison_content: float = Field(ge=0, le=1)
+    authority_content: float = Field(ge=0, le=1)
+    citations: float = Field(ge=0, le=1)
+    reviews: float = Field(ge=0, le=1)
+    social_proof: float = Field(ge=0, le=1)
+    press: float = Field(ge=0, le=1)
+    gbp: float = Field(ge=0, le=1)
+    linkedin: float = Field(ge=0, le=1)
+    contact_clarity: float = Field(ge=0, le=1)
+    freshness: float = Field(ge=0, le=1)
+
+
+class AiVisibilityScore(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    signals: AiVisibilitySignals
+    ai_visibility_score: float = Field(ge=0, le=100)
+    search_visibility_score: float = Field(ge=0, le=100)
+    reputation_score: float = Field(ge=0, le=100)
+    missing_entity_signals: list[str] = Field(default_factory=list)
+    missing_authority_signals: list[str] = Field(default_factory=list)
+    missing_proof: list[str] = Field(default_factory=list)
+    recommended_content: list[str] = Field(default_factory=list)
+    recommended_citations: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+# ===========================================================================
+# Oversight (mirror of oversight.ts)
+# ===========================================================================
+
+OversightCadence = Literal["daily", "weekly", "monthly"]
+RecursiveLayer = Literal[
+    "business", "department", "agent", "campaign", "client_journey",
+    "employee_journey", "vendor_journey", "donor_journey",
+    "product_flow", "content_funnel",
+]
+
+
+class BlindSpot(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    scope: str = Field(min_length=1)
+    blind_spot: str = Field(min_length=1)
+    why_matters: str = Field(min_length=1)
+    data_needed: str = Field(min_length=1)
+    reporting_fix: str = Field(min_length=1)
+    owner: str = Field(min_length=1)
+    cadence: OversightCadence
+    created_at: datetime
+
+
+class RecursiveDiagnosis(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    layer: RecursiveLayer
+    subject: str = Field(min_length=1)
+    stakeholder: str = Field(min_length=1)
+    objective: str = Field(min_length=1)
+    first_impression: str = Field(min_length=1)
+    trust_gap: str = Field(min_length=1)
+    conversion_action: str = Field(min_length=1)
+    support_loop: str = Field(min_length=1)
+    kpi: str = Field(min_length=1)
+    feedback_loop: str = Field(min_length=1)
+    retention_loop: str = Field(min_length=1)
+    root_failure_point: str = Field(min_length=1)
+    created_at: datetime
+
+
+class BillionDollarCheck(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    subject: str = Field(min_length=1)
+    investor_grade: bool
+    client_grade: bool
+    legal_grade: bool
+    operator_grade: bool
+    scales_100x: bool
+    protects_brand: bool
+    protects_revenue: bool
+    protects_trust: bool
+    reduces_future_chaos: bool
+    passed: bool
+    revisions_needed: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -13471,4 +13908,46 @@ __all__ = [
     "ScoreEcosystemHealthInput",
     "WinWinWinReview",
     "WinWinWinReviewInput",
+    # Knowledge Ops
+    "KnowledgeSourceKind",
+    "SourcePipelineStatus",
+    "KnowEffort",
+    "KnowMagnitude",
+    "CompanyStage",
+    "KnowBusinessModel",
+    "KnowDiscipline",
+    "ScenarioKind",
+    "KnowExperimentStatus",
+    "KnowledgeSource",
+    "OperatorDigestItem",
+    "AdaptationFilterResult",
+    "KnowledgeTaxonomyEntry",
+    "ScenarioOption",
+    "KnowledgeScenario",
+    "KnowledgeExperiment",
+    # Lifecycle + Growth Architecture
+    "LifecycleStage",
+    "StakeholderKind",
+    "GrowthLoopKind",
+    "FirstImpressionTouchpoint",
+    "LifecycleStageSpec",
+    "LifecycleMap",
+    "GrowthLoopStep",
+    "GrowthLoop",
+    "TrustAssetAudit",
+    "FirstImpressionAudit",
+    "WhiteGloveStage",
+    "WhiteGloveJourney",
+    # Market Intelligence
+    "VocSourceKind",
+    "VoiceOfCustomerInsight",
+    "MarketGap",
+    "AiVisibilitySignals",
+    "AiVisibilityScore",
+    # Oversight
+    "OversightCadence",
+    "RecursiveLayer",
+    "BlindSpot",
+    "RecursiveDiagnosis",
+    "BillionDollarCheck",
 ]

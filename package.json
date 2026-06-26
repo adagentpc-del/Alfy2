@@ -129,7 +129,11 @@
     "reviewcadence:smoke": "tsx scripts/review-cadence-smoke.mts",
     "council:smoke": "tsx scripts/expert-council-smoke.mts",
     "orghealth:smoke": "tsx scripts/org-health-smoke.mts",
-    "ecosystem:smoke": "tsx scripts/incentive-ecosystem-smoke.mts"
+    "ecosystem:smoke": "tsx scripts/incentive-ecosystem-smoke.mts",
+    "knowops:smoke": "tsx scripts/knowledge-ops-smoke.mts",
+    "lifecycle:smoke": "tsx scripts/lifecycle-growth-smoke.mts",
+    "marketintel:smoke": "tsx scripts/market-intel-smoke.mts",
+    "oversight:smoke": "tsx scripts/oversight-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
