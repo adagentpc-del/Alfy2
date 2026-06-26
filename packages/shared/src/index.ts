@@ -1686,3 +1686,6 @@ export {
   type ApprovalRequestStatus as ApiApprovalRequestStatus,
   type ApprovalRequest as ApiApprovalRequest,
 } from "./contracts/api-approval.js";
+
+// Founder Energy + Capacity Layer (§31) — uniquely prefixed; no barrel collisions.
+export * from "./contracts/founder-capacity.js";

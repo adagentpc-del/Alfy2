@@ -445,6 +445,15 @@ export type {
   ApprovalListFilter,
 } from "./api-approval/repository.js";
 
+// Founder Energy + Capacity Layer (§31 — daily check-in → capacity_score + work-mode; append-only)
+export {
+  FounderCapacityEngine,
+  type FounderCapacityEngineOptions,
+  type RecordCapacityInput,
+} from "./founder-capacity/engine.js";
+export { InMemoryFounderCapacityRepository } from "./founder-capacity/in-memory-repository.js";
+export type { FounderCapacityRepository } from "./founder-capacity/repository.js";
+
 // Model Router (provider-agnostic model selection by task type)
 export { ModelRouter } from "./model-router/router.js";
 export { DEFAULT_MODEL_CATALOG } from "./model-router/catalog.js";

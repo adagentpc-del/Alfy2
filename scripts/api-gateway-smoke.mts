@@ -17,6 +17,8 @@ import {
   MissionControlEngine,
   InMemoryMissionControlReadModel,
   type MissionControlAggregate,
+  FounderCapacityEngine,
+  InMemoryFounderCapacityRepository,
 } from "@alfy2/core";
 import { createApp } from "../services/api/src/app.js";
 import type { AppDeps, RequestRepos } from "../services/api/src/app.js";
@@ -54,8 +56,10 @@ const missionControl = new MissionControlEngine(new InMemoryMissionControlReadMo
   nowMs: () => Date.parse("2026-06-26T12:00:00.000Z"),
 });
 
+const founderCapacity = new FounderCapacityEngine(new InMemoryFounderCapacityRepository());
+
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
-  const ctx: RequestRepos = { inbox, gate, missionControl };
+  const ctx: RequestRepos = { inbox, gate, missionControl, founderCapacity };
   return fn(ctx);
 };
 
@@ -223,6 +227,31 @@ let approvalId = "";
   assert.ok(text.length > 0, "daily brief is non-empty");
 }
 
+// --- 8. FounderOS capacity check-in scores + recommends a work mode ------------------------------
+
+{
+  const res = await app.request("/founder/capacity", {
+    method: "POST",
+    headers: authHeader(token),
+    body: JSON.stringify({ energy: 2, stress: 9, sleep_hours: 4 }),
+  });
+  assert.equal(res.status, 201, "capacity check-in → 201");
+  const snap = (await res.json()) as { capacity_score: number; recommended_mode: string };
+  assert.ok(snap.capacity_score < 50, "low inputs → low score");
+  assert.ok(
+    snap.recommended_mode === "recovery" || snap.recommended_mode === "protect",
+    "low capacity recommends recovery/protect",
+  );
+
+  const latest = await app.request("/founder/capacity", {
+    method: "GET",
+    headers: authHeader(token),
+  });
+  assert.equal(latest.status, 200, "get capacity → 200");
+  const { capacity } = (await latest.json()) as { capacity: { recommended_mode: string } | null };
+  assert.equal(capacity?.recommended_mode, snap.recommended_mode, "latest matches the check-in");
+}
+
 console.log(
-  "API GATEWAY SMOKE OK — auth 401s, inbox ingest+list, approval gate parks (202) and clears (200) once approved, mission-control snapshot+brief, health 200.",
+  "API GATEWAY SMOKE OK — auth 401s, inbox ingest+list, approval gate parks (202) and clears (200) once approved, mission-control snapshot+brief, founder capacity check-in, health 200.",
 );

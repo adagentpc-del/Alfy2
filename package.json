@@ -136,7 +136,8 @@
     "oversight:smoke": "tsx scripts/oversight-smoke.mts",
     "apiapproval:smoke": "tsx scripts/api-approval-smoke.mts",
     "apigw:smoke": "tsx scripts/api-gateway-smoke.mts",
-    "missioncontrol:smoke": "tsx scripts/mission-control-smoke.mts"
+    "missioncontrol:smoke": "tsx scripts/mission-control-smoke.mts",
+    "foundercap:smoke": "tsx scripts/founder-capacity-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

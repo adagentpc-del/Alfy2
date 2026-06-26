@@ -1,3 +1,8 @@
+### Added — Release 5: FounderOS capacity (migration 0241)
+- `FounderCapacityEngine` + `founder_capacity_snapshots` (append-only, RLS) + Pg adapter + Pydantic mirror. A check-in scores capacity 0..100 and recommends a work mode (protect / normal / high_capacity / recovery) deterministically.
+- `services/api` routes `POST /founder/capacity` (check-in → scored snapshot) and `GET /founder/capacity` (latest). Mission Control's founder-capacity tile now reads the latest snapshot (mode + score) instead of a default.
+- DB now 241 tables, 0 without RLS. Full tsc -b green; founder + gateway smokes pass (gateway covers 8 cases now); 636 pytest.
+
 ### Added — Release 1: Mission Control live (migration 0240)
 - `PgMissionControlReadModel` (@alfy2/db) composes the Layer-0 aggregate from live tables — real pending approvals, open inbox loops, blocked high-urgency items, top scored revenue opportunities, due follow-ups; revenue/cash/runway return honest 0/null until RevOps + Capital land (R6). All five queries validated against the live schema.
 - Migration 0240 — `mission_control_snapshots` (append-only history) + `mission_control_alerts` (mutable queue), RLS. DB now 240 tables, 0 without RLS.

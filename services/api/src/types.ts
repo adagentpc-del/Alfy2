@@ -1,4 +1,9 @@
-import type { ExecutiveInbox, ApprovalGateService, MissionControlEngine } from "@alfy2/core";
+import type {
+  ExecutiveInbox,
+  ApprovalGateService,
+  MissionControlEngine,
+  FounderCapacityEngine,
+} from "@alfy2/core";
 
 /**
  * The per-request, tenant-scoped repositories handed to a route handler. All are already bound to
@@ -8,6 +13,7 @@ export interface RequestRepos {
   inbox: ExecutiveInbox;
   gate: ApprovalGateService;
   missionControl: MissionControlEngine;
+  founderCapacity: FounderCapacityEngine;
 }
 
 /**

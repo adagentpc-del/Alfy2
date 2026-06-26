@@ -13016,6 +13016,38 @@ class ApiApprovalRequest(BaseModel):
     decided_at: datetime | None = None
 
 
+# ---------------------------------------------------------------------------
+# Founder Energy + Capacity Layer (§31) — mirror of founder-capacity.ts
+# ---------------------------------------------------------------------------
+
+FounderWorkMode = Literal["protect", "normal", "high_capacity", "recovery"]
+
+
+class FounderCapacitySnapshot(BaseModel):
+    """Mirror of FounderCapacitySnapshotSchema (founder-capacity.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    as_of: datetime
+    energy: int | None = None
+    sleep_hours: float | None = None
+    stress: int | None = None
+    focus: int | None = None
+    meeting_load: int | None = None
+    decision_fatigue: int | None = None
+    context_switching: int | None = None
+    emotional_load: int | None = None
+    urgency: int | None = None
+    build_intensity: int | None = None
+    health_constraints: list[str] = Field(default_factory=list)
+    capacity_score: int
+    recommended_mode: FounderWorkMode
+    do_not_interrupt: bool = False
+    created_at: datetime
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -14079,4 +14111,7 @@ __all__ = [
     "ApiApprovalRisk",
     "ApiApprovalRequestStatus",
     "ApiApprovalRequest",
+    # Founder Energy + Capacity Layer
+    "FounderWorkMode",
+    "FounderCapacitySnapshot",
 ]

@@ -30,6 +30,10 @@ interface FollowRow {
   entity_name: string;
   next_touch_at: Date | string | null;
 }
+interface CapacityRow {
+  capacity_score: number | null;
+  recommended_mode: string;
+}
 
 function iso(v: Date | string): string {
   return v instanceof Date ? v.toISOString() : v;
@@ -51,7 +55,7 @@ export class PgMissionControlReadModel implements MissionControlReadModel {
   constructor(private readonly q: Querier) {}
 
   async aggregate(_tenantId: string, _businessId?: string): Promise<MissionControlAggregate> {
-    const [approvals, openInbox, blocked, opps, follows] = await Promise.all([
+    const [approvals, openInbox, blocked, opps, follows, capacity] = await Promise.all([
       this.q.query(
         `select id, action_class, risk, summary, requires_approval, created_at
            from api_approval_requests where status = 'pending'
@@ -76,7 +80,13 @@ export class PgMissionControlReadModel implements MissionControlReadModel {
           where status = 'active' and next_touch_at is not null and next_touch_at <= now()
           order by next_touch_at asc limit 20`,
       ),
+      this.q.query(
+        `select capacity_score, recommended_mode from founder_capacity_snapshots
+          order by as_of desc limit 1`,
+      ),
     ]);
+
+    const cap = (capacity.rows as CapacityRow[])[0];
 
     const pending_approvals: MissionControlPendingApproval[] = (approvals.rows as ApprovalRow[]).map(
       (r) => ({
@@ -104,7 +114,9 @@ export class PgMissionControlReadModel implements MissionControlReadModel {
       })),
       active_builds: [],
       department_health: {},
-      founder_capacity: { score: null, mode: "normal" },
+      founder_capacity: cap
+        ? { score: cap.capacity_score, mode: cap.recommended_mode }
+        : { score: null, mode: "normal" },
       follow_ups_due: (follows.rows as FollowRow[]).map((r) => ({
         id: r.id,
         label: r.entity_name,
