@@ -1643,3 +1643,6 @@ export * from "./contracts/department-os.js";
 // AI Organization / Chain of Command, and CRO / Revenue Command. (Uniquely prefixed; collision-free.)
 export * from "./contracts/ai-org.js";
 export * from "./contracts/revenue-command.js";
+
+// Swarm Lab — R&D's bounded swarm.
+export * from "./contracts/swarm-lab.js";

@@ -294,7 +294,7 @@ export class DepartmentOsEngine {
 }
 
 // ===========================================================================
-// Seed catalog — the 12 departments of a billion-dollar AI operating company.
+// Seed catalog — the 13 departments of a billion-dollar AI operating company (incl. R&D).
 // ===========================================================================
 
 /** Standard AI-employee scorecard KPI names (every seeded AI employee is measured on these). */
@@ -709,6 +709,38 @@ export const DEFAULT_DEPARTMENTS: readonly DepartmentSeedSpec[] = [
       "dollars raised",
       "follow-ups completed",
       "reports delivered",
+    ],
+    review_cadence: "weekly",
+  },
+  {
+    key: "research_development",
+    name: "R&D / Innovation",
+    mission:
+      "Explore, experiment, and de-risk new ideas — including bounded swarm exploration — before they enter the accountable build pipeline.",
+    operating_loop: [
+      "frame a question / objective",
+      "diverge (bounded swarm explores in parallel)",
+      "converge + rank candidates",
+      "validate / prototype cheaply",
+      "kill dead-ends fast",
+      "promote validated ideas to the approval-gated pipeline",
+      "log learnings",
+    ],
+    ai_employees: [
+      "R&D Lead",
+      "Swarm Orchestrator",
+      "Experiment Designer",
+      "Research Scout",
+      "Prototype Agent",
+      "Red-Team Agent",
+    ],
+    kpis: [
+      "experiments run",
+      "ideas validated",
+      "ideas promoted to build",
+      "dead-ends killed fast",
+      "time to validate",
+      "swarm runs converged",
     ],
     review_cadence: "weekly",
   },

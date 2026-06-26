@@ -11841,6 +11841,83 @@ class RevenueKpiSnapshot(BaseModel):
     time_to_cash: float = Field(default=0, ge=0)
 
 
+# ===========================================================================
+# Swarm Lab (mirror of swarm-lab.ts) — R&D's bounded swarm
+# ===========================================================================
+
+SwarmMode = Literal[
+    "idea_generation", "option_exploration", "research_scan", "red_team", "divergent_brainstorm",
+]
+SwarmRunStatus = Literal["draft", "running", "converged", "reported", "promoted", "archived"]
+SwarmPermissionScope = Literal["draft_only", "recommend_only"]
+
+
+class SwarmRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    department_key: str = "research_development"
+    packet_id: UUID | None = None
+    objective: str = Field(min_length=1)
+    mode: SwarmMode = "divergent_brainstorm"
+    agent_count: int = Field(default=8, ge=1, le=50)
+    permission_scope: SwarmPermissionScope = "draft_only"
+    reports_to: str = "R&D Lead"
+    status: SwarmRunStatus = "draft"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class StartSwarmRunInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    objective: str = Field(min_length=1)
+    mode: SwarmMode = "divergent_brainstorm"
+    agent_count: int = Field(default=8, ge=1, le=50)
+    business_id: UUID | None = None
+    packet_id: UUID | None = None
+    permission_scope: SwarmPermissionScope = "draft_only"
+
+
+class SwarmCandidate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    run_id: UUID
+    agent_label: str = Field(min_length=1)
+    angle: str = ""
+    content: str = ""
+    novelty: float = Field(default=0.5, ge=0, le=1)
+    feasibility: float = Field(default=0.5, ge=0, le=1)
+    score: float = Field(default=0, ge=0, le=1)
+    created_at: datetime
+
+
+class SwarmCluster(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    run_id: UUID
+    theme: str = ""
+    candidate_ids: list[UUID] = Field(default_factory=list)
+    pick: bool = False
+    rank: int = Field(default=0, ge=0)
+    rationale: str = ""
+    created_at: datetime
+
+
+class SwarmReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    run_id: UUID
+    top_candidate_ids: list[UUID] = Field(default_factory=list)
+    clusters_summary: str = ""
+    recommended_next_step: str = ""
+    escalated: bool = False
+    created_at: datetime
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -12799,4 +12876,10 @@ __all__ = [
     "OfferReview",
     "OfferReviewInput",
     "RevenueKpiSnapshot",
+    # Swarm Lab
+    "SwarmRun",
+    "StartSwarmRunInput",
+    "SwarmCandidate",
+    "SwarmCluster",
+    "SwarmReport",
 ]

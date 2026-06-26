@@ -757,3 +757,6 @@ export {
 
 // CRO / Revenue Command (portfolio opportunity scoring, command center, business missions)
 export { RevenueCommandEngine, type RevenueCommandEngineOptions } from "./revenue-command/engine.js";
+
+// Swarm Lab — R&D department's bounded swarm (parallel exploration → approval-gated pipeline)
+export { SwarmLabEngine, type SwarmLabOptions, type SwarmGenerator } from "./swarm-lab/engine.js";
