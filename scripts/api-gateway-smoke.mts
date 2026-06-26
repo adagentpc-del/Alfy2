@@ -17,6 +17,8 @@ import {
   MissionControlEngine,
   InMemoryMissionControlReadModel,
   type MissionControlAggregate,
+  MissionControlAlertService,
+  InMemoryMissionControlAlertRepository,
   FounderCapacityEngine,
   InMemoryFounderCapacityRepository,
 } from "@alfy2/core";
@@ -57,9 +59,12 @@ const missionControl = new MissionControlEngine(new InMemoryMissionControlReadMo
 });
 
 const founderCapacity = new FounderCapacityEngine(new InMemoryFounderCapacityRepository());
+const missionControlAlerts = new MissionControlAlertService(
+  new InMemoryMissionControlAlertRepository(),
+);
 
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
-  const ctx: RequestRepos = { inbox, gate, missionControl, founderCapacity };
+  const ctx: RequestRepos = { inbox, gate, missionControl, missionControlAlerts, founderCapacity };
   return fn(ctx);
 };
 
@@ -209,14 +214,25 @@ let approvalId = "";
   assert.equal(res.status, 200, "mission-control → 200");
   const body = (await res.json()) as {
     snapshot: { revenue_opportunities: unknown[]; cash_runway_days: number | null };
-    alerts: Array<{ category: string; severity: string }>;
+    alerts: Array<{ id: string; category: string; severity: string; status: string }>;
   };
   assert.equal(body.snapshot.revenue_opportunities.length, 1, "snapshot carries the opportunity");
   assert.equal(body.snapshot.cash_runway_days, 45, "snapshot reflects runway");
-  assert.ok(
-    body.alerts.some((a) => a.category === "cash" && a.severity === "warn"),
-    "45-day runway raises a warn cash alert",
-  );
+  const cashAlert = body.alerts.find((a) => a.category === "cash" && a.severity === "warn");
+  assert.ok(cashAlert, "45-day runway raises a warn cash alert");
+  assert.equal(cashAlert?.status, "open", "persisted alert starts open");
+
+  // acknowledge it, then confirm it comes back acknowledged (persisted, not duplicated)
+  const ack = await app.request(`/mission-control/alerts/${cashAlert?.id}/ack`, {
+    method: "POST",
+    headers: authHeader(token),
+  });
+  assert.equal(ack.status, 200, "ack alert → 200");
+  const again = await app.request("/mission-control", { method: "GET", headers: authHeader(token) });
+  const body2 = (await again.json()) as { alerts: Array<{ id: string; status: string }> };
+  const same = body2.alerts.filter((a) => a.id === cashAlert?.id);
+  assert.equal(same.length, 1, "alert is not duplicated on re-compose");
+  assert.equal(same[0]?.status, "acknowledged", "acknowledged status persists across refresh");
 
   const brief = await app.request("/mission-control/brief", {
     method: "GET",

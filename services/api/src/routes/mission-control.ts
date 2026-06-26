@@ -10,14 +10,38 @@ import type { AppDeps, AppEnv } from "../types.js";
 export function missionControlRoutes(deps: AppDeps): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
 
-  // GET /mission-control — the composed CEO snapshot + derived alerts.
+  // GET /mission-control — the composed CEO snapshot + the persisted, actionable alert queue.
   app.get("/mission-control", async (c) => {
     const tenantId = c.get("tenantId");
     const businessId = c.get("businessId");
-    const result = await deps.scope(tenantId, businessId, ({ missionControl }) =>
-      missionControl.compose(tenantId, businessId),
-    );
+    const result = await deps.scope(tenantId, businessId, async ({ missionControl, missionControlAlerts }) => {
+      const { snapshot, alerts } = await missionControl.compose(tenantId, businessId);
+      const active = await missionControlAlerts.sync(tenantId, businessId ?? null, alerts);
+      return { snapshot, alerts: active };
+    });
     return c.json(result, 200);
+  });
+
+  // POST /mission-control/alerts/:id/ack — acknowledge an alert.
+  app.post("/mission-control/alerts/:id/ack", async (c) => {
+    const tenantId = c.get("tenantId");
+    const businessId = c.get("businessId");
+    const id = c.req.param("id");
+    await deps.scope(tenantId, businessId, ({ missionControlAlerts }) =>
+      missionControlAlerts.acknowledge(tenantId, id),
+    );
+    return c.json({ ok: true, id, status: "acknowledged" }, 200);
+  });
+
+  // POST /mission-control/alerts/:id/escalate — escalate an alert.
+  app.post("/mission-control/alerts/:id/escalate", async (c) => {
+    const tenantId = c.get("tenantId");
+    const businessId = c.get("businessId");
+    const id = c.req.param("id");
+    await deps.scope(tenantId, businessId, ({ missionControlAlerts }) =>
+      missionControlAlerts.escalate(tenantId, id),
+    );
+    return c.json({ ok: true, id, status: "escalated" }, 200);
   });
 
   // GET /mission-control/brief — the plain-text daily CEO brief (§28.6).

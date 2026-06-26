@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alfie2 · Mission Control (preview)</title>
+<style>
+  :root{
+    --bg:#f7f6f3; --surface:#ffffff; --ink:#1f2933; --mut:#6b7280; --line:#e4e2dd;
+    --line2:#d8dade; --green:#2f6f5e; --greenbg:#e7f1ec; --amber:#9a5a22; --amberbg:#fbeae0;
+    --red:#a32d2d; --redbg:#fcebeb; --clay:#b8732e; --accentbg:#eef4f1;
+    --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .app{display:flex;min-height:100vh}
+  /* sidebar */
+  .nav{width:230px;background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;
+    display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:9px;padding:6px 8px 18px}
+  .brand .logo{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .brand b{font-size:15px;font-weight:600}
+  .brand span{font-size:11px;color:var(--mut);display:block}
+  .navitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;
+    font-size:14px;color:var(--ink);border:none;background:none;width:100%;text-align:left;font-weight:500}
+  .navitem:hover{background:var(--bg)}
+  .navitem.active{background:var(--accentbg);color:var(--green)}
+  .navitem .ic{width:18px;text-align:center;opacity:.8}
+  .navfoot{margin-top:auto;padding:10px 8px;font-size:11px;color:var(--mut);border-top:1px solid var(--line)}
+  /* main */
+  main{flex:1;padding:26px 30px;max-width:1000px}
+  .head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px}
+  h1{font-size:23px;font-weight:600}
+  .sub{font-size:12px;color:var(--mut)}
+  .chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--accentbg);color:var(--green)}
+  .preview-banner{font-size:11px;color:var(--amber);background:var(--amberbg);border:1px solid #f0d9c8;
+    padding:6px 12px;border-radius:8px;margin:14px 0 22px;display:inline-block}
+  /* metric cards */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+  .metric{background:var(--surface);border-radius:var(--radius);padding:15px 16px;box-shadow:var(--shadow)}
+  .metric .l{font-size:12px;color:var(--mut)}
+  .metric .v{font-size:25px;font-weight:600;margin-top:3px}
+  .metric .d{font-size:11px;margin-top:2px}
+  .up{color:var(--green)} .warn{color:var(--amber)} .danger{color:var(--red)} .neutral{color:var(--mut)}
+  /* sections */
+  .sec{font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;
+    margin:26px 0 10px;display:flex;align-items:center;gap:7px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-top:1px solid var(--line)}
+  .row:first-child{border-top:none}
+  .row .t{font-size:14px}
+  .row .s{font-size:11px;color:var(--mut);margin-top:1px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:1px}
+  .g{background:var(--green)} .a{background:var(--amber)} .r{background:var(--red)} .n{background:#b4b2a9}
+  .pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:7px;white-space:nowrap}
+  .pill.green{background:var(--greenbg);color:var(--green)} .pill.amber{background:var(--amberbg);color:var(--amber)}
+  .pill.red{background:var(--redbg);color:var(--red)} .pill.gray{background:var(--bg);color:var(--mut)}
+  .btn{font-size:12px;font-weight:500;padding:6px 13px;border-radius:8px;border:1px solid var(--line2);
+    background:#fff;cursor:pointer;color:var(--ink)}
+  .btn:hover{background:var(--bg)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btns{display:flex;gap:7px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;padding:14px 16px;font-size:13px}
+  .bar{flex:1;max-width:220px;height:8px;border-radius:6px;background:var(--bg);overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--green);border-radius:6px}
+  .view{display:none} .view.active{display:block}
+  .empty{padding:26px 16px;text-align:center;color:var(--mut);font-size:13px}
+  .gatebox{background:var(--amberbg);border:1px solid #f0d9c8;border-radius:9px;padding:5px 11px;font-size:11px;color:var(--amber);font-weight:600}
+  @media(max-width:760px){
+    .app{flex-direction:column} .nav{width:100%;height:auto;flex-direction:row;overflow-x:auto;position:static}
+    .brand{display:none} .navfoot{display:none} main{padding:18px 16px} .two{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="nav">
+    <div class="brand"><div class="logo">A</div><div><b>Alfie2</b><span>operating system</span></div></div>
+    <button class="navitem active" data-view="mc"><span class="ic">◎</span> Mission Control</button>
+    <button class="navitem" data-view="inbox"><span class="ic">✉</span> Executive Inbox</button>
+    <button class="navitem" data-view="approvals"><span class="ic">🔒</span> Approvals</button>
+    <button class="navitem" data-view="founder"><span class="ic">◐</span> Founder</button>
+    <div class="navfoot">Preview build · mock data<br/>v1.0 · Jun 2026</div>
+  </nav>
+
+  <main>
+    <!-- ===== MISSION CONTROL ===== -->
+    <section class="view active" id="mc">
+      <div class="head">
+        <h1>Mission control</h1>
+        <span class="chip">Founder mode · normal</span>
+      </div>
+      <div class="sub">Friday, Jun 26 · one screen for everything that needs you</div>
+      <div class="preview-banner">Preview — numbers are illustrative. Live data arrives once the API is connected.</div>
+
+      <div class="metrics">
+        <div class="metric"><div class="l">Revenue today</div><div class="v">$1,240</div><div class="d up">▲ vs 7-day avg</div></div>
+        <div class="metric"><div class="l">Cash position</div><div class="v">$18,600</div><div class="d neutral">across businesses</div></div>
+        <div class="metric"><div class="l">Runway</div><div class="v">94 days</div><div class="d up">healthy</div></div>
+        <div class="metric"><div class="l">Founder capacity</div><div class="v">72</div><div class="d neutral">deep work protected</div></div>
+        <div class="metric"><div class="l">Needs you</div><div class="v">4</div><div class="d warn">1 high-risk</div></div>
+      </div>
+
+      <div class="sec">⚠ Critical alerts</div>
+      <div class="card">
+        <div class="row"><div><span class="dot a"></span><span class="t">3 Move Mi leads waiting on first reply over 24h</span></div><span class="pill amber">watch</span></div>
+        <div class="row"><div><span class="dot g"></span><span class="t">Weekly revenue brief ready for review</span></div><span class="pill green">info</span></div>
+      </div>
+
+      <div class="sec">⚑ Top 3 priorities today</div>
+      <div class="card">
+        <div class="row"><span class="t"><span class="neutral">1.</span> Approve the Move Mi quote reply to the Henderson move</span><span class="pill green">revenue</span></div>
+        <div class="row"><span class="t"><span class="neutral">2.</span> Follow up on 3 stalled Move Mi leads</span><span class="pill amber">follow-up</span></div>
+        <div class="row"><span class="t"><span class="neutral">3.</span> Review the weekly revenue brief</span><span class="pill gray">review</span></div>
+      </div>
+
+      <div class="two">
+        <div>
+          <div class="sec">♡ Department health</div>
+          <div class="card"><div class="grid2">
+            <span><span class="dot g"></span>Revenue</span><span><span class="dot g"></span>Operations</span>
+            <span><span class="dot a"></span>Growth</span><span><span class="dot g"></span>Customer success</span>
+            <span><span class="dot g"></span>Finance</span><span><span class="dot n"></span>R&amp;D · idle</span>
+          </div></div>
+        </div>
+        <div>
+          <div class="sec">↗ Revenue opportunities</div>
+          <div class="card">
+            <div class="row"><span class="t">Henderson full-house move</span><b style="font-size:13px">$2,400</b></div>
+            <div class="row"><span class="t">Office relocation lead</span><b style="font-size:13px">$5,800</b></div>
+            <div class="row"><span class="t">Realtor referral follow-up</span><span class="s">warm</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">⚙ Active builds</div>
+      <div class="card">
+        <div class="row"><span class="t">Runtime foundation · Release 0</span><div style="display:flex;align-items:center;gap:10px"><div class="bar"><i style="width:100%"></i></div><span class="s">done</span></div></div>
+        <div class="row"><span class="t">Mission Control · Release 1</span><div style="display:flex;align-items:center;gap:10px"><div class="bar"><i style="width:100%"></i></div><span class="s">done</span></div></div>
+        <div class="row"><span class="t">FounderOS · Release 5</span><div style="display:flex;align-items:center;gap:10px"><div class="bar"><i style="width:100%"></i></div><span class="s">done</span></div></div>
+      </div>
+    </section>
+
+    <!-- ===== INBOX ===== -->
+    <section class="view" id="inbox">
+      <div class="head"><h1>Executive inbox</h1><span class="chip">5 items</span></div>
+      <div class="sub">One triaged entry point · newest first</div>
+      <div class="preview-banner">Preview — mock items.</div>
+      <div class="card" style="margin-top:8px">
+        <div class="row"><div><span class="t">Invoice #42 — A3 Visual, $2,000 due next week</span><div class="s">email · finance · needs your review</div></div><span class="pill amber">approval</span></div>
+        <div class="row"><div><span class="t">Inbound lead: full-house move, Henderson</span><div class="s">email · revenue · Move Mi</div></div><span class="pill green">lead</span></div>
+        <div class="row"><div><span class="t">Realtor partnership reply</span><div class="s">email · growth</div></div><span class="pill gray">reviewed</span></div>
+        <div class="row"><div><span class="t">Meeting notes: ops standup</span><div class="s">notes · operations</div></div><span class="pill gray">new</span></div>
+        <div class="row"><div><span class="t">Vendor quote request</span><div class="s">email · operations</div></div><span class="pill gray">new</span></div>
+      </div>
+    </section>
+
+    <!-- ===== APPROVALS ===== -->
+    <section class="view" id="approvals">
+      <div class="head"><h1>Approvals</h1><span class="gatebox">Gate · default-deny</span></div>
+      <div class="sub">Nothing risky executes until you approve it</div>
+      <div class="preview-banner">Preview — buttons are illustrative.</div>
+      <div class="card" style="margin-top:8px">
+        <div class="row"><div><span class="t">Send reply to inbound Move Mi lead</span><div class="s">outbound email · high-risk</div></div><div class="btns"><button class="btn">Review</button><button class="btn primary">Approve</button></div></div>
+        <div class="row"><div><span class="t">Send quote · $2,400 · Henderson move</span><div class="s">money + pricing · high-risk</div></div><div class="btns"><button class="btn">Review</button><button class="btn primary">Approve</button></div></div>
+        <div class="row"><div><span class="t">Publish internal moving-day SOP</span><div class="s">internal draft · low risk</div></div><div class="btns"><button class="btn">Review</button><button class="btn primary">Approve</button></div></div>
+        <div class="row"><div><span class="t">Divini Procure vendor outreach list</span><div class="s">review before send</div></div><div class="btns"><button class="btn">Review</button><button class="btn primary">Approve</button></div></div>
+      </div>
+    </section>
+
+    <!-- ===== FOUNDER ===== -->
+    <section class="view" id="founder">
+      <div class="head"><h1>Founder</h1><span class="chip">Mode · normal</span></div>
+      <div class="sub">The system adapts to your capacity</div>
+      <div class="preview-banner">Preview — mock capacity.</div>
+      <div class="metrics" style="margin-top:8px">
+        <div class="metric"><div class="l">Capacity score</div><div class="v">72</div><div class="d up">high-functioning</div></div>
+        <div class="metric"><div class="l">Approval load</div><div class="v">4</div><div class="d neutral">manageable</div></div>
+        <div class="metric"><div class="l">Recommended mode</div><div class="v" style="font-size:19px">Normal</div><div class="d neutral">surface strategy</div></div>
+      </div>
+      <div class="sec">Today's check-in</div>
+      <div class="card"><div class="grid2">
+        <span class="neutral">Energy</span><span>7 / 10</span>
+        <span class="neutral">Sleep</span><span>7.0 hrs</span>
+        <span class="neutral">Stress</span><span>3 / 10</span>
+        <span class="neutral">Focus</span><span>8 / 10</span>
+        <span class="neutral">Meeting load</span><span>4 / 10</span>
+        <span class="neutral">Do not interrupt</span><span>off</span>
+      </div></div>
+      <div class="sec">How the system responds</div>
+      <div class="card">
+        <div class="row"><span class="t">Surface strategic decisions</span><span class="pill green">on</span></div>
+        <div class="row"><span class="t">Accelerate outbound</span><span class="pill green">on</span></div>
+        <div class="row"><span class="t">Protect cash / legal / critical alerts</span><span class="pill green">always</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+  const items = document.querySelectorAll('.navitem');
+  const views = document.querySelectorAll('.view');
+  items.forEach(b=>b.addEventListener('click',()=>{
+    items.forEach(x=>x.classList.remove('active'));
+    views.forEach(v=>v.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.view).classList.add('active');
+    window.scrollTo(0,0);
+  }));
+</script>
+</body>
+</html>

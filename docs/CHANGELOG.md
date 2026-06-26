@@ -1,3 +1,7 @@
+### Added — Release 1 completion: Mission Control alerts are now persistent + actionable
+- `MissionControlAlertService` (core) + `MissionControlAlertRepository` port + InMemory + `PgMissionControlAlertRepository` (@alfy2/db) over the existing `mission_control_alerts` table (no new migration). `sync()` reconciles freshly-derived alerts with the persisted queue by (category, title) so conditions don't duplicate and operator status survives refresh.
+- `services/api`: `GET /mission-control` now persists + returns the active alert queue; new `POST /mission-control/alerts/:id/ack` and `/escalate`. Gateway smoke proves an alert persists, acknowledges, and is not duplicated on re-compose. Full tsc -b green.
+
 ### Added — Release 5: FounderOS capacity (migration 0241)
 - `FounderCapacityEngine` + `founder_capacity_snapshots` (append-only, RLS) + Pg adapter + Pydantic mirror. A check-in scores capacity 0..100 and recommends a work mode (protect / normal / high_capacity / recovery) deterministically.
 - `services/api` routes `POST /founder/capacity` (check-in → scored snapshot) and `GET /founder/capacity` (latest). Mission Control's founder-capacity tile now reads the latest snapshot (mode + score) instead of a default.

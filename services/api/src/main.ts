@@ -5,6 +5,7 @@ import {
   ExecutiveInbox,
   ApprovalGateService,
   MissionControlEngine,
+  MissionControlAlertService,
   FounderCapacityEngine,
 } from "@alfy2/core";
 import {
@@ -12,6 +13,7 @@ import {
   PgInboxRepository,
   PgApprovalRequestRepository,
   PgMissionControlReadModel,
+  PgMissionControlAlertRepository,
   PgFounderCapacityRepository,
 } from "@alfy2/db";
 import { createApp } from "./app.js";
@@ -47,8 +49,17 @@ async function main(): Promise<void> {
         });
         const gate = new ApprovalGateService(new PgApprovalRequestRepository(q));
         const missionControl = new MissionControlEngine(new PgMissionControlReadModel(q));
+        const missionControlAlerts = new MissionControlAlertService(
+          new PgMissionControlAlertRepository(q),
+        );
         const founderCapacity = new FounderCapacityEngine(new PgFounderCapacityRepository(q));
-        const ctx: RequestRepos = { inbox, gate, missionControl, founderCapacity };
+        const ctx: RequestRepos = {
+          inbox,
+          gate,
+          missionControl,
+          missionControlAlerts,
+          founderCapacity,
+        };
         return fn(ctx);
       },
       businessId,

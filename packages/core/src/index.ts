@@ -315,6 +315,13 @@ export {
 } from "./mission-control/read-model.js";
 // Earlier one-screen reading-snapshot assembler (placeholder superseded by the §28 engine above)
 export { MissionControlSnapshotAssembler } from "./mission-control/reading-snapshot.js";
+export {
+  MissionControlAlertService,
+  InMemoryMissionControlAlertRepository,
+  type MissionControlAlertRepository,
+  type MissionControlAlertServiceOptions,
+  type MissionControlAlertStatus,
+} from "./mission-control/alert-service.js";
 
 // Continuous Improvement Engine (evaluate workflows; recommend simplify/automate/remove/merge/split/delegate)
 export { ContinuousImprovementEngine } from "./continuous-improvement/engine.js";

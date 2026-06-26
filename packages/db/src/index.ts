@@ -14,3 +14,4 @@ export { PgInboxRepository } from "./inbox-repository.js";
 export { PgApprovalRequestRepository } from "./api-approval-repository.js";
 export { PgFounderCapacityRepository } from "./founder-capacity-repository.js";
 export { PgMissionControlReadModel } from "./mission-control-read-model.js";
+export { PgMissionControlAlertRepository } from "./mission-control-alert-repository.js";

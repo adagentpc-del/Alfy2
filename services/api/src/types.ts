@@ -2,6 +2,7 @@ import type {
   ExecutiveInbox,
   ApprovalGateService,
   MissionControlEngine,
+  MissionControlAlertService,
   FounderCapacityEngine,
 } from "@alfy2/core";
 
@@ -13,6 +14,7 @@ export interface RequestRepos {
   inbox: ExecutiveInbox;
   gate: ApprovalGateService;
   missionControl: MissionControlEngine;
+  missionControlAlerts: MissionControlAlertService;
   founderCapacity: FounderCapacityEngine;
 }
 
