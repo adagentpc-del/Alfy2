@@ -1,0 +1,99 @@
+<svg viewBox="0 0 940 1290" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+<title>Alfie2 structure and operating algorithm</title>
+<desc>Top: the Constitution governs five operating systems above the built domain stack (contracts, engines, db adapter, 237 tables) and the AI org. Bottom: the runtime algorithm — work flows down via delegation packets, results flow up through review and an approval gate, outcomes feed KPIs and continuous improvement.</desc>
+<defs>
+<marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5b6573"/></marker>
+<marker id="arrowUp" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2f6f5e"/></marker>
+</defs>
+<style>
+.ink{fill:#1f2933;}.mut{fill:#6b7280;}
+.h1{font-size:24px;font-weight:700;}.h2{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.lbl{font-size:13px;font-weight:600;}.sub{font-size:11px;}.tiny{font-size:10px;}
+.box{fill:#f4f3f0;stroke:#c9ccd1;stroke-width:1.2;}
+.built{fill:#e7f1ec;stroke:#2f6f5e;stroke-width:1.4;}
+.pending{fill:#f7f6f3;stroke:#9aa1ab;stroke-width:1.3;stroke-dasharray:5 4;}
+.crown{fill:#f3ecdb;stroke:#b08a2e;stroke-width:1.6;}
+.flow{stroke:#5b6573;stroke-width:1.6;fill:none;}.flowUp{stroke:#2f6f5e;stroke-width:1.6;fill:none;}
+.gate{fill:#fbeae0;stroke:#b8732e;stroke-width:1.8;}
+</style>
+<rect x="0" y="0" width="940" height="1290" fill="#ffffff"/>
+<text x="40" y="46" class="ink h1">Alfie2 — What's Built</text>
+<text x="40" y="68" class="mut sub">172 contracts · 173 engines · 237 live tables (all RLS) · 622 tests green · runtime pending</text>
+<rect x="636" y="34" width="14" height="14" class="built"/><text x="656" y="45" class="mut tiny">built &amp; live</text>
+<rect x="730" y="34" width="14" height="14" class="pending"/><text x="750" y="45" class="mut tiny">specified / pending</text>
+<rect x="300" y="86" width="340" height="44" rx="8" class="crown"/>
+<text x="470" y="105" text-anchor="middle" class="ink lbl">THE CONSTITUTION</text>
+<text x="470" y="121" text-anchor="middle" class="mut sub">supreme governance · final authority: Alyssa</text>
+<line x1="470" y1="130" x2="470" y2="150" class="flow" marker-end="url(#arrow)"/>
+<text x="40" y="168" class="mut h2">Five Operating Systems</text>
+<rect x="40" y="178" width="166" height="52" rx="7" class="built"/><text x="123" y="200" text-anchor="middle" class="ink lbl">AOS</text><text x="123" y="216" text-anchor="middle" class="mut sub">runs the AI org</text>
+<rect x="218" y="178" width="166" height="52" rx="7" class="box"/><text x="301" y="200" text-anchor="middle" class="ink lbl">AESL</text><text x="301" y="216" text-anchor="middle" class="mut sub">specs &amp; build queue</text>
+<rect x="396" y="178" width="148" height="52" rx="7" class="box"/><text x="470" y="200" text-anchor="middle" class="ink lbl">AMC</text><text x="470" y="216" text-anchor="middle" class="mut sub">master control</text>
+<rect x="556" y="178" width="166" height="52" rx="7" class="box"/><text x="639" y="200" text-anchor="middle" class="ink lbl">ADOS</text><text x="639" y="216" text-anchor="middle" class="mut sub">documentation OS</text>
+<rect x="734" y="178" width="166" height="52" rx="7" class="pending"/><text x="817" y="200" text-anchor="middle" class="ink lbl">Mission Control</text><text x="817" y="216" text-anchor="middle" class="mut sub">day-to-day ops</text>
+<line x1="123" y1="230" x2="123" y2="258" class="flow" marker-end="url(#arrow)"/>
+<text x="40" y="278" class="mut h2">AOS — Domain Stack (contracts-first)</text>
+<rect x="40" y="290" width="200" height="60" rx="7" class="built"/><text x="140" y="314" text-anchor="middle" class="ink lbl">packages/shared</text><text x="140" y="332" text-anchor="middle" class="mut sub">172 Zod contracts</text>
+<line x1="240" y1="320" x2="268" y2="320" class="flow" marker-end="url(#arrow)"/>
+<rect x="270" y="290" width="200" height="60" rx="7" class="built"/><text x="370" y="314" text-anchor="middle" class="ink lbl">packages/core</text><text x="370" y="332" text-anchor="middle" class="mut sub">173 engines (deterministic)</text>
+<line x1="470" y1="320" x2="498" y2="320" class="flow" marker-end="url(#arrow)"/>
+<rect x="500" y="290" width="180" height="60" rx="7" class="built"/><text x="590" y="314" text-anchor="middle" class="ink lbl">@alfy2/db</text><text x="590" y="332" text-anchor="middle" class="mut sub">RLS tenant adapter</text>
+<line x1="680" y1="320" x2="708" y2="320" class="flow" marker-end="url(#arrow)"/>
+<rect x="710" y="290" width="190" height="60" rx="7" class="pending"/><text x="805" y="314" text-anchor="middle" class="ink lbl">services/api · orch</text><text x="805" y="332" text-anchor="middle" class="mut sub">runtime — not built</text>
+<line x1="590" y1="350" x2="590" y2="372" class="flow" marker-end="url(#arrow)"/>
+<rect x="270" y="368" width="200" height="40" rx="7" class="built"/><text x="370" y="393" text-anchor="middle" class="mut sub">workers/ · Pydantic · 622 tests</text>
+<rect x="500" y="372" width="400" height="48" rx="7" class="built"/><text x="700" y="392" text-anchor="middle" class="ink lbl">Supabase · 237 tables</text><text x="700" y="408" text-anchor="middle" class="mut sub">every table RLS deny-by-default · tenant isolated</text>
+<text x="40" y="452" class="mut h2">The AI Organization (seeded)</text>
+<rect x="40" y="462" width="275" height="46" rx="7" class="built"/><text x="177" y="484" text-anchor="middle" class="ink lbl">15 Departments</text><text x="177" y="500" text-anchor="middle" class="mut sub">mission · loop · KPIs each</text>
+<rect x="332" y="462" width="275" height="46" rx="7" class="built"/><text x="469" y="484" text-anchor="middle" class="ink lbl">94 AI Employees</text><text x="469" y="500" text-anchor="middle" class="mut sub">scorecards attached</text>
+<rect x="624" y="462" width="276" height="46" rx="7" class="built"/><text x="762" y="484" text-anchor="middle" class="ink lbl">78 Role Cards</text><text x="762" y="500" text-anchor="middle" class="mut sub">5-level chain of command</text>
+<line x1="40" y1="532" x2="900" y2="532" stroke="#d8dade" stroke-width="1"/>
+<text x="40" y="572" class="ink h1">The Operating Algorithm</text>
+<text x="40" y="594" class="mut sub">work flows DOWN through delegation · results flow UP through review · the gate stops risky execution</text>
+<rect x="40" y="624" width="180" height="232" rx="8" class="box"/>
+<text x="130" y="648" text-anchor="middle" class="ink lbl">Context loaded first</text>
+<text x="130" y="672" text-anchor="middle" class="mut sub">Business Profile</text><text x="130" y="692" text-anchor="middle" class="mut sub">11-layer Context Stack</text>
+<text x="130" y="712" text-anchor="middle" class="mut sub">Source of Truth</text><text x="130" y="732" text-anchor="middle" class="mut sub">brand · banned words</text>
+<text x="130" y="752" text-anchor="middle" class="mut sub">compliance cautions</text>
+<line x1="130" y1="772" x2="130" y2="792" stroke="#b8732e" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="130" y="812" text-anchor="middle" class="ink sub" font-weight="700">no cross-business</text><text x="130" y="828" text-anchor="middle" class="ink sub" font-weight="700">contamination</text>
+<line x1="220" y1="700" x2="250" y2="700" class="flow" marker-end="url(#arrow)"/>
+<rect x="262" y="624" width="300" height="40" rx="7" class="crown"/><text x="412" y="649" text-anchor="middle" class="ink lbl">1 · Alyssa / CEO — intent</text>
+<line x1="412" y1="664" x2="412" y2="684" class="flow" marker-end="url(#arrow)"/>
+<rect x="262" y="686" width="300" height="38" rx="7" class="built"/><text x="412" y="710" text-anchor="middle" class="lbl ink">2 · Executive — set priority</text>
+<line x1="412" y1="724" x2="412" y2="742" class="flow" marker-end="url(#arrow)"/>
+<rect x="262" y="744" width="300" height="38" rx="7" class="built"/><text x="412" y="768" text-anchor="middle" class="lbl ink">3 · Department Leader — owns outcome</text>
+<line x1="412" y1="782" x2="412" y2="800" class="flow" marker-end="url(#arrow)"/>
+<rect x="262" y="802" width="300" height="38" rx="7" class="built"/><text x="412" y="826" text-anchor="middle" class="lbl ink">4 · AI Employee — manages task</text>
+<line x1="412" y1="840" x2="412" y2="858" class="flow" marker-end="url(#arrow)"/>
+<rect x="262" y="860" width="300" height="44" rx="7" class="built"/><text x="412" y="881" text-anchor="middle" class="lbl ink">5 · Specialist Agents — execute</text><text x="412" y="897" text-anchor="middle" class="mut sub">only with a delegation packet</text>
+<rect x="604" y="744" width="296" height="96" rx="8" class="box"/>
+<text x="752" y="767" text-anchor="middle" class="ink lbl">Delegation Packet (required)</text>
+<text x="752" y="787" text-anchor="middle" class="mut sub">objective · context · allowed tools</text>
+<text x="752" y="805" text-anchor="middle" class="mut sub">prohibited actions · approval needed</text>
+<text x="752" y="823" text-anchor="middle" class="mut sub">success criteria · no packet = stop</text>
+<line x1="604" y1="792" x2="566" y2="858" class="flow" marker-end="url(#arrow)"/>
+<line x1="412" y1="904" x2="412" y2="926" class="flowUp" marker-end="url(#arrowUp)"/>
+<rect x="262" y="928" width="300" height="40" rx="7" class="built"/><text x="412" y="947" text-anchor="middle" class="lbl ink">6 · Report-back ▲ review</text><text x="412" y="962" text-anchor="middle" class="mut sub">accept · revise · reject · escalate</text>
+<line x1="412" y1="968" x2="412" y2="988" class="flowUp" marker-end="url(#arrowUp)"/>
+<polygon points="412,990 470,1020 412,1050 354,1020" class="gate"/>
+<text x="412" y="1016" text-anchor="middle" class="ink lbl">Approval</text><text x="412" y="1032" text-anchor="middle" class="ink lbl">Gate</text>
+<text x="540" y="1016" class="mut sub">money · public · legal · deploy</text><text x="540" y="1032" class="mut sub">pricing · send → default DENY</text>
+<line x1="412" y1="1050" x2="412" y2="1070" class="flow" marker-end="url(#arrow)"/>
+<rect x="282" y="1072" width="260" height="40" rx="7" class="built"/><text x="412" y="1091" text-anchor="middle" class="lbl ink">7 · Execute (if approved)</text><text x="412" y="1106" text-anchor="middle" class="mut sub">verify → changelog → audit log</text>
+<line x1="412" y1="1112" x2="412" y2="1132" class="flow" marker-end="url(#arrow)"/>
+<rect x="282" y="1134" width="260" height="40" rx="7" class="built"/><text x="412" y="1153" text-anchor="middle" class="lbl ink">8 · KPIs · Execution Scores</text><text x="412" y="1169" text-anchor="middle" class="mut sub">speed · quality · ROI · reliability</text>
+<line x1="282" y1="1154" x2="240" y2="1154" class="flowUp"/>
+<rect x="40" y="1134" width="200" height="58" rx="7" class="pending"/>
+<text x="140" y="1158" text-anchor="middle" class="ink lbl">9 · Continuous</text><text x="140" y="1174" text-anchor="middle" class="ink lbl">Improvement</text><text x="140" y="1188" text-anchor="middle" class="mut tiny">task → SOP / template / skill</text>
+<path d="M140,1134 C140,1040 150,720 130,624" class="flowUp" marker-end="url(#arrowUp)"/>
+<rect x="604" y="990" width="296" height="184" rx="8" class="pending"/>
+<text x="752" y="1014" text-anchor="middle" class="ink lbl">Mission Control watches</text>
+<text x="752" y="1037" text-anchor="middle" class="mut sub">revenue · cash · runway</text><text x="752" y="1056" text-anchor="middle" class="mut sub">approvals · blocked · risk</text>
+<text x="752" y="1075" text-anchor="middle" class="mut sub">top 3 priorities · agent activity</text><text x="752" y="1094" text-anchor="middle" class="mut sub">founder capacity → work mode</text>
+<text x="752" y="1118" text-anchor="middle" class="ink sub" font-weight="700">monitors · routes · escalates</text><text x="752" y="1136" text-anchor="middle" class="ink sub" font-weight="700">summarizes · asks approval</text>
+<text x="752" y="1158" text-anchor="middle" class="mut tiny">(read-model — builds in Release 1)</text>
+<line x1="604" y1="1030" x2="472" y2="1020" class="flow" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text x="40" y="1238" class="mut sub">Built and live: everything in green. Pending runtime: dashed. The brain and the org exist; the nervous system (API + gate + connectors + UI) is the next build.</text>
+<text x="40" y="1260" class="mut sub">Freeze v1.0 active — next step is Release 0 / Build Queue Group 1: Supabase Auth → tenant isolation → API gateway → approval gate.</text>
+</svg>

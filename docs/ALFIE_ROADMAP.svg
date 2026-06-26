@@ -1,0 +1,79 @@
+<svg viewBox="0 0 940 1230" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+<title>Alfie2 release roadmap R0 to R10 with current position</title>
+<desc>Vertical roadmap of eleven releases from Foundations to Self-Optimizing Organization, grouped Now/Mid/Long, each with status, completion, and gates. Current position is the start of Release 0; Release 3 (Move Mi) is the freeze-exit milestone.</desc>
+<style>
+.ink{fill:#1f2933;}.mut{fill:#6b7280;}
+.h1{font-size:24px;font-weight:700;}.band{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;fill:#8a8f98;}
+.rname{font-size:15px;font-weight:700;}.sub{font-size:11px;}.tiny{font-size:10px;}
+.barbg{fill:#eceae6;}.barfill{fill:#2f6f5e;}.spine{stroke:#c9ccd1;stroke-width:2.4;}
+.gate{font-size:10px;font-weight:700;fill:#9a5a22;}
+.nowdot{fill:#e7f1ec;stroke:#2f6f5e;stroke-width:2.4;}.futdot{fill:#ffffff;stroke:#9aa1ab;stroke-width:2;}
+</style>
+<rect x="0" y="0" width="940" height="1230" fill="#ffffff"/>
+<text x="40" y="48" class="ink h1">Alfie2 — Release Roadmap</text>
+<text x="40" y="70" class="mut sub">Domain built (172 contracts · 173 engines · 237 tables · 622 tests). Runtime not started. Freeze v1.0 active.</text>
+<rect x="612" y="36" width="13" height="13" rx="2" class="barfill"/><text x="631" y="47" class="mut tiny">% complete</text>
+<text x="720" y="47" class="gate">◆ go/no-go gate</text>
+<line x1="180" y1="150" x2="180" y2="1120" class="spine"/>
+<text x="40" y="138" class="band">Now · in freeze</text>
+<circle cx="180" cy="172" r="11" class="nowdot"/>
+<text x="206" y="168" class="ink rname">R0 · Foundations</text>
+<text x="206" y="185" class="mut sub">auth · tenant isolation · persistence · API · approval gate</text>
+<rect x="600" y="160" width="260" height="12" rx="6" class="barbg"/><rect x="600" y="160" width="26" height="12" rx="6" class="barfill"/><text x="868" y="170" class="mut tiny">10%</text>
+<text x="600" y="190" class="gate">◆ G0 · isolation + gate green</text>
+<polygon points="150,172 120,162 120,182" fill="#b8732e"/>
+<rect x="22" y="150" width="96" height="44" rx="8" fill="#fbeae0" stroke="#b8732e" stroke-width="1.6"/>
+<text x="70" y="169" text-anchor="middle" font-size="11" font-weight="700" fill="#9a5a22">YOU ARE</text>
+<text x="70" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#9a5a22">HERE</text>
+<circle cx="180" cy="262" r="9" class="futdot"/>
+<text x="206" y="258" class="ink rname">R1 · Mission Control</text>
+<text x="206" y="275" class="mut sub">CEO dashboard · alerts · daily/weekly summaries</text>
+<rect x="600" y="250" width="260" height="12" rx="6" class="barbg"/><rect x="600" y="250" width="13" height="12" rx="6" class="barfill"/><text x="868" y="260" class="mut tiny">5%</text>
+<circle cx="180" cy="352" r="9" class="futdot"/>
+<text x="206" y="348" class="ink rname">R2 · Executive Inbox</text>
+<text x="206" y="365" class="mut sub">one triaged entry point · first UI surface</text>
+<rect x="600" y="340" width="260" height="12" rx="6" class="barbg"/><rect x="600" y="340" width="65" height="12" rx="6" class="barfill"/><text x="868" y="350" class="mut tiny">25%</text>
+<circle cx="180" cy="442" r="11" class="futdot" stroke="#b8732e"/>
+<text x="206" y="438" class="ink rname">R3 · Move Mi — first live slice</text>
+<text x="206" y="455" class="mut sub">email in/out (gated) · revenue brief · real loop</text>
+<rect x="600" y="430" width="260" height="12" rx="6" class="barbg"/><text x="868" y="440" class="mut tiny">0%</text>
+<text x="600" y="460" class="gate">◆ G3 · FREEZE LIFTS — loop runs end-to-end</text>
+<line x1="206" y1="490" x2="860" y2="490" stroke="#e4e2dd" stroke-width="1"/>
+<text x="40" y="530" class="band">Mid · post-freeze</text>
+<circle cx="180" cy="552" r="9" class="futdot"/>
+<text x="206" y="548" class="ink rname">R4 · Divini Procure</text>
+<text x="206" y="565" class="mut sub">second business on the same runtime (proves it scales)</text>
+<rect x="600" y="540" width="260" height="12" rx="6" class="barbg"/><text x="868" y="550" class="mut tiny">0%</text>
+<circle cx="180" cy="632" r="9" class="futdot"/>
+<text x="206" y="628" class="ink rname">R5 · FounderOS</text>
+<text x="206" y="645" class="mut sub">capacity-aware · protects energy · work modes</text>
+<rect x="600" y="620" width="260" height="12" rx="6" class="barbg"/><text x="868" y="630" class="mut tiny">0%</text>
+<circle cx="180" cy="712" r="9" class="futdot"/>
+<text x="206" y="708" class="ink rname">R6 · Revenue OS</text>
+<text x="206" y="725" class="mut sub">portfolio funnel · decisions · capital allocation</text>
+<rect x="600" y="700" width="260" height="12" rx="6" class="barbg"/><rect x="600" y="700" width="26" height="12" rx="6" class="barfill"/><text x="868" y="710" class="mut tiny">10%</text>
+<text x="600" y="730" class="gate">◆ G6 · money stays recommend-only</text>
+<circle cx="180" cy="802" r="9" class="futdot"/>
+<text x="206" y="798" class="ink rname">R7 · Connectors</text>
+<text x="206" y="815" class="mut sub">Slack · social · CRM · payments · analytics (gated)</text>
+<rect x="600" y="790" width="260" height="12" rx="6" class="barbg"/><text x="868" y="800" class="mut tiny">0%</text>
+<line x1="206" y1="840" x2="860" y2="840" stroke="#e4e2dd" stroke-width="1"/>
+<text x="40" y="880" class="band">Long · scale</text>
+<circle cx="180" cy="902" r="9" class="futdot"/>
+<text x="206" y="898" class="ink rname">R8 · Public Beta</text>
+<text x="206" y="915" class="mut sub">hardening · observability · multi-user onboarding</text>
+<rect x="600" y="890" width="260" height="12" rx="6" class="barbg"/><text x="868" y="900" class="mut tiny">0%</text>
+<text x="600" y="920" class="gate">◆ G8 · security standards met</text>
+<circle cx="180" cy="982" r="9" class="futdot"/>
+<text x="206" y="978" class="ink rname">R9 · Enterprise</text>
+<text x="206" y="995" class="mut sub">multi-tenant · SSO · roles · licensing · compliance</text>
+<rect x="600" y="970" width="260" height="12" rx="6" class="barbg"/><text x="868" y="980" class="mut tiny">0%</text>
+<text x="600" y="1000" class="gate">◆ G9 · isolation at scale</text>
+<circle cx="180" cy="1062" r="9" class="futdot"/>
+<text x="206" y="1058" class="ink rname">R10 · Self-Optimizing Org</text>
+<text x="206" y="1075" class="mut sub">closed learning loop · agent lifecycle · within the gates</text>
+<rect x="600" y="1050" width="260" height="12" rx="6" class="barbg"/><text x="868" y="1060" class="mut tiny">0%</text>
+<rect x="40" y="1140" width="860" height="58" rx="8" fill="#f4f3f0" stroke="#c9ccd1" stroke-width="1.2"/>
+<text x="58" y="1164" class="ink rname" font-size="13">Critical path → R0 → R1 → R2 → R3</text>
+<text x="58" y="1184" class="mut sub">Foundations, then visibility, then the entry point, then the first live revenue loop. R3 is the freeze-exit gate; everything after reuses the proven runtime. Next concrete step: Build Queue task #1 — env + live persistence proof.</text>
+</svg>
