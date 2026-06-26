@@ -10,6 +10,7 @@ import {
   DecisionEngine,
   MemoryEngine,
   InMemoryMemoryRepository,
+  InMemoryInboxRepository,
 } from "@alfy2/core";
 
 const TENANT = "00000000-0000-0000-0000-000000000001";
@@ -31,11 +32,13 @@ const a3 = await memory.remember(TENANT, {
   keywords: ["a3 visual", "printing", "fabrication", "stadium"],
 });
 
+const inboxStore = new InMemoryInboxRepository();
 const inbox = new ExecutiveInbox(decisions, {
   clock: () => NOW,
   idFactory: id,
   memory,
   businesses: [{ id: "a3-visual", name: "A3 Visual", keywords: ["a3", "banner", "fabrication", "stadium"] }],
+  inbox: inboxStore,
 });
 
 const everyFieldPresent = (it: any) => {
@@ -98,7 +101,23 @@ const note = await inbox.process(TENANT, {
 everyFieldPresent(note);
 assert.ok(note.dashboard_updated, "dashboards refresh on every item");
 
-console.log("EXECUTIVE INBOX SMOKE OK — every drop identified, classified, routed, linked, saved; approval only when needed");
+// 6. PERSISTENCE — every processed drop was stored through the InboxRepository port.
+const stored = await inbox.listItems(TENANT);
+assert.equal(stored.length, 5, "all five processed items were persisted");
+assert.equal(stored[0]?.status, "new", "items persist with status 'new'");
+const gotInvoice = await inbox.getItem(TENANT, invoice.id);
+assert.ok(gotInvoice, "invoice is retrievable by id");
+assert.equal(gotInvoice.item.category, "finance", "stored item round-trips its routing");
+assert.ok(gotInvoice.content.includes("Invoice #4471"), "original drop content was kept");
+await inbox.markStatus(TENANT, invoice.id, "actioned");
+const reFetched = await inbox.getItem(TENANT, invoice.id);
+assert.equal(reFetched?.status, "actioned", "status advances");
+const onlyNew = await inbox.listItems(TENANT, { statuses: ["new"] });
+assert.equal(onlyNew.length, 4, "status filter excludes the actioned item");
+const isolated = await inbox.listItems("00000000-0000-0000-0000-0000000000ff");
+assert.equal(isolated.length, 0, "another tenant sees none of these items");
+
+console.log("EXECUTIVE INBOX SMOKE OK — every drop identified, classified, routed, linked, saved, PERSISTED; approval only when needed");
 console.log(
   "invoice:",
   JSON.stringify(

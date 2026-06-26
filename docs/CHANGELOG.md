@@ -4,7 +4,16 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
-### Added — Phase 2 runtime layer (persistence, brick 1)
+### Added — Phase 2 runtime layer (persistence, bricks 1–2)
+- **Executive Inbox persistence (brick 2).** New `InboxRepository` port + `InMemoryInboxRepository`
+  in `@alfy2/core`; `ExecutiveInbox` now accepts an optional `inbox` store and persists every
+  processed drop (`process()` → save with status `new`), plus `getItem` / `listItems` (newest-first,
+  status/category filters) / `markStatus`. `PgInboxRepository` in `@alfy2/db` maps the
+  `inbox_items` table — scalar columns + a `payload` jsonb for the variable-shape fields (linked
+  entities, tasks, missing info, agents, explanation, summary), rehydrated on read. Backward
+  compatible (no store = route-only, as before). Verified: `tsc -b` green; the inbox smoke now
+  exercises the full persistence path (persist 5, get, advance status, status filter, tenant
+  isolation); `db-smoke` round-trips a Move-Mi-email-shaped item end-to-end when `DATABASE_URL` set.
 - **`@alfy2/db`** — the first real persistence adapter package. `Db.withTenant(tenantId, fn)` opens a
   Postgres transaction and sets `app.tenant_id` (+ optional `app.business_id`) as a **LOCAL GUC**, so
   the schema's RLS policies (`current_setting('app.tenant_id', true)`) enforce isolation per

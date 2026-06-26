@@ -19,6 +19,12 @@ import {
   memoryKindFor,
   REQUIRED_FIELDS_BY_TYPE,
 } from "./classify.js";
+import type {
+  InboxRepository,
+  StoredInboxItem,
+  InboxListFilter,
+  InboxItemStatus,
+} from "./repository.js";
 
 /**
  * The Executive Inbox — the single entry point into Alfy2 (docs/adr/ADR-0011-executive-inbox.md).
@@ -46,6 +52,8 @@ export interface ExecutiveInboxOptions {
   memory?: InboxMemory;
   /** Known businesses for routing (id + name + optional keywords). */
   businesses?: InboxBusiness[];
+  /** Persistence for processed items. Optional — without it, process() routes but does not store. */
+  inbox?: InboxRepository;
 }
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
@@ -55,6 +63,7 @@ export class ExecutiveInbox {
   private readonly newId: () => string;
   private readonly memory: InboxMemory | undefined;
   private readonly businesses: InboxBusiness[];
+  private readonly inbox: InboxRepository | undefined;
 
   constructor(
     private readonly decisions: DecisionEngine,
@@ -64,6 +73,7 @@ export class ExecutiveInbox {
     this.newId = options.idFactory ?? (() => crypto.randomUUID());
     this.memory = options.memory;
     this.businesses = options.businesses ?? [];
+    this.inbox = options.inbox;
   }
 
   /** Process one drop into a fully-routed ProcessedInboxItem. */
@@ -146,7 +156,41 @@ export class ExecutiveInbox {
       summary,
     };
 
-    return ProcessedInboxItemSchema.parse(processed);
+    const result = ProcessedInboxItemSchema.parse(processed);
+
+    // Persist when a store is configured. Status starts at "new"; the original content is kept for
+    // full-text search and re-display.
+    if (this.inbox) {
+      await this.inbox.save({ item: result, content: drop.content, status: "new" });
+    }
+
+    return result;
+  }
+
+  // --- persistence read/advance (require options.inbox) -------------------
+
+  /** Fetch one stored item by id. Throws if no inbox repository was configured. */
+  async getItem(tenantId: string, id: string): Promise<StoredInboxItem | null> {
+    return this.requireInbox().get(tenantId, id);
+  }
+
+  /** List stored items (newest first), optionally filtered. Throws if no inbox repository. */
+  async listItems(tenantId: string, filter?: InboxListFilter): Promise<StoredInboxItem[]> {
+    return this.requireInbox().list(tenantId, filter);
+  }
+
+  /** Advance an item's workflow status. Throws if no inbox repository. */
+  async markStatus(tenantId: string, id: string, status: InboxItemStatus): Promise<void> {
+    return this.requireInbox().setStatus(tenantId, id, status);
+  }
+
+  private requireInbox(): InboxRepository {
+    if (!this.inbox) {
+      throw new Error(
+        "ExecutiveInbox: no inbox repository configured (pass options.inbox to persist/list items).",
+      );
+    }
+    return this.inbox;
   }
 
   // --- internals ----------------------------------------------------------

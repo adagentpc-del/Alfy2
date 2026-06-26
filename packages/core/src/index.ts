@@ -414,6 +414,13 @@ export {
   memoryKindFor,
   REQUIRED_FIELDS_BY_TYPE,
 } from "./executive-inbox/classify.js";
+export { InMemoryInboxRepository } from "./executive-inbox/in-memory-repository.js";
+export type {
+  InboxRepository,
+  StoredInboxItem,
+  InboxItemStatus,
+  InboxListFilter,
+} from "./executive-inbox/repository.js";
 
 // Model Router (provider-agnostic model selection by task type)
 export { ModelRouter } from "./model-router/router.js";

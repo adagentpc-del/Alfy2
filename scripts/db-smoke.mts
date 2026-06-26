@@ -10,8 +10,9 @@
  */
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import type { ProcessedInboxItem } from "@alfy2/shared";
 import { MemoryEngine } from "@alfy2/core";
-import { Db, PgMemoryRepository } from "@alfy2/db";
+import { Db, PgMemoryRepository, PgInboxRepository } from "@alfy2/db";
 
 const url = process.env["DATABASE_URL"];
 if (!url) {
@@ -77,9 +78,56 @@ try {
     await repo.remove(TENANT, doctor.id);
     await repo.remove(TENANT, clinic.id);
     assert.equal(await repo.get(TENANT, doctor.id), null, "memory should be gone after remove");
+
+    // --- Executive Inbox persistence (Move Mi + email shape) ---
+    const inboxRepo = new PgInboxRepository(q);
+    const itemId = randomUUID();
+    const processed: ProcessedInboxItem = {
+      id: itemId,
+      tenant_id: TENANT,
+      created_at: new Date().toISOString(),
+      source: "db-smoke",
+      item_type: "email",
+      category: "business",
+      confidence: 0.8,
+      suggested_business: "Move Mi",
+      suggested_owner: "Move Mi / Operations",
+      urgency: 0.6,
+      urgency_level: "high",
+      next_action: "Draft a moving quote and follow up.",
+      linked_entities: [],
+      suggested_tasks: [],
+      missing_info: [],
+      recommended_agents: [],
+      saved_memory_id: null,
+      requires_approval: false,
+      approval_reason: "",
+      dashboard_updated: true,
+      explanation: "db-smoke inbox item.",
+      summary: "db-smoke email -> Move Mi.",
+    };
+    await inboxRepo.save({
+      item: processed,
+      content: "Hi, I need a quote to move a 2BR apartment next month.",
+      status: "new",
+    });
+    const gotItem = await inboxRepo.get(TENANT, itemId);
+    assert.ok(gotItem, "inbox item retrievable");
+    assert.equal(gotItem.item.suggested_business, "Move Mi");
+    assert.equal(gotItem.item.urgency_level, "high");
+    assert.equal(gotItem.status, "new");
+    assert.ok(gotItem.content.includes("2BR"), "original email content kept");
+    const listed = await inboxRepo.list(TENANT, { statuses: ["new"], limit: 50 });
+    assert.ok(listed.some((s) => s.item.id === itemId), "inbox list includes the new item");
+    await inboxRepo.setStatus(TENANT, itemId, "actioned");
+    assert.equal((await inboxRepo.get(TENANT, itemId))?.status, "actioned", "status advances");
+    await q.query("delete from inbox_items where id = $1 and tenant_id = $2", [itemId, TENANT]);
+    assert.equal(await inboxRepo.get(TENANT, itemId), null, "inbox item cleaned up");
   });
 
-  console.log("db-smoke: PASS (memories saved, recalled, linked, and cleaned up via Postgres + RLS)");
+  console.log(
+    "db-smoke: PASS (memories + inbox items saved, recalled, listed, advanced, and cleaned up via Postgres + RLS)",
+  );
 } finally {
   await db.end();
 }
