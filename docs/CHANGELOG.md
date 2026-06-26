@@ -1,3 +1,7 @@
+### Added — Release 0 Wave 2: services/api gateway (the runtime goes live)
+- `@alfy2/api` Hono gateway: Supabase JWT auth (JWKS, injectable verifier) → tenant context (single-operator default tenant + optional x-business-id, runs inside `Db.withTenant`) → central **approval gate** middleware (default-deny `GATED_ROUTES`; gated routes park at 202 `approval_required` + create a pending `api_approval_requests` row, clear to 200 once approved) → routes: health, inbox (ingest/list/status), `/actions/send-email` (gated demo), approvals (queue + decide). `pg` stays isolated to @alfy2/db. Deps: hono, @hono/node-server, jose.
+- Verified: full `tsc -b` green across the workspace incl. services/api; `api-gateway-smoke` passes in-process (401s, inbox round-trip, gate parks 202 then clears 200, health 200); 626 pytest; no live DB needed to verify. To serve live: fill `.env` (DATABASE_URL + SUPABASE_* + ALFY_DEFAULT_TENANT_ID) and `pnpm dev` in services/api. **Release 0 runtime foundation complete.**
+
 ### Added — Release 0 Wave 1: Approval-gate persistence (migration 0239)
 - `ApprovalGateService` (core) + `ApprovalRequestRepository` port + InMemory + `PgApprovalRequestRepository` (@alfy2/db) + `api-approval` contract (shared, `Api*`-aliased to avoid collision with existing security `ApprovalRequest`) + Pydantic mirror. Deterministic gate: classifies action classes → requires_approval + risk; persists pending requests; operator decides. Table `api_approval_requests` (RLS). DB now 238 tables, 0 without RLS. tsc -b green, api-approval smoke pass, 626 pytest.
 

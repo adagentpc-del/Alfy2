@@ -134,7 +134,8 @@
     "lifecycle:smoke": "tsx scripts/lifecycle-growth-smoke.mts",
     "marketintel:smoke": "tsx scripts/market-intel-smoke.mts",
     "oversight:smoke": "tsx scripts/oversight-smoke.mts",
-    "apiapproval:smoke": "tsx scripts/api-approval-smoke.mts"
+    "apiapproval:smoke": "tsx scripts/api-approval-smoke.mts",
+    "apigw:smoke": "tsx scripts/api-gateway-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
