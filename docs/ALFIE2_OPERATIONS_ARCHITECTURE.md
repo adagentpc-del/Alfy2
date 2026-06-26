@@ -17,11 +17,13 @@ up through reporting, and approval gates protect execution.**
 
 **Where we actually are (verified):**
 
-- **Domain layer is built and live.** 168 Zod contracts (`packages/shared`), **169 engine modules**
-  (`packages/core`), 234 migrations → **220 Supabase tables, every one RLS-secured** (project
-  `oxromxpjoiifvamxjluz`, deny-by-default tenant isolation, default operator tenant seeded).
+- **Domain layer is built and live.** 172 Zod contracts (`packages/shared`), **173 engine modules**
+  (`packages/core`), 238 migrations → **237 Supabase tables, every one RLS-secured** (project
+  `oxromxpjoiifvamxjluz`, deny-by-default tenant isolation, default operator tenant seeded). This
+  now includes the final intelligence wave — **Knowledge Ops, Lifecycle + Growth, Market Intel,
+  Oversight** — so the backlog that follows is runtime/UI work, not new domain features.
 - **Runtime layer is the gap.** `services/api` and `services/orchestrator` are empty scaffolds.
-  Only **2 of 169 engines** (Memory, Executive Inbox) have real database adapters (`@alfy2/db`); the
+  Only **2 of 173 engines** (Memory, Executive Inbox) have real database adapters (`@alfy2/db`); the
   rest compute in in-memory Maps. There is no auth, no request-time tenant context, no live
   connectors, and no UI yet.
 
@@ -345,22 +347,25 @@ PHASE B — INDUSTRIALIZE (scaffold + fill in)
   B3  More connectors (Slack, socials, CRM, payments) + more UI tabs.
   B4  Seed specialist-agent role cards + new C-suite leader cards.
 
-PHASE C — INTELLIGENCE BACKLOG (defer until the slice proves out)
-  C1  Elite Operator Digest, Knowledge Source Tracker, Adaptation Filter, Elite Knowledge Governance
-      taxonomy/stage-fit/scenario-simulator (compose Expert Council + Business Profile + testing loop).
-  C2  AEO / AI-Search + Public-Reputation monitoring (extends `visibility`; needs live web research).
-  C3  Voice-of-Customer intelligence, Market Gap Detector, First Impression Audit, White-Glove
-      Experience Designer, Reputation/Trust Flywheel, Growth Loop Designer, Funnel/Lifecycle
-      Architecture (data + loops layered on the runtime; several reuse conversion/relationship engines).
-  C4  Leadership Blind-Spot Detector + Recursive System Optimizer + Billion-Dollar Standard Checker
-      (cross-cutting review passes — fold into Org Health + Review Cadence + a pre-ship checklist).
+PHASE C — INTELLIGENCE LAYER (domain now BUILT; wire into runtime/UI after the slice)
+  C1  Knowledge Ops (Elite Operator Digest, Knowledge Source Tracker, Adaptation Filter, taxonomy +
+      stage/model fit, scenario simulator, experiment + learning repo). ✅ BUILT — KnowledgeOpsEngine.
+  C2  Market Intel (Voice-of-Customer, Market Gap Detector, AI-Search/AEO + public-reputation
+      visibility scoring). ✅ BUILT — MarketIntelEngine.
+  C3  Lifecycle + Growth (8-stage Funnel/Lifecycle Architecture, Growth Loop Designer, Reputation/
+      Trust Flywheel, First Impression Audit, White-Glove Experience Designer). ✅ BUILT —
+      LifecycleGrowthEngine.
+  C4  Oversight (Leadership Blind-Spot Detector, Recursive System Optimizer, Billion-Dollar Standard
+      Checker). ✅ BUILT — OversightEngine.
+  → Remaining for Phase C is RUNTIME ONLY: Pg repository adapters + API routes + UI tabs for these
+    four engines, plus the AEO live-web-research feeder for C2 (the scoring/contract is already live).
 ```
 
 ---
 
 ## 23. What to Build NOW (the critical path)
 
-A1 → A2 → A3 → A4 → A5. Nothing else. This is the smallest sequence that turns "220 live tables + 169
+A1 → A2 → A3 → A4 → A5. Nothing else. This is the smallest sequence that turns "237 live tables + 173
 engines" into "connect Move Mi's email and watch an accountable, approval-gated, business-aware loop
 actually run against the live database." Everything in Phases B/C is valuable but is either mechanical
 repetition (B) or strategy/intelligence that should ride on top of a proven runtime (C).
@@ -379,11 +384,12 @@ repetition (B) or strategy/intelligence that should ride on top of a proven runt
 
 ## 25. What to DEFER (real, not now)
 
-All of Phase C. They are genuine value but are **not on the path to a working revenue slice** and
-several heavily overlap existing engines (conversion, relationship-capital, content-factory,
-visibility, capital-allocator, knowledge-*) — they should be reconciled/extended, not built fresh.
-Deferring them prevents the exact failure mode this document was written to avoid: feature sprawl on
-top of an un-runnable core.
+The Phase C **domain** is now built (Knowledge Ops, Lifecycle + Growth, Market Intel, Oversight), so
+"defer" no longer means "don't build the engine" — it means **don't wire these four into the runtime
+or UI until the Move Mi slice (Phase A) is proven.** Their persistence adapters, API routes, UI tabs,
+and the AEO live-web-research feeder ride on top of the runtime and add no value until that runtime
+exists. Deferring their wiring (not their logic) prevents the failure mode this document was written
+to avoid: surface area on top of an un-runnable core.
 
 ---
 
@@ -425,8 +431,8 @@ top of an un-runnable core.
 
 ### Appendix — Verification baseline (current)
 
-`tsc -b` green across the workspace · 599 Python contract tests passing · all engine smokes pass ·
-220 live tables, 0 without RLS · code on GitHub (`adagentpc-del/Alfy2`, commits pending Push).
+`tsc -b` green across the workspace · 622 Python contract tests passing · all engine smokes pass ·
+237 live tables, 0 without RLS · 173 engines · code on GitHub (`adagentpc-del/Alfy2`, commits pending Push).
 
 **Decisions already locked:** Supabase Auth · first vertical slice = **Move Mi + email** ·
 Supabase by default · `pg`/RLS-GUC persistence pattern · cost-control guardrails on all AI features.
