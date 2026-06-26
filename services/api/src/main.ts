@@ -4,8 +4,14 @@ import {
   DecisionEngine,
   ExecutiveInbox,
   ApprovalGateService,
+  MissionControlEngine,
 } from "@alfy2/core";
-import { Db, PgInboxRepository, PgApprovalRequestRepository } from "@alfy2/db";
+import {
+  Db,
+  PgInboxRepository,
+  PgApprovalRequestRepository,
+  PgMissionControlReadModel,
+} from "@alfy2/db";
 import { createApp } from "./app.js";
 import { makeJwksVerifier } from "./auth/jwks.js";
 import type { AppDeps, RequestRepos } from "./types.js";
@@ -38,7 +44,8 @@ async function main(): Promise<void> {
           inbox: new PgInboxRepository(q),
         });
         const gate = new ApprovalGateService(new PgApprovalRequestRepository(q));
-        const ctx: RequestRepos = { inbox, gate };
+        const missionControl = new MissionControlEngine(new PgMissionControlReadModel(q));
+        const ctx: RequestRepos = { inbox, gate, missionControl };
         return fn(ctx);
       },
       businessId,

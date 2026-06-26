@@ -1,12 +1,13 @@
-import type { ExecutiveInbox, ApprovalGateService } from "@alfy2/core";
+import type { ExecutiveInbox, ApprovalGateService, MissionControlEngine } from "@alfy2/core";
 
 /**
- * The per-request, tenant-scoped repositories handed to a route handler. Both are already bound to
+ * The per-request, tenant-scoped repositories handed to a route handler. All are already bound to
  * the active tenant's persistence (in-memory in tests, Pg-over-RLS in production) by {@link AppDeps.scope}.
  */
 export interface RequestRepos {
   inbox: ExecutiveInbox;
   gate: ApprovalGateService;
+  missionControl: MissionControlEngine;
 }
 
 /**

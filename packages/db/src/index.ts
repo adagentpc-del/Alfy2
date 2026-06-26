@@ -12,3 +12,4 @@ export { Db, type Querier, type DbOptions } from "./client.js";
 export { PgMemoryRepository } from "./memory-repository.js";
 export { PgInboxRepository } from "./inbox-repository.js";
 export { PgApprovalRequestRepository } from "./api-approval-repository.js";
+export { PgMissionControlReadModel } from "./mission-control-read-model.js";

@@ -7,6 +7,7 @@ import { healthRoutes } from "./routes/health.js";
 import { inboxRoutes } from "./routes/inbox.js";
 import { actionRoutes } from "./routes/actions.js";
 import { approvalRoutes } from "./routes/approvals.js";
+import { missionControlRoutes } from "./routes/mission-control.js";
 
 export type { AppDeps, AppEnv, AppVariables, RequestRepos } from "./types.js";
 export { GATED_ROUTES } from "./middleware/approval-gate.js";
@@ -40,6 +41,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   app.route("/", inboxRoutes(deps));
   app.route("/", actionRoutes(deps));
   app.route("/", approvalRoutes(deps));
+  app.route("/", missionControlRoutes(deps));
 
   return app;
 }

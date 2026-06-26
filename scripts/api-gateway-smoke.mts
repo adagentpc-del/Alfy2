@@ -14,6 +14,9 @@ import {
   ApprovalGateService,
   InMemoryInboxRepository,
   InMemoryApprovalRequestRepository,
+  MissionControlEngine,
+  InMemoryMissionControlReadModel,
+  type MissionControlAggregate,
 } from "@alfy2/core";
 import { createApp } from "../services/api/src/app.js";
 import type { AppDeps, RequestRepos } from "../services/api/src/app.js";
@@ -30,8 +33,29 @@ const approvalRepo = new InMemoryApprovalRequestRepository();
 const inbox = new ExecutiveInbox(decisions, { inbox: inboxRepo });
 const gate = new ApprovalGateService(approvalRepo);
 
+// Mission Control over a fixed in-memory aggregate (a 45-day runway → warn; one revenue opportunity).
+const mcFixture: MissionControlAggregate = {
+  as_of: "2026-06-26T12:00:00.000Z",
+  revenue_today: 0,
+  cash_position: 0,
+  cash_runway_days: 45,
+  pending_approvals: [],
+  open_inbox_count: 1,
+  blocked: [],
+  opportunities: [{ label: "Henderson move", value: 2400, status: "open" }],
+  active_builds: [],
+  department_health: {},
+  founder_capacity: { score: null, mode: "normal" },
+  follow_ups_due: [],
+  meetings: [],
+  launch_readiness: {},
+};
+const missionControl = new MissionControlEngine(new InMemoryMissionControlReadModel(mcFixture), {
+  nowMs: () => Date.parse("2026-06-26T12:00:00.000Z"),
+});
+
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
-  const ctx: RequestRepos = { inbox, gate };
+  const ctx: RequestRepos = { inbox, gate, missionControl };
   return fn(ctx);
 };
 
@@ -174,6 +198,31 @@ let approvalId = "";
   assert.equal(body.ok, true, "healthz says ok");
 }
 
+// --- 7. Mission Control composes a live snapshot + daily brief -----------------------------------
+
+{
+  const res = await app.request("/mission-control", { method: "GET", headers: authHeader(token) });
+  assert.equal(res.status, 200, "mission-control → 200");
+  const body = (await res.json()) as {
+    snapshot: { revenue_opportunities: unknown[]; cash_runway_days: number | null };
+    alerts: Array<{ category: string; severity: string }>;
+  };
+  assert.equal(body.snapshot.revenue_opportunities.length, 1, "snapshot carries the opportunity");
+  assert.equal(body.snapshot.cash_runway_days, 45, "snapshot reflects runway");
+  assert.ok(
+    body.alerts.some((a) => a.category === "cash" && a.severity === "warn"),
+    "45-day runway raises a warn cash alert",
+  );
+
+  const brief = await app.request("/mission-control/brief", {
+    method: "GET",
+    headers: authHeader(token),
+  });
+  assert.equal(brief.status, 200, "brief → 200");
+  const { brief: text } = (await brief.json()) as { brief: string };
+  assert.ok(text.length > 0, "daily brief is non-empty");
+}
+
 console.log(
-  "API GATEWAY SMOKE OK — auth 401s, inbox ingest+list, approval gate parks (202) and clears (200) once approved, health 200.",
+  "API GATEWAY SMOKE OK — auth 401s, inbox ingest+list, approval gate parks (202) and clears (200) once approved, mission-control snapshot+brief, health 200.",
 );
