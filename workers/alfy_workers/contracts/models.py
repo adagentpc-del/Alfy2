@@ -12895,6 +12895,53 @@ class BillionDollarCheck(BaseModel):
     created_at: datetime
 
 
+# ===========================================================================
+# API Approval Gate (mirror of api-approval.ts). Named with an Api* prefix to
+# avoid colliding with the security.ts ApprovalRequest mirror above.
+# ===========================================================================
+
+ApiApprovalActionClass = Literal[
+    "send_message",
+    "publish_public",
+    "move_money",
+    "charge",
+    "deploy",
+    "delete_data",
+    "send_contract",
+    "change_pricing",
+    "change_access",
+    "change_standing_rule",
+    "medical_legal_financial_claim",
+    "internal_action",
+    "other",
+]
+ApiApprovalRisk = Literal["low", "medium", "high", "critical"]
+ApiApprovalRequestStatus = Literal["pending", "approved", "denied", "expired"]
+
+
+class ApiApprovalRequest(BaseModel):
+    """Mirror of ApprovalRequestSchema (api-approval.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    action_class: ApiApprovalActionClass
+    method: str
+    route: str
+    summary: str
+    payload: dict[str, Any] = Field(default_factory=dict)
+    risk: ApiApprovalRisk
+    requires_approval: bool
+    status: ApiApprovalRequestStatus = "pending"
+    requested_by: str
+    decided_by: str | None = None
+    decision_reason: str = ""
+    created_at: datetime
+    decided_at: datetime | None = None
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -13950,4 +13997,9 @@ __all__ = [
     "BlindSpot",
     "RecursiveDiagnosis",
     "BillionDollarCheck",
+    # API Approval Gate
+    "ApiApprovalActionClass",
+    "ApiApprovalRisk",
+    "ApiApprovalRequestStatus",
+    "ApiApprovalRequest",
 ]

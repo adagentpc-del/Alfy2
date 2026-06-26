@@ -422,6 +422,18 @@ export type {
   InboxListFilter,
 } from "./executive-inbox/repository.js";
 
+// API Approval Gate (the central, persisted gate the API enforces; deny-by-default except internal_action)
+export { ApprovalGateService, GATED_ACTION_CLASSES } from "./api-approval/gate.js";
+export type {
+  RequireApprovalInput,
+  ApprovalGateServiceOptions,
+} from "./api-approval/gate.js";
+export { InMemoryApprovalRequestRepository } from "./api-approval/in-memory-repository.js";
+export type {
+  ApprovalRequestRepository,
+  ApprovalListFilter,
+} from "./api-approval/repository.js";
+
 // Model Router (provider-agnostic model selection by task type)
 export { ModelRouter } from "./model-router/router.js";
 export { DEFAULT_MODEL_CATALOG } from "./model-router/catalog.js";

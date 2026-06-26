@@ -133,7 +133,8 @@
     "knowops:smoke": "tsx scripts/knowledge-ops-smoke.mts",
     "lifecycle:smoke": "tsx scripts/lifecycle-growth-smoke.mts",
     "marketintel:smoke": "tsx scripts/market-intel-smoke.mts",
-    "oversight:smoke": "tsx scripts/oversight-smoke.mts"
+    "oversight:smoke": "tsx scripts/oversight-smoke.mts",
+    "apiapproval:smoke": "tsx scripts/api-approval-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

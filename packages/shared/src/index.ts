@@ -1661,3 +1661,16 @@ export * from "./contracts/knowledge-ops.js";
 export * from "./contracts/lifecycle-growth.js";
 export * from "./contracts/market-intel.js";
 export * from "./contracts/oversight.js";
+
+// API Approval Gate (the central, persisted gate the API enforces).
+// Re-exported under Api*-prefixed aliases to avoid colliding with security.ts's ApprovalRequest*.
+export {
+  ApprovalActionClassSchema as ApiApprovalActionClassSchema,
+  ApprovalRiskSchema as ApiApprovalRiskSchema,
+  ApprovalRequestStatusSchema as ApiApprovalRequestStatusSchema,
+  ApprovalRequestSchema as ApiApprovalRequestSchema,
+  type ApprovalActionClass as ApiApprovalActionClass,
+  type ApprovalRisk as ApiApprovalRisk,
+  type ApprovalRequestStatus as ApiApprovalRequestStatus,
+  type ApprovalRequest as ApiApprovalRequest,
+} from "./contracts/api-approval.js";
