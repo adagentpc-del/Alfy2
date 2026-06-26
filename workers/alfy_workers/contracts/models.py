@@ -11453,6 +11453,394 @@ class DeptGovernanceReport(BaseModel):
     kpis_checked: int = Field(default=0, ge=0)
 
 
+# ===========================================================================
+# AI Organization / Chain of Command (mirror of ai-org.ts)
+# ===========================================================================
+
+OrgLayer = Literal[
+    "executive", "department_leader", "ai_employee", "specialist_agent",
+]
+RoleCardReviewCadence = Literal["daily", "weekly", "monthly", "per_task"]
+PermissionScope = Literal[
+    "observe_only", "research_only", "draft_only", "recommend_only",
+    "create_internal_task", "prepare_external_asset", "execute_low_risk",
+    "execute_with_approval", "admin_disabled",
+]
+RoleCardStatus = Literal["active", "testing", "paused", "retired"]
+DelegationStatus = Literal[
+    "issued", "accepted", "in_progress", "reported", "approved", "rejected", "escalated",
+]
+DelegationPriority = Literal["low", "medium", "high", "critical"]
+AgentReportExecutionStatus = Literal["done", "partial", "blocked", "failed"]
+AgentReportVerificationStatus = Literal["unverified", "self_checked", "verified"]
+EscalationReason = Literal[
+    "high_risk", "approval_required", "context_conflict", "source_conflict",
+    "execution_failed", "low_confidence", "legal_medical_financial",
+    "high_stakes_public", "cost_threshold", "live_system_change",
+    "revenue_pricing_contract",
+]
+DepartmentReportCadence = Literal["daily", "weekly", "monthly"]
+AiOrgViolationKind = Literal[
+    "role_without_department", "non_executive_without_reports_to",
+    "specialist_acted_without_packet",
+]
+
+
+class RoleCard(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    name: str = Field(min_length=1)
+    department_key: str = Field(min_length=1)
+    org_layer: OrgLayer
+    is_leader: bool = False
+    mission: str = ""
+    businesses_used_by: list[str] = Field(default_factory=list)
+    primary_responsibilities: list[str] = Field(default_factory=list)
+    operating_loop: list[str] = Field(default_factory=list)
+    allowed_actions: list[str] = Field(default_factory=list)
+    requires_approval_for: list[str] = Field(default_factory=list)
+    inputs: list[str] = Field(default_factory=list)
+    outputs: list[str] = Field(default_factory=list)
+    tools_integrations: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    failure_signals: list[str] = Field(default_factory=list)
+    escalation_rules: list[str] = Field(default_factory=list)
+    review_cadence: RoleCardReviewCadence = "weekly"
+    permission_scope: PermissionScope = "recommend_only"
+    reports_to: str | None = None
+    status: RoleCardStatus = "active"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class DelegationPacket(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    assigning_employee: str = Field(min_length=1)
+    assigned_agent: str = Field(min_length=1)
+    business: str = ""
+    project: str = ""
+    objective: str = Field(min_length=1)
+    context_stack: list[str] = Field(default_factory=list)
+    source_of_truth_refs: list[str] = Field(default_factory=list)
+    required_output: str = ""
+    allowed_tools: list[str] = Field(default_factory=list)
+    prohibited_actions: list[str] = Field(default_factory=list)
+    approval_required: bool = False
+    deadline: str | None = None
+    priority: DelegationPriority = "medium"
+    success_criteria: list[str] = Field(default_factory=list)
+    reporting_format: str = ""
+    escalation_trigger: str = ""
+    status: DelegationStatus = "issued"
+    created_at: datetime
+
+
+class AgentReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    packet_id: UUID
+    agent: str = Field(min_length=1)
+    task_completed: bool = False
+    output_produced: str = ""
+    sources_used: list[str] = Field(default_factory=list)
+    assumptions: list[str] = Field(default_factory=list)
+    issues: list[str] = Field(default_factory=list)
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    risks: list[str] = Field(default_factory=list)
+    approval_needed: bool = False
+    recommended_next_step: str = ""
+    execution_status: AgentReportExecutionStatus = "done"
+    verification_status: AgentReportVerificationStatus = "unverified"
+    created_at: datetime
+
+
+class EscalationEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    from_layer: OrgLayer
+    to_layer: OrgLayer
+    reason: EscalationReason
+    detail: str = ""
+    packet_id: UUID | None = None
+    resolved: bool = False
+    created_at: datetime
+
+
+class AccountabilityRecord(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    requesting_leader: str = ""
+    responsible_employee: str = ""
+    executing_agent: str = Field(min_length=1)
+    approving_authority: str | None = None
+    business: str = ""
+    task: str = ""
+    status: str = ""
+    result: str = ""
+    kpi_impact: str = ""
+    audit_log: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class DepartmentReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    department_key: str = Field(min_length=1)
+    cadence: DepartmentReportCadence
+    completed_work: list[str] = Field(default_factory=list)
+    pending_approvals: list[str] = Field(default_factory=list)
+    blockers: list[str] = Field(default_factory=list)
+    revenue_opportunities: list[str] = Field(default_factory=list)
+    risks: list[str] = Field(default_factory=list)
+    next_actions: list[str] = Field(default_factory=list)
+    kpis: dict[str, float] = Field(default_factory=dict)
+    wins: list[str] = Field(default_factory=list)
+    failures: list[str] = Field(default_factory=list)
+    lessons_learned: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class AiOrgViolation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    kind: AiOrgViolationKind
+    subject: str
+    detail: str = ""
+
+
+class AiOrgChainReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    tenant_id: UUID
+    ok: bool
+    violations: list[AiOrgViolation] = Field(default_factory=list)
+    roles_checked: int = Field(default=0, ge=0)
+
+
+# ===========================================================================
+# CRO / Revenue Command (mirror of revenue-command.ts)
+# ===========================================================================
+
+RevenueOpportunityKind = Literal[
+    "fast_cash", "long_term", "stalled_deal", "unpaid_labor", "underpriced_offer",
+    "weak_funnel", "missing_followup", "conversion_blocker", "partnership",
+    "referral", "upsell",
+]
+RevenueEffort = Literal["low", "medium", "high"]
+RevenueRisk = Literal["low", "medium", "high", "critical"]
+RevenueStrategicValue = Literal["low", "medium", "high"]
+RevenueRepeatability = Literal["one_time", "repeatable", "recurring"]
+RevenueMargin = Literal["low", "medium", "high"]
+RevenueOpportunityStatus = Literal[
+    "pursue_now", "nurture", "automate", "delegate", "reprice", "pause", "kill",
+]
+MoneyActionStatus = Literal["todo", "in_progress", "blocked", "done"]
+FunnelStage = Literal[
+    "lead_capture", "nurture", "activation", "conversion", "upsell", "referral",
+    "retention", "reactivation",
+]
+FunnelHealth = Literal["healthy", "leaking", "broken"]
+BusinessRevenueKey = Literal[
+    "move_mi", "divini_procure", "divini_partners", "stratalogic", "founder_os",
+    "black_flag",
+]
+BusinessRevenueMissionStatus = Literal["active", "paused", "done"]
+OfferReviewVerdict = Literal["send", "revise", "hold"]
+
+
+class RevenueOpportunity(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: str = Field(min_length=1)
+    kind: RevenueOpportunityKind
+    title: str = Field(min_length=1)
+    description: str = ""
+    expected_revenue_usd: float = Field(default=0, ge=0)
+    speed_to_cash_days: float = Field(default=0, ge=0)
+    effort: RevenueEffort = "medium"
+    risk: RevenueRisk = "low"
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    founder_time_hours: float = Field(default=0, ge=0)
+    strategic_value: RevenueStrategicValue = "medium"
+    repeatability: RevenueRepeatability = "one_time"
+    margin: RevenueMargin = "medium"
+    probability_of_close: float = Field(default=0.5, ge=0, le=1)
+    score: float = Field(default=0, ge=0, le=100)
+    status: RevenueOpportunityStatus = "nurture"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class RevenueOpportunityInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business: str = Field(min_length=1)
+    kind: RevenueOpportunityKind
+    title: str = Field(min_length=1)
+    description: str = ""
+    expected_revenue_usd: float = Field(default=0, ge=0)
+    speed_to_cash_days: float = Field(default=0, ge=0)
+    effort: RevenueEffort = "medium"
+    risk: RevenueRisk = "low"
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    founder_time_hours: float = Field(default=0, ge=0)
+    strategic_value: RevenueStrategicValue = "medium"
+    repeatability: RevenueRepeatability = "one_time"
+    margin: RevenueMargin = "medium"
+    probability_of_close: float = Field(default=0.5, ge=0, le=1)
+
+
+class RevenueOpportunityFilter(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business: str | None = Field(default=None, min_length=1)
+    kind: RevenueOpportunityKind | None = None
+    status: RevenueOpportunityStatus | None = None
+
+
+class MoneyAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    opportunity_id: UUID | None = None
+    business: str = Field(min_length=1)
+    action: str = Field(min_length=1)
+    rationale: str = ""
+    expected_revenue_usd: float = Field(default=0, ge=0)
+    due: str | None = None
+    assigned_agent: str | None = None
+    approval_required: bool = False
+    status: MoneyActionStatus = "todo"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class MoneyActionInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    opportunity_id: UUID | None = None
+    business: str = Field(min_length=1)
+    action: str = Field(min_length=1)
+    rationale: str = ""
+    expected_revenue_usd: float = Field(default=0, ge=0)
+    due: str | None = None
+    assigned_agent: str | None = None
+    approval_required: bool = False
+
+
+class FunnelStageRecord(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: str = Field(min_length=1)
+    stage: FunnelStage
+    health: FunnelHealth = "healthy"
+    notes: str = ""
+    recommended_action: str = ""
+    created_at: datetime
+
+
+class FunnelStageRecordInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business: str = Field(min_length=1)
+    stage: FunnelStage
+    health: FunnelHealth = "healthy"
+    notes: str = ""
+    recommended_action: str = ""
+
+
+class RevenueCommandCenter(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    date: str = Field(min_length=1)
+    top_money_actions: list[str] = Field(default_factory=list)
+    hottest_leads: list[str] = Field(default_factory=list)
+    proposals_due: list[str] = Field(default_factory=list)
+    followups_due: list[str] = Field(default_factory=list)
+    payment_links_needed: list[str] = Field(default_factory=list)
+    stalled_deals: list[str] = Field(default_factory=list)
+    top_platform_users: list[str] = Field(default_factory=list)
+    fastest_partnerships: list[str] = Field(default_factory=list)
+    revenue_blockers: list[str] = Field(default_factory=list)
+    cash_forecast_usd: float | None = None
+    created_at: datetime
+
+
+class BusinessRevenueMission(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: BusinessRevenueKey
+    objectives: list[str] = Field(default_factory=list)
+    tactics: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    status: BusinessRevenueMissionStatus = "active"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class BusinessRevenueMissionInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business: BusinessRevenueKey
+    objectives: list[str] = Field(default_factory=list)
+    tactics: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    status: BusinessRevenueMissionStatus = "active"
+
+
+class OfferReview(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: str = Field(min_length=1)
+    offer_name: str = Field(min_length=1)
+    price_usd: float = Field(default=0, ge=0)
+    flags: list[str] = Field(default_factory=list)
+    recommended_price_usd: float | None = None
+    verdict: OfferReviewVerdict = "send"
+    notes: str = ""
+    created_at: datetime
+
+
+class OfferReviewInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business: str = Field(min_length=1)
+    offer_name: str = Field(min_length=1)
+    price_usd: float = Field(default=0, ge=0)
+    price_floor_usd: float = Field(default=0, ge=0)
+    has_clear_scope: bool = True
+    has_cta: bool = True
+    has_deposit: bool = True
+    has_payment_link: bool = True
+    is_custom_work: bool = False
+    is_consulting: bool = False
+    is_paid: bool = True
+    notes: str = ""
+
+
+class RevenueKpiSnapshot(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    tenant_id: UUID
+    leads: float = Field(default=0, ge=0)
+    qualified_leads: float = Field(default=0, ge=0)
+    booked_calls: float = Field(default=0, ge=0)
+    proposals_sent: float = Field(default=0, ge=0)
+    close_rate: float = Field(default=0, ge=0, le=1)
+    avg_deal_size: float = Field(default=0, ge=0)
+    revenue_generated: float = Field(default=0, ge=0)
+    recurring_revenue: float = Field(default=0, ge=0)
+    transaction_fees: float = Field(default=0, ge=0)
+    referral_revenue: float = Field(default=0, ge=0)
+    funding_raised: float = Field(default=0, ge=0)
+    followups_completed: float = Field(default=0, ge=0)
+    unpaid_labor_prevented: float = Field(default=0, ge=0)
+    time_to_cash: float = Field(default=0, ge=0)
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -12364,4 +12752,51 @@ __all__ = [
     "KpiRecord",
     "DeptGovernanceViolation",
     "DeptGovernanceReport",
+    # AI Organization / Chain of Command
+    "OrgLayer",
+    "RoleCardReviewCadence",
+    "PermissionScope",
+    "RoleCardStatus",
+    "DelegationStatus",
+    "DelegationPriority",
+    "AgentReportExecutionStatus",
+    "AgentReportVerificationStatus",
+    "EscalationReason",
+    "DepartmentReportCadence",
+    "AiOrgViolationKind",
+    "RoleCard",
+    "DelegationPacket",
+    "AgentReport",
+    "EscalationEvent",
+    "AccountabilityRecord",
+    "DepartmentReport",
+    "AiOrgViolation",
+    "AiOrgChainReport",
+    # CRO / Revenue Command
+    "RevenueOpportunityKind",
+    "RevenueEffort",
+    "RevenueRisk",
+    "RevenueStrategicValue",
+    "RevenueRepeatability",
+    "RevenueMargin",
+    "RevenueOpportunityStatus",
+    "MoneyActionStatus",
+    "FunnelStage",
+    "FunnelHealth",
+    "BusinessRevenueKey",
+    "BusinessRevenueMissionStatus",
+    "OfferReviewVerdict",
+    "RevenueOpportunity",
+    "RevenueOpportunityInput",
+    "RevenueOpportunityFilter",
+    "MoneyAction",
+    "MoneyActionInput",
+    "FunnelStageRecord",
+    "FunnelStageRecordInput",
+    "RevenueCommandCenter",
+    "BusinessRevenueMission",
+    "BusinessRevenueMissionInput",
+    "OfferReview",
+    "OfferReviewInput",
+    "RevenueKpiSnapshot",
 ]
