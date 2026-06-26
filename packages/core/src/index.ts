@@ -726,3 +726,17 @@ export {
   BuildFromBrainstormEngine,
   type BuildFromBrainstormOptions,
 } from "./build-from-brainstorm/engine.js";
+
+// People Operations + Hiring Lifecycle (role need → design → hire → onboard → manage → offboard)
+export { PeopleOpsEngine, PeopleOpsEngineError } from "./people-ops/engine.js";
+
+// Department OS + AI Employee KPI/scorecards (departments, operating loops, governance)
+export {
+  DepartmentOsEngine,
+  AI_EMPLOYEE_KPI_NAMES,
+  DEFAULT_DEPARTMENTS,
+  type DepartmentOsEngineOptions,
+  type CreateDepartmentInput,
+  type CreateAiEmployeeInput,
+  type RecordKpiInput,
+} from "./department-os/engine.js";

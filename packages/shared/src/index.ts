@@ -1634,3 +1634,8 @@ export {
   type BuildTask, type ApprovalSummary, type ApproveQueueInput, type AgentRunLog, type QaCheck,
   type QaResult, type BrainstormChangelogEntry,
 } from "./contracts/build-from-brainstorm.js";
+
+// People Operations + Hiring Lifecycle, and Department OS + AI Employee KPI/scorecards.
+// (All exports uniquely prefixed by their contracts; verified collision-free.)
+export * from "./contracts/people-ops.js";
+export * from "./contracts/department-os.js";

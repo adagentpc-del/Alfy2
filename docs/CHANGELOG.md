@@ -4,6 +4,23 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — People Operations + Department OS (native features, LIVE)
+- **People Operations + Hiring Lifecycle** (`PeopleOpsEngine`) — the full 13-stage hiring/team loop
+  for humans OR AI employees: role-need detection → role design → **Billion-Dollar Hiring Standard
+  gate** (10 criteria; a vague role is blocked from posting, a scoped role passes) → job post →
+  candidate pipeline → interview → offer → onboarding docs → access setup → training → nurture →
+  performance → delegation → offboarding (revokes all access). Contract `people-ops.ts`, migration
+  `0225` (14 tables + RLS, applied live). Smoke `pnpm run peopleops:smoke`.
+- **Department OS + AI Employee KPI/Scorecards** (`DepartmentOsEngine`) — organizes AI agents as
+  departments in a billion-dollar operating company. Seeds the **12 departments** (Executive Office,
+  Growth, Sales, Product, Engineering, Operations, Customer Success, Finance, Legal/Compliance, Data,
+  People Ops, Fundraising) with their operating loops, **74 AI-employee scorecards**, and KPIs.
+  Enforces governance: every AI employee belongs to a department, every department has a loop + KPIs,
+  every KPI links to a business outcome (`validateGovernance`). Contract `department-os.ts`, migration
+  `0226` (3 tables + RLS, applied live). Smoke `pnpm run deptos:smoke`. Built in parallel by two
+  isolated build-agents, then integrated + verified by the orchestrator (full `tsc -b` green, both
+  smokes pass). Database now 185 tables, all RLS-on.
+
 ### Added — Build From Brainstorm (native feature, LIVE)
 - **Build From Brainstorm** — the bridge from raw founder conversation to an approval-gated build.
   Full 9-stage pipeline: brain dump → classify inputs (14 kinds; conversation is INPUT, never a
