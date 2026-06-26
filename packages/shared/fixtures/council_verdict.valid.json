@@ -1,0 +1,119 @@
+{
+  "id": "d4d4d4d4-4444-4ddd-8ddd-d4d4d4d4d4d4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "major_launch",
+  "decision": "Launch the enterprise tier in the EU market this quarter",
+  "opinions": [
+    {
+      "role": "ceo",
+      "recommendation": "proceed",
+      "confidence": 0.664,
+      "risks": [],
+      "assumptions": ["Strategy and timing are aligned"],
+      "missing_information": [],
+      "expected_upside": "Aggregate upside 0.65",
+      "expected_downside": "Aggregate burden 0.4"
+    },
+    {
+      "role": "cfo",
+      "recommendation": "proceed",
+      "confidence": 0.688,
+      "risks": [],
+      "assumptions": ["Revenue upside is realizable within budget"],
+      "missing_information": [],
+      "expected_upside": "Revenue upside 0.7 vs cost 0.4",
+      "expected_downside": "Limited financial downside"
+    },
+    {
+      "role": "coo",
+      "recommendation": "proceed_with_conditions",
+      "confidence": 0.688,
+      "risks": ["Operational load 0.5"],
+      "assumptions": ["Processes and staffing can absorb the work"],
+      "missing_information": [],
+      "expected_upside": "Operable with staffing",
+      "expected_downside": "Manageable operational load"
+    },
+    {
+      "role": "cto",
+      "recommendation": "proceed_with_conditions",
+      "confidence": 0.688,
+      "risks": ["Operational/technical load 0.5"],
+      "assumptions": ["Engineering capacity is available"],
+      "missing_information": [],
+      "expected_upside": "Feasible with planning",
+      "expected_downside": "Modest technical cost"
+    },
+    {
+      "role": "cmo",
+      "recommendation": "proceed",
+      "confidence": 0.88,
+      "risks": [],
+      "assumptions": ["Go-to-market can reach the audience"],
+      "missing_information": [],
+      "expected_upside": "Revenue upside 0.7, customer impact 0.6",
+      "expected_downside": "Messaging risk"
+    },
+    {
+      "role": "legal_risk",
+      "recommendation": "proceed",
+      "confidence": 0.784,
+      "risks": [],
+      "assumptions": ["Regulatory landscape is stable"],
+      "missing_information": [],
+      "expected_upside": "Clear legal footing",
+      "expected_downside": "Minor compliance overhead"
+    },
+    {
+      "role": "security",
+      "recommendation": "proceed",
+      "confidence": 0.784,
+      "risks": [],
+      "assumptions": ["Existing controls remain in place"],
+      "missing_information": [],
+      "expected_upside": "Minimal attack surface",
+      "expected_downside": "Limited security downside"
+    },
+    {
+      "role": "customer",
+      "recommendation": "proceed",
+      "confidence": 0.832,
+      "risks": [],
+      "assumptions": ["Customers value the change"],
+      "missing_information": [],
+      "expected_upside": "Customer impact 0.6",
+      "expected_downside": "Minor experience friction"
+    },
+    {
+      "role": "investor",
+      "recommendation": "proceed_with_conditions",
+      "confidence": 0.64,
+      "risks": [],
+      "assumptions": ["Upside compounds over the horizon"],
+      "missing_information": [],
+      "expected_upside": "Return potential 0.7 against risk 0.5",
+      "expected_downside": "Bounded downside"
+    },
+    {
+      "role": "contrarian",
+      "recommendation": "reject",
+      "confidence": 0.784,
+      "risks": ["Aggregate burden 0.4", "Optimism bias in the upside case"],
+      "assumptions": ["The base case understates downside"],
+      "missing_information": ["Evidence that the opposing case is wrong"],
+      "expected_upside": "Surfacing the strongest objection protects the decision",
+      "expected_downside": "Proceeding may ignore correlated or tail risks"
+    }
+  ],
+  "agreement": 0.743,
+  "confidence_gap": 0.24,
+  "unresolved_risks": [
+    "Operational load 0.5",
+    "Operational/technical load 0.5",
+    "Aggregate burden 0.4",
+    "Optimism bias in the upside case"
+  ],
+  "needs_more_data": false,
+  "recommendation": "Proceed — 6 of 10 agents recommend proceeding with sufficient data.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

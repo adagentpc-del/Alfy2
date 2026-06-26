@@ -1,0 +1,14 @@
+{
+  "id": "50505050-3333-4ccc-8ccc-505050505050",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "at": "2026-06-24T12:00:00.000Z",
+  "actor": "research.web",
+  "is_agent": true,
+  "action": "Pay the A3 Visual invoice",
+  "action_class": "spend_money",
+  "resource": "invoice:4471",
+  "target_env": "production",
+  "decision": "requires_approval",
+  "outcome": "queued",
+  "metadata": { "amount_usd": 12400 }
+}

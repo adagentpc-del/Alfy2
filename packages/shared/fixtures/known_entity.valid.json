@@ -1,0 +1,18 @@
+{
+  "memory_id": "a1a1a1a1-1111-4aaa-8aaa-a1a1a1a1a1a1",
+  "module": "vehicles",
+  "entity_type": "dealership",
+  "identity": "Mercedes dealership",
+  "fields": {
+    "store": "Mercedes-Benz of Coral Gables",
+    "phone": "+1-305-555-0142",
+    "advisor": "Diego Ramos",
+    "hours": "Mon-Fri 7:30am-6pm, Sat 8am-4pm",
+    "preferred_contact": "text",
+    "service_history": "Last service 2026-03-10 (A-service, 22k mi)"
+  },
+  "present_fields": ["store", "phone", "advisor", "hours", "preferred_contact", "service_history"],
+  "missing_fields": [],
+  "last_updated": "2026-06-20T15:00:00.000Z",
+  "source": "operator"
+}

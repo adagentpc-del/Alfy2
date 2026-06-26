@@ -1,0 +1,22 @@
+{
+  "entities": [
+    {
+      "ref_id": "contact:dev-rivera",
+      "kind": "contact",
+      "name": "Sam Rivera",
+      "business_id": null,
+      "tags": ["engineer"],
+      "keywords": ["procurement", "supply chain", "developer", "backend"],
+      "attributes": { "role": "developer" }
+    },
+    {
+      "ref_id": "biz:divini-procure",
+      "kind": "business",
+      "name": "Divini Procure",
+      "business_id": "00000000-0000-0000-0000-0000000000dd",
+      "tags": [],
+      "keywords": ["procurement", "supply chain", "vendor", "bidding"],
+      "attributes": { "sector": "procurement", "needs": "developer" }
+    }
+  ]
+}

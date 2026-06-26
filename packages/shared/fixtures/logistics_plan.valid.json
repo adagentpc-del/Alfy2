@@ -1,0 +1,92 @@
+{
+  "id": "b2b2b2b2-2222-4bbb-8bbb-b2b2b2b2b2b2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "event": "SaaStr Annual conference keynote and networking dinner",
+  "starts_at": "2026-09-10T16:00:00.000Z",
+  "checklists": [
+    {
+      "category": "packing",
+      "items": ["Pack toiletries", "Pack overnight bag", "Pack chargers"]
+    },
+    {
+      "category": "clothing",
+      "items": ["Choose outfits for each day", "Pack sleepwear"]
+    },
+    {
+      "category": "charging",
+      "items": ["Charge phone and laptop", "Pack charging cables and adapters"]
+    },
+    {
+      "category": "documents",
+      "items": ["ID / passport", "Booking confirmations"]
+    },
+    {
+      "category": "travel",
+      "items": ["Confirm itinerary", "Check-in online", "Pack travel essentials"]
+    },
+    {
+      "category": "transportation",
+      "items": ["Arrange airport transfer", "Confirm rental or rideshare"]
+    },
+    {
+      "category": "hotel",
+      "items": ["Confirm hotel reservation", "Note check-in / check-out times"]
+    },
+    {
+      "category": "business_materials",
+      "items": ["Pack business cards", "Prepare one-line intro"]
+    },
+    {
+      "category": "networking",
+      "items": ["Review attendee list", "Set 3 connection goals"]
+    },
+    {
+      "category": "pet_care",
+      "items": ["Arrange pet sitter or boarding", "Stock pet food and supplies"]
+    },
+    {
+      "category": "weather",
+      "items": ["Check forecast for the dates", "Pack weather-appropriate layers"]
+    },
+    {
+      "category": "recovery",
+      "items": ["Block recovery time after the event", "Plan light schedule the next morning"]
+    }
+  ],
+  "calendar_blocks": [
+    {
+      "starts_at": "2026-09-10T14:00:00.000Z",
+      "ends_at": "2026-09-10T16:00:00.000Z",
+      "label": "Travel to \"SaaStr Annual conference keynote and networking dinner\""
+    },
+    {
+      "starts_at": "2026-09-10T16:00:00.000Z",
+      "ends_at": "2026-09-10T18:00:00.000Z",
+      "label": "SaaStr Annual conference keynote and networking dinner"
+    },
+    {
+      "starts_at": "2026-09-10T18:00:00.000Z",
+      "ends_at": "2026-09-10T19:00:00.000Z",
+      "label": "Decompression after \"SaaStr Annual conference keynote and networking dinner\""
+    }
+  ],
+  "reminders": [
+    {
+      "at": "2026-09-09T20:00:00.000Z",
+      "label": "Night-before prep for \"SaaStr Annual conference keynote and networking dinner\""
+    },
+    {
+      "at": "2026-09-10T14:00:00.000Z",
+      "label": "Leave / final prep for \"SaaStr Annual conference keynote and networking dinner\""
+    },
+    {
+      "at": "2026-09-11T16:00:00.000Z",
+      "label": "Follow up after \"SaaStr Annual conference keynote and networking dinner\""
+    }
+  ],
+  "follow_ups": [
+    "Note new contacts made",
+    "Send follow-ups to new contacts"
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

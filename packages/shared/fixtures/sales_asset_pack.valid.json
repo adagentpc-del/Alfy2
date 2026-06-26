@@ -1,0 +1,13 @@
+{
+  "id": "c3c3c3c3-4444-4ddd-8ddd-c3c3c3c3c3c3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "business_name": "Move Mi",
+  "assets": [
+    { "kind": "one_pager", "title": "Move Mi — One-Pager", "body": "What we do, who it's for, the offer, and the next step.", "asset_id": "asset:movemi-one-pager" },
+    { "kind": "call_script", "title": "Move Mi — Call Script", "body": "Open, discover, present, handle objections, close.", "asset_id": "asset:movemi-call-script" },
+    { "kind": "objection_handling", "title": "Move Mi — Objection Handling", "body": "Too expensive → reframe on reliability and time saved.", "asset_id": "asset:movemi-objections" }
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

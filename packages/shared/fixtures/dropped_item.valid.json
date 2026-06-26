@@ -1,0 +1,15 @@
+{
+  "id": "e5e5e5e5-1111-4aaa-8aaa-e5e5e5e5e5e5",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "missed_follow_up",
+  "title": "Acme Corp — no reply since intro call",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "business_name": "Move Mi",
+  "age_days": 9,
+  "value_usd": 18000,
+  "status": "open",
+  "assigned_agent": null,
+  "recommended_action": "Send a value-add follow-up referencing the intro call.",
+  "detected_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "f2f2f2f2-8888-4bbb-8bbb-f2f2f2f2f2f2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "focus_choice",
+  "question": "Focus on Move Mi or Divini Procure this quarter?",
+  "a": {
+    "label": "Move Mi",
+    "best_case_usd": 130000,
+    "likely_case_usd": 60000,
+    "worst_case_usd": 16000,
+    "expected_value_usd": 60000,
+    "risk": 0.3,
+    "time_cost_days": 20,
+    "stress_cost": 0.4,
+    "score": 0.66
+  },
+  "b": {
+    "label": "Divini Procure",
+    "best_case_usd": 195000,
+    "likely_case_usd": 67500,
+    "worst_case_usd": 12000,
+    "expected_value_usd": 67500,
+    "risk": 0.6,
+    "time_cost_days": 45,
+    "stress_cost": 0.7,
+    "score": 0.39
+  },
+  "recommendation": "Move Mi",
+  "reason": "Move Mi wins on the composite (score 0.66 vs 0.39). Expected value $60000 vs $67500, risk 0.3 vs 0.6, stress 0.4 vs 0.7, time 20d vs 45d.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

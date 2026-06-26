@@ -1,0 +1,11 @@
+{
+  "id": "11111111-2222-4bbb-8bbb-111111112222",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "repo_url": "https://github.com/acme/invoice-parser",
+  "name": "invoice-parser",
+  "verdict": "safe",
+  "assessment_id": "10101010-1111-4aaa-8aaa-101010101010",
+  "approved_by": "adagentpc@gmail.com",
+  "approved_at": "2026-06-24T12:05:00.000Z",
+  "tags": ["finance", "pdf", "library"]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "20202020-1111-4aaa-8aaa-202020202020",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "type": "pitch_deck",
+  "name": "Move Mi — Seed Pitch Deck",
+  "description": "12-slide seed deck: problem, solution, market, traction, ask.",
+  "owner": "adagentpc@gmail.com",
+  "business_id": "move-mi",
+  "version": "2.1.0",
+  "status": "active",
+  "approval": "approved",
+  "approved_by": "adagentpc@gmail.com",
+  "location": "https://drive.google.com/file/d/move-mi-seed-deck",
+  "sensitive": false,
+  "visibility": "business",
+  "tags": ["fundraising", "seed", "deck"],
+  "relationships": [
+    { "relation": "derived_from", "target_asset_id": "20202020-2222-4aaa-8aaa-202020202020" }
+  ],
+  "usage_history": [
+    { "at": "2026-06-20T14:00:00.000Z", "actor": "adagentpc@gmail.com", "action": "sent" }
+  ],
+  "keywords": ["pitch", "seed", "investors", "move mi"],
+  "created_at": "2026-06-01T09:00:00.000Z",
+  "updated_at": "2026-06-20T14:00:00.000Z"
+}

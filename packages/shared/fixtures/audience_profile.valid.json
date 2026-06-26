@@ -1,0 +1,48 @@
+{
+  "id": "f3f3f3f3-9999-4eee-8fff-f3f3f3f3f3f3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "audience_name": "Solo founders scaling past $1M",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "biggest_fears": [
+    "I'm worried I'll burn out before we hit the next milestone",
+    "Scaling the team feels risky and I don't want to lose our culture"
+  ],
+  "biggest_goals": [
+    "I want to get to $5M ARR without doubling headcount",
+    "We're trying to build systems so the business runs without me"
+  ],
+  "language_used": [
+    "founder",
+    "scaling",
+    "systems",
+    "headcount",
+    "burnout",
+    "milestone",
+    "culture",
+    "runway"
+  ],
+  "objections": [
+    "It looks great but it's too expensive for where we are right now",
+    "I'm not sure another tool is the answer"
+  ],
+  "desires": [
+    "I'd love a business that runs without me having to be in every decision"
+  ],
+  "misconceptions": [
+    "How is this different from just hiring a COO?",
+    "Does this actually replace my existing stack?"
+  ],
+  "favorite_content": [
+    "Content like: \"The teardown of how you systemized ops was the best thing I read all month\"",
+    "Content like: \"Loved the podcast episode on delegation without losing quality\""
+  ],
+  "best_offers": [
+    "A lower-risk entry offer (payment plan or trial) to defuse price objections",
+    "An outcome-guaranteed package tied to their stated goal",
+    "A premium 'done-for-you' offer matching their ideal scenario"
+  ],
+  "messaging_recommendation": "Lead by directly addressing the top objection: \"It looks great but it's too expensive for where we are right now\" — name it before they do.",
+  "signal_count": 9,
+  "updated_at": "2026-06-25T12:00:00.000Z",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

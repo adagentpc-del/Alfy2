@@ -1,0 +1,40 @@
+{
+  "id": "d5d5d5d5-4444-4eee-8eee-d5d5d5d5d5d5",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "name": "Autonomous AI agents in the workplace",
+  "horizon": "3_years",
+  "description": "Teams increasingly delegate end-to-end workflows to autonomous AI agents.",
+  "likelihood": 0.9,
+  "impact": 0.8,
+  "industries_affected": ["software", "professional services"],
+  "businesses_affected": ["AI Authority"],
+  "preparation_steps": [
+    "Monitor \"Autonomous AI agents in the workplace\" signals over the next 3 years.",
+    "Brief the executive on how \"Autonomous AI agents in the workplace\" affects the portfolio.",
+    "Run a what-if simulation for \"Autonomous AI agents in the workplace\".",
+    "Allocate a small budget to experiment with \"Autonomous AI agents in the workplace\"."
+  ],
+  "skills_needed": [
+    "Literacy in Autonomous AI agents in the workplace",
+    "Strategic planning for the next 3 years",
+    "Rapid experimentation",
+    "Change management"
+  ],
+  "technology_needed": [
+    "Tooling to track Autonomous AI agents in the workplace",
+    "A sandbox to pilot Autonomous AI agents in the workplace",
+    "Analytics to measure Autonomous AI agents in the workplace impact"
+  ],
+  "investment_opportunities": [
+    "Early position in Autonomous AI agents in the workplace",
+    "Partnerships with Autonomous AI agents in the workplace leaders",
+    "Build an offer around Autonomous AI agents in the workplace"
+  ],
+  "potential_threats": [
+    "Competitors adopting Autonomous AI agents in the workplace first",
+    "Disruption to existing revenue from Autonomous AI agents in the workplace",
+    "Regulatory or compliance shifts around Autonomous AI agents in the workplace"
+  ],
+  "readiness_score": 0.72,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

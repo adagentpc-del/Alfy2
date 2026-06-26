@@ -1,0 +1,30 @@
+{
+  "id": "0e444444-4444-4eee-8eee-0e4444444444",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "created_at": "2026-06-24T12:00:00.000Z",
+  "source": "email",
+  "item_type": "invoice",
+  "category": "finance",
+  "confidence": 0.86,
+  "suggested_business": "a3-visual",
+  "suggested_owner": "A3 Visual / Finance",
+  "urgency": 0.7,
+  "urgency_level": "high",
+  "next_action": "Review the $12,400 invoice and schedule payment before 2026-07-05 (payment needs your approval).",
+  "linked_entities": [
+    { "memory_id": "aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaaa", "title": "A3 Visual", "kind": "company", "relevance": 0.74 }
+  ],
+  "suggested_tasks": [
+    { "title": "Pay invoice #4471 ($12,400) to A3 Visual", "due": "2026-07-05T00:00:00.000Z", "priority_level": "high" }
+  ],
+  "missing_info": [
+    { "field": "payment_method", "prompt": "Which account/method should pay this?", "required": false }
+  ],
+  "recommended_agents": ["finance.analyze"],
+  "saved_memory_id": "0f555555-5555-4fff-8fff-0f5555555555",
+  "requires_approval": true,
+  "approval_reason": "Paying money is irreversible — needs your sign-off.",
+  "dashboard_updated": true,
+  "explanation": "Identified an invoice and filed it under Finance for A3 Visual. Linked it to the A3 Visual company memory, drafted a payment task due 2026-07-05, and saved it for reuse. Payment requires your approval.",
+  "summary": "Invoice $12,400 → Finance / A3 Visual; payment task created, needs approval."
+}

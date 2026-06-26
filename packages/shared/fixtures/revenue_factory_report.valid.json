@@ -1,0 +1,15 @@
+{
+  "business_name": "Move Mi",
+  "fastest_path_to_cash": "Close proposal to Acme Corp for \"Local Move Package\" ($18000)",
+  "easiest_offer_to_sell": "Local Move Package",
+  "best_warm_contact": "Acme Corp",
+  "lowest_effort_revenue_action": "Follow up with Dana (effort 0.1)",
+  "highest_value_follow_up": "Acme Corp ($18000)",
+  "offer_most_likely_to_convert": "Local Move Package",
+  "todays_money_move": "Close proposal to Acme Corp for \"Local Move Package\" ($18000)",
+  "warm_lead_count": 3,
+  "cold_lead_count": 12,
+  "referral_source_count": 2,
+  "open_proposal_value_usd": 42000,
+  "generated_at": "2026-06-25T12:00:00.000Z"
+}

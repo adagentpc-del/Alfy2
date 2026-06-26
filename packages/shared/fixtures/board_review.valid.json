@@ -1,0 +1,113 @@
+{
+  "id": "b0b0b0b0-8888-4bbb-8bbb-b0b0b0b0b0b0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "proposal": "Launch the AI productized service to existing clients next quarter",
+  "verdicts": [
+    {
+      "role": "ceo",
+      "stance": "approve",
+      "benefits": ["Aggregate upside 0.667"],
+      "risks": ["Aggregate burden 0.417"],
+      "blind_spots": ["Strategic alignment and timing"],
+      "dependencies": ["Cross-functional alignment"],
+      "costs": [],
+      "operational_impact": "Weighs the overall strategic balance."
+    },
+    {
+      "role": "cfo",
+      "stance": "approve_with_conditions",
+      "benefits": ["Revenue upside justifies spend"],
+      "risks": ["Cost is material relative to return"],
+      "blind_spots": ["Downstream / hidden carrying costs"],
+      "dependencies": ["Budget headroom and cash position"],
+      "costs": ["Cost signal 0.6"],
+      "operational_impact": "Weighs cost against revenue upside."
+    },
+    {
+      "role": "coo",
+      "stance": "approve_with_conditions",
+      "benefits": [],
+      "risks": ["Operational load 0.5"],
+      "blind_spots": ["Process and staffing capacity"],
+      "dependencies": ["Operations capacity and runbooks"],
+      "costs": [],
+      "operational_impact": "Weighs operational load."
+    },
+    {
+      "role": "cto",
+      "stance": "approve_with_conditions",
+      "benefits": [],
+      "risks": ["Technical complexity 0.5"],
+      "blind_spots": ["Scalability and maintenance burden"],
+      "dependencies": ["Engineering capacity and architecture"],
+      "costs": [],
+      "operational_impact": "Weighs technical complexity."
+    },
+    {
+      "role": "cmo",
+      "stance": "approve",
+      "benefits": ["Revenue upside 0.7", "Customer impact 0.6"],
+      "risks": [],
+      "blind_spots": ["Brand perception and positioning"],
+      "dependencies": ["Go-to-market and messaging"],
+      "costs": [],
+      "operational_impact": "Weighs customer impact and revenue."
+    },
+    {
+      "role": "clo",
+      "stance": "approve",
+      "benefits": ["No material legal exposure"],
+      "risks": [],
+      "blind_spots": ["Regulatory and contractual obligations"],
+      "dependencies": ["Legal review and compliance check"],
+      "costs": [],
+      "operational_impact": "Weighs legal exposure."
+    },
+    {
+      "role": "cro",
+      "stance": "approve",
+      "benefits": ["Risk profile is acceptable"],
+      "risks": ["Overall risk signal 0.4"],
+      "blind_spots": ["Tail risks and correlated failures"],
+      "dependencies": ["Mitigation plan and risk owner"],
+      "costs": [],
+      "operational_impact": "Weighs aggregate downside risk."
+    },
+    {
+      "role": "cso",
+      "stance": "approve",
+      "benefits": [],
+      "risks": [],
+      "blind_spots": ["Data handling and access control gaps"],
+      "dependencies": ["Security review sign-off"],
+      "costs": [],
+      "operational_impact": "Weighs security exposure."
+    },
+    {
+      "role": "cpo",
+      "stance": "approve",
+      "benefits": ["Product fit 0.7"],
+      "risks": [],
+      "blind_spots": ["Roadmap coherence and user need"],
+      "dependencies": ["Product discovery and validation"],
+      "costs": [],
+      "operational_impact": "Weighs product fit."
+    },
+    {
+      "role": "cco",
+      "stance": "approve",
+      "benefits": ["Customer impact 0.6"],
+      "risks": [],
+      "blind_spots": ["Support load and churn signals"],
+      "dependencies": ["Customer success readiness"],
+      "costs": [],
+      "operational_impact": "Weighs customer impact and experience."
+    }
+  ],
+  "approvals": 7,
+  "rejections": 0,
+  "disagreements": [],
+  "synthesis": "The board reviewed \"Launch the AI productized service to existing clients next quarter\". 7 reviewer(s) approve, 0 reject, 3 approve with conditions. The board was broadly aligned. Recommendation: proceed.",
+  "final_recommendation": "proceed",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

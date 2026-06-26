@@ -1,0 +1,13 @@
+{
+  "id": "c4c4c4c4-eeee-4ddd-8ddd-c4c4c4c4c4c4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "workflow_name": "Crew dispatch",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "artifacts": [
+    { "kind": "sop", "title": "SOP — Crew dispatch", "asset_id": "asset:sop-crew-dispatch", "outline": ["Purpose", "Assign and route crews", "Steps", "Confirm booking", "Assign crew"] },
+    { "kind": "checklist", "title": "Checklist — Crew dispatch", "asset_id": "asset:checklist-crew-dispatch", "outline": ["[ ] Confirm booking", "[ ] Assign crew"] }
+  ],
+  "reusable_ip": true,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

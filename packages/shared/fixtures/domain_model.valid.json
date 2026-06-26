@@ -1,0 +1,24 @@
+{
+  "id": "11112222-1111-4aaa-8aaa-111122223333",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "domain": "sales",
+  "name": "Sales",
+  "goals": ["Hit $50k MRR", "Keep pipeline coverage above 3x"],
+  "workflows": [
+    { "name": "Outbound prospecting", "purpose": "Generate qualified meetings", "trigger": "daily", "steps": ["Build list", "Personalize", "Send", "Follow up"] }
+  ],
+  "agents": ["sales.outreach", "sales.followup"],
+  "kpis": [
+    { "name": "mrr", "target": 50000, "unit": "usd", "direction": "higher_better" },
+    { "name": "pipeline_coverage", "target": 3, "unit": "x", "direction": "higher_better" }
+  ],
+  "assets": ["sales_deck", "email_template"],
+  "approvals": ["Discount above 15% requires owner approval"],
+  "dashboards": ["Pipeline by stage", "Rep activity"],
+  "escalation_rules": [
+    { "condition": "Deal stalls > 14 days", "action": "Flag for owner review", "escalate_to": "owner" }
+  ],
+  "template_version": "1.0.0",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

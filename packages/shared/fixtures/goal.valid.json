@@ -1,0 +1,68 @@
+{
+  "id": "80808080-1111-4aaa-8aaa-808080808080",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "type": "cash_flow",
+  "title": "Reach $50k monthly recurring revenue",
+  "description": "Stabilize Move Mi cash flow before the Q4 push.",
+  "status": "active",
+  "approved": true,
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "metric": "monthly_recurring_revenue",
+  "unit": "usd",
+  "baseline_value": 18000,
+  "current_value": 22000,
+  "target_value": 50000,
+  "deadline": "2026-12-31T00:00:00.000Z",
+  "priority_level": "high",
+  "analysis": {
+    "current_state": "MRR is $22,000 with lumpy booking-driven revenue.",
+    "desired_state": "Predictable $50,000 MRR.",
+    "gap": "$28,000 of additional monthly recurring revenue.",
+    "constraints": [{ "description": "Limited sales bandwidth", "severity": "high" }],
+    "resources": [{ "description": "Existing referral-partner network", "kind": "relationship" }],
+    "best_opportunities": [{ "description": "Convert one-off movers to retainer plans", "leverage": "high" }],
+    "fastest_path": {
+      "kind": "fastest",
+      "summary": "Push retainer conversions hard now.",
+      "steps": ["List active one-off customers", "Offer retainer upgrade", "Close 10 this month"],
+      "rationale": "Reuses existing demand; least new acquisition.",
+      "estimated_days": 45,
+      "risk_level": "medium"
+    },
+    "lowest_resistance_path": {
+      "kind": "lowest_resistance",
+      "summary": "Lean on referral partners.",
+      "steps": ["Re-activate top partners", "Add referral incentive", "Nurture monthly"],
+      "rationale": "Warm channel, low friction.",
+      "estimated_days": 75,
+      "risk_level": "low"
+    },
+    "highest_roi_path": {
+      "kind": "highest_roi",
+      "summary": "Productize a subscription tier.",
+      "steps": ["Define subscription offer", "Launch to base", "Scale via ads"],
+      "rationale": "Compounding recurring revenue.",
+      "estimated_days": 120,
+      "risk_level": "high"
+    },
+    "recommended_path": "fastest",
+    "explanation": "Closing the $28k gap fastest comes from converting existing one-off demand to retainers."
+  },
+  "plan": {
+    "weekly_plan": [
+      { "week": 1, "focus": "Retainer conversion sprint", "milestones": ["Customer list ready", "Offer drafted"], "outcome": "Pipeline built" }
+    ],
+    "daily_priorities": ["Call 5 one-off customers", "Send 3 retainer offers"],
+    "recommended_agents": ["sales", "cash_flow"],
+    "recommended_automations": ["Auto follow-up on unsent retainer offers"],
+    "expected_completion": "2026-08-15T00:00:00.000Z",
+    "risk_analysis": [
+      { "description": "Sales bandwidth too thin", "likelihood": "high", "impact": "high", "mitigation": "Automate follow-up; delegate outreach" }
+    ],
+    "risk_summary": "Primary risk is execution bandwidth; mitigated by automation and delegation."
+  },
+  "version": 2,
+  "created_at": "2026-06-24T12:00:00.000Z",
+  "updated_at": "2026-06-25T09:00:00.000Z",
+  "last_recalculated_at": "2026-06-25T09:00:00.000Z"
+}

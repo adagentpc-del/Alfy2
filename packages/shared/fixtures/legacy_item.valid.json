@@ -1,0 +1,20 @@
+{
+  "id": "1ec1ec1e-2222-4bbb-8bbb-1ec1ec1ec1ec",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "framework",
+  "title": "The Founder Leverage Allocation Framework",
+  "detail": "How to allocate a founder's hours toward the highest-compounding moves.",
+  "repeatability": 0.8,
+  "strategic_value": 0.7,
+  "recommended_forms": [
+    "sop",
+    "founderos_feature",
+    "keynote",
+    "book_chapter",
+    "consulting_framework",
+    "course",
+    "licensing_opportunity"
+  ],
+  "legacy_score": 0.75,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

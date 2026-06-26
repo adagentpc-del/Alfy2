@@ -1,0 +1,8 @@
+{
+  "module": "vehicles",
+  "entity_type": "dealership",
+  "name": "Vehicle dealership / service center",
+  "memory_kind": "company",
+  "required_fields": ["store", "phone", "advisor", "hours", "preferred_contact"],
+  "optional_fields": ["address", "service_history", "email"]
+}

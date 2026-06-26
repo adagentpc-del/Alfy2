@@ -1,0 +1,47 @@
+{
+  "id": "7c2a9f01-3333-4ccc-8ccc-7c2a9f013333",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "podcast",
+  "title": "Decoded Ep 42 — Killing Busywork",
+  "brand": "decoded_podcast",
+  "business_id": null,
+  "status": "queued",
+  "assets": [
+    {
+      "kind": "podcast_episode",
+      "title": "Decoded Ep 42 — Killing Busywork — Podcast Episode",
+      "outline": [
+        "Hook for Decoded Ep 42 — Killing Busywork",
+        "Core point as a Podcast Episode",
+        "Brand CTA + caption"
+      ],
+      "cta": "Follow for more.",
+      "asset_id": "asset:decoded-ep-42-killing-busywork-podcast-episode"
+    },
+    {
+      "kind": "youtube_video",
+      "title": "Decoded Ep 42 — Killing Busywork — Youtube Video",
+      "outline": [
+        "Hook for Decoded Ep 42 — Killing Busywork",
+        "Core point as a Youtube Video",
+        "Brand CTA + caption"
+      ],
+      "cta": "Follow for more.",
+      "asset_id": "asset:decoded-ep-42-killing-busywork-youtube-video"
+    },
+    {
+      "kind": "reel",
+      "title": "Decoded Ep 42 — Killing Busywork — Reel",
+      "outline": [
+        "Hook for Decoded Ep 42 — Killing Busywork",
+        "Core point as a Reel",
+        "Brand CTA + caption"
+      ],
+      "cta": "Follow for more.",
+      "asset_id": "asset:decoded-ep-42-killing-busywork-reel"
+    }
+  ],
+  "requires_approval": true,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

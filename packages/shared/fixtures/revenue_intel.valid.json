@@ -1,0 +1,14 @@
+{
+  "id": "b2b2b2b2-3333-4ccc-8ccc-b2b2b2b2b2b2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_name": "Move Mi",
+  "generated_at": "2026-06-25T12:00:00.000Z",
+  "fastest_path_to_cash": "Close the Acme Corp deal ($18,000, 70% in 10 days).",
+  "easiest_offer_to_sell": "Monthly retainer (9% conversion).",
+  "best_lead_source": "Referral partners (12% conversion).",
+  "highest_roi_campaign": "Retainer upsell (ROI 24.8x).",
+  "stuck_deals": ["Globex (idle 21 days)"],
+  "next_money_action": "Send the Acme Corp proposal today to pull the $18k forward.",
+  "weighted_pipeline_usd": 42000,
+  "revenue_goal_usd": 50000
+}

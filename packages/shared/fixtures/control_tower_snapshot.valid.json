@@ -1,0 +1,38 @@
+{
+  "id": "40404040-3333-4ccc-8ccc-404040404040",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "generated_at": "2026-06-25T12:00:00.000Z",
+  "cash_position": { "cash_on_hand_usd": 50000, "monthly_burn_usd": 15000, "monthly_inflow_usd": 12000, "runway_months": 16.67 },
+  "revenue_pipeline": { "open_deals": 12, "weighted_value_usd": 84000, "closing_30d_usd": 30000 },
+  "goals": [
+    { "name": "Reach $50k MRR", "status": "active", "progress": 0.44, "priority_level": "high" }
+  ],
+  "active_campaigns": [
+    { "name": "Move Mi retainer upsell", "status": "active", "note": "Variant B winning" }
+  ],
+  "blocked_deals": [
+    { "name": "Acme Corp", "reason": "Awaiting legal review", "value_usd": 18000 }
+  ],
+  "risks": [
+    { "description": "Single late payment compresses runway", "severity": "high" }
+  ],
+  "agent_performance": [
+    { "agent_name": "sales.outreach", "success_rate": 0.92, "roi": 24.8, "actions": 40 }
+  ],
+  "approvals_needed": [
+    { "action": "Wire $40k to A3 Visual", "requested_by": "finance.payments", "required_role": "owner" }
+  ],
+  "top_priorities": ["Unblock Acme Corp legal review", "Close the $30k pipeline this month", "Approve A3 wire"],
+  "business_health": [
+    { "business_name": "Move Mi", "score": 0.78, "signal": "Healthy growth" }
+  ],
+  "opportunities": [
+    { "title": "This investor should meet Strata HQ", "composite": 0.7 }
+  ],
+  "workflows_running": [
+    { "name": "Auto follow-up reminders", "status": "active" }
+  ],
+  "review_queue": [
+    { "item": "Monthly finance review", "cadence": "monthly", "due": "2026-06-30T00:00:00.000Z" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "launches",
+  "title": "Launch the podcast",
+  "description": "Stand up the podcast as the ecosystem amplification engine.",
+  "current_state": "No episodes recorded; no equipment chosen.",
+  "desired_state": "Weekly show live across YouTube, Spotify, and Apple with 10 episodes banked.",
+  "business_id": null,
+  "metric": "episodes_published",
+  "unit": "episodes",
+  "baseline_value": 0,
+  "current_value": 0,
+  "target_value": 10,
+  "deadline": "2026-10-01T00:00:00.000Z",
+  "constraints": ["No editor hired yet", "Limited recording time"],
+  "resources": ["Existing audience on LinkedIn", "Studio access via The Move Miami"]
+}

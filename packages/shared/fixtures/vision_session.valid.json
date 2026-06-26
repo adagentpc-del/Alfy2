@@ -1,0 +1,70 @@
+{
+  "id": "b2f1c9d4-3e5a-47c8-9a16-7d4e2f8c1a90",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "idea": "An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns",
+  "exploration": [
+    "Let's think about \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" together — what's the sharpest version of this idea?",
+    "One angle on \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": who feels this problem most acutely, and what would they pay to make it go away?",
+    "Another angle on \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": where could this become a system that compounds rather than a one-off?"
+  ],
+  "challenges": [
+    "What has to be true for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" to actually work?",
+    "What's the hardest objection a skeptic would raise about \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\"?",
+    "\"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" is novel — is the market ready for it, or are we early?"
+  ],
+  "strengthened": [
+    "Strengthen \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" by narrowing to the single highest-value use case first.",
+    "Strengthen \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" by attaching it to an existing audience instead of building one from zero.",
+    "Strengthen \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\" by shipping a deliberately small first version to cut the complexity."
+  ],
+  "risks": [
+    "Risk for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": demand may be assumed rather than proven — validate before building.",
+    "Risk for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the build is complex — scope creep could stall it before it earns."
+  ],
+  "opportunities": [
+    "Opportunity for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": turn the first solution into a reusable asset others would pay for.",
+    "Opportunity for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": there's real pull here — move fast while the window is open.",
+    "Opportunity for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": strong demand could let this expand across adjacent markets."
+  ],
+  "artifacts": [
+    {
+      "kind": "architecture",
+      "outline": "Architecture plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the components, data flow, and boundaries it would need."
+    },
+    {
+      "kind": "implementation_plan",
+      "outline": "Implementation plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the phased build sequence from foundation to launch."
+    },
+    {
+      "kind": "business_model",
+      "outline": "Business model for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": who pays, for what value, and how the economics work."
+    },
+    {
+      "kind": "marketing",
+      "outline": "Marketing plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the positioning, channels, and message to reach the right buyers."
+    },
+    {
+      "kind": "monetization",
+      "outline": "Monetization plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": pricing, packaging, and the fastest path to first revenue."
+    },
+    {
+      "kind": "assets",
+      "outline": "Assets plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the reusable assets to build so the work compounds."
+    },
+    {
+      "kind": "agents",
+      "outline": "Agents plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the agents that would run it without constant founder input."
+    },
+    {
+      "kind": "workflows",
+      "outline": "Workflows plan for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the repeatable workflows that keep it operating reliably."
+    },
+    {
+      "kind": "roadmap",
+      "outline": "Roadmap for \"An AI concierge that turns a founder's voice notes into ready-to-run revenue campaigns\": the milestones from first version to a compounding system."
+    }
+  ],
+  "promise": 0.61,
+  "awaiting_approval": true,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

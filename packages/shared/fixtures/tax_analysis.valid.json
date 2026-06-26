@@ -1,0 +1,45 @@
+{
+  "id": "a1a1a1a1-1111-4aaa-8aaa-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "subject": "Alfy Studios LLC",
+  "recommendations": [
+    {
+      "area": "entity_election",
+      "title": "Consider an S Corp election to reduce self-employment tax",
+      "why_it_may_apply": "Annual profit of $180000 may justify electing S Corp treatment so a portion is taken as distributions rather than wages.",
+      "estimated_benefit": "Potential self-employment tax savings on the distribution portion of profit.",
+      "risk_level": "medium",
+      "complexity": "medium",
+      "requires_professional_review": true,
+      "documents_needed": [
+        "Prior-year returns",
+        "Profit & loss statement",
+        "Reasonable-compensation analysis"
+      ],
+      "next_step": "Ask a CPA to model an S Corp election against your current treatment.",
+      "questions_for_advisor": [
+        "What reasonable salary supports an S Corp election for this profit level?",
+        "Do the payroll and admin costs outweigh the SE tax savings?"
+      ]
+    },
+    {
+      "area": "retirement_vehicles",
+      "title": "Maximize tax-advantaged retirement contributions",
+      "why_it_may_apply": "Retirement vehicles allow legal tax deferral and are broadly relevant regardless of structure.",
+      "estimated_benefit": "Tax deferral on contributions up to applicable limits.",
+      "risk_level": "low",
+      "complexity": "low",
+      "requires_professional_review": true,
+      "documents_needed": [
+        "Income summary",
+        "Existing retirement-account statements"
+      ],
+      "next_step": "Ask your CPA which retirement vehicle and contribution level fits.",
+      "questions_for_advisor": [
+        "Which plan maximizes deferral for my income and entity?"
+      ]
+    }
+  ],
+  "disclaimer": "Analysis only — not legal or tax advice. Legal optimization (avoidance, deferral, deduction, structuring, planning) only; never evasion. CPA/attorney review required before any action.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

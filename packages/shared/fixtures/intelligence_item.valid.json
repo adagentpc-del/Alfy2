@@ -1,0 +1,41 @@
+{
+  "id": "a1a1a1a1-1111-4eee-8eee-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "title": "Major model provider cuts inference prices 70%",
+  "executive_summary": "A major model provider cut inference prices by 70% today.",
+  "deep_dive": "A major model provider cut inference prices by 70% today. The change applies across their flagship and small models. Analysts expect competitors to follow within weeks. AI Authority and its content products run directly on these models.",
+  "why_it_matters": "It carries revenue potential, a clear opportunity, strategic value and directly touches AI Authority.",
+  "businesses_affected": ["AI Authority"],
+  "goals_affected": [],
+  "agents_to_notify": ["intel.monitor", "business.ai-authority"],
+  "immediate_actions": [
+    "Act now on this for AI Authority.",
+    "Brief the executive and assign an owner today."
+  ],
+  "future_implications": [
+    "Likely to shape the market over the long term.",
+    "Signals an innovation worth positioning around."
+  ],
+  "scores": {
+    "importance": 0.9,
+    "urgency": 0.85,
+    "opportunity": 0.8,
+    "risk": 0.4,
+    "revenue_potential": 0.8,
+    "innovation": 0.7,
+    "implementation_difficulty": 0.3,
+    "compliance_risk": 0.2,
+    "strategic_value": 0.85,
+    "long_term_impact": 0.8,
+    "recommended_reading_minutes": 6
+  },
+  "classification": "immediate_action",
+  "confidence": 0.817,
+  "sources": ["The Information"],
+  "related_briefing_id": "b2b2b2b2-2222-4eee-8eee-b2b2b2b2b2b2",
+  "follow_up_recommendations": [
+    "Schedule a follow-up review in one week.",
+    "Explore a monetization angle."
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

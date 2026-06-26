@@ -1,0 +1,38 @@
+{
+  "id": "90909090-1111-4aaa-8aaa-909090909090",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "business_name": "Move Mi",
+  "baseline_conversion": 0.06,
+  "baseline_revenue_per_unit_usd": 12,
+  "active_tests": [
+    {
+      "id": "91919191-1111-4aaa-8aaa-919191919191",
+      "surface": "email",
+      "hypothesis": "Reliability framing beats a discount.",
+      "variant_a": "Save 20% with a retainer.",
+      "variant_b": "Never scramble for movers again.",
+      "status": "active",
+      "winner": null,
+      "revenue_per_unit_a_usd": 10,
+      "revenue_per_unit_b_usd": 0,
+      "conversion_a": 0.06,
+      "conversion_b": 0,
+      "created_at": "2026-06-25T12:00:00.000Z"
+    }
+  ],
+  "winning_copy": [
+    { "surface": "email", "text": "Never scramble for movers again.", "conversion_rate": 0.09, "revenue_per_unit_usd": 18 }
+  ],
+  "losing_copy": [
+    { "surface": "email", "text": "Save 20% with a retainer.", "conversion_rate": 0.06, "revenue_per_unit_usd": 10 }
+  ],
+  "objections": ["Too expensive", "Not sure I move often enough"],
+  "best_offers": [
+    { "name": "Monthly retainer", "conversion_rate": 0.09, "revenue_usd": 2700 }
+  ],
+  "next_optimization": "Test the subject line on the winning reliability email.",
+  "revenue_focused": true,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

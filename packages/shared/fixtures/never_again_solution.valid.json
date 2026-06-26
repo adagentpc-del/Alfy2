@@ -1,0 +1,23 @@
+{
+  "id": "b2b2b2b2-2222-4bbb-8bbb-b2b2b2b2b2b2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "trigger": "always_breaks",
+  "problem": "the nightly data sync",
+  "root_cause": "\"the nightly data sync\" lacks the validation, retries, or alerting to keep it reliable.",
+  "permanent_solution": "Harden \"the nightly data sync\" so it stops breaking and self-heals when it does.",
+  "workflow": "Resilient workflow for \"the nightly data sync\" with validation and retries.",
+  "automation": "Automation that retries \"the nightly data sync\" with backoff and alerts on failure.",
+  "agent": "Reliability agent that monitors \"the nightly data sync\" and reroutes around failures.",
+  "checklist": [
+    "Confirm the root cause of \"the nightly data sync\" is addressed, not just the symptom.",
+    "Deploy the workflow, automation, and agent that own it.",
+    "Set the reminder and record the SOP, knowledge update, and policy.",
+    "Verify it cannot recur on the next cycle."
+  ],
+  "sop": "SOP: \"the nightly data sync\" defines failure handling and an alert path up front.",
+  "reminder": "Reminder to review the health of \"the nightly data sync\".",
+  "knowledge_update": "Document the failure modes of \"the nightly data sync\" and their fixes.",
+  "policy": "Policy: fragile steps like \"the nightly data sync\" must be observable and retryable.",
+  "priority": 0.86,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

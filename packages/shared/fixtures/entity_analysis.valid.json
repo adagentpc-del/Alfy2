@@ -1,0 +1,83 @@
+{
+  "id": "a1a1a1a1-1111-4aaa-8aaa-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_name": "Alfy Studios",
+  "current_structure": "llc",
+  "recommended_structure": "llc_s_corp",
+  "why_recommended": "Alfy Studios has profit of $90000 with payroll in place — an S Corp election can reduce self-employment tax by splitting reasonable wages from distributions.",
+  "alternatives": [
+    {
+      "structure": "llc",
+      "pros": [
+        "Simple and flexible",
+        "Pass-through taxation",
+        "Liability protection"
+      ],
+      "cons": [
+        "Self-employment tax on full profit",
+        "Less familiar to institutional investors"
+      ],
+      "tax_considerations": [
+        "Default pass-through; can elect S Corp later"
+      ],
+      "legal_considerations": [
+        "Maintain separation of personal and business assets"
+      ]
+    },
+    {
+      "structure": "c_corp",
+      "pros": [
+        "Preferred by investors",
+        "Supports priced rounds and stock options",
+        "QSBS potential"
+      ],
+      "cons": [
+        "Double taxation on distributed profit",
+        "More compliance and cost"
+      ],
+      "tax_considerations": [
+        "Corporate tax plus tax on dividends if distributed"
+      ],
+      "legal_considerations": [
+        "Board, bylaws, and corporate formalities required"
+      ]
+    },
+    {
+      "structure": "holding_company",
+      "pros": [
+        "Separates IP and assets from operating risk",
+        "Supports multiple subsidiaries"
+      ],
+      "cons": [
+        "More entities to maintain",
+        "Intercompany agreements needed"
+      ],
+      "tax_considerations": [
+        "Intercompany transfers and management fees must be at arm's length"
+      ],
+      "legal_considerations": [
+        "Distinct entities with proper documentation to preserve the shield"
+      ]
+    }
+  ],
+  "cpa_questions": [
+    "Does the recommended structure improve my overall tax position?",
+    "What payroll and reasonable-compensation requirements apply?",
+    "What are the ongoing filing and accounting costs?"
+  ],
+  "attorney_questions": [
+    "What liability protection does this structure actually provide?",
+    "What governance documents must be in place and maintained?",
+    "How does this structure affect a future raise or exit?"
+  ],
+  "action_checklist": [
+    "Confirm goals (raise, exit, IP, liability) with the business owner.",
+    "Engage a CPA to model the tax impact of the recommended structure.",
+    "Engage an attorney to confirm liability protection and formation steps.",
+    "Document reasonable owner compensation with the CPA.",
+    "File the S Corp election within the required window."
+  ],
+  "risk_level": "low",
+  "requires_professional_review": true,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

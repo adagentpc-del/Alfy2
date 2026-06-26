@@ -1,0 +1,10 @@
+{
+  "id": "business",
+  "version": "0.0.0",
+  "status": "scaffold",
+  "description": "Operate ventures: portfolio state, follow-ups, outreach. Declared surface only.",
+  "capabilities": [],
+  "requires_agents": [],
+  "irreversible_capabilities": [],
+  "owner": "founder"
+}

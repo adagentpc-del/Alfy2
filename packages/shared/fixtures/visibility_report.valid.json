@@ -1,0 +1,36 @@
+{
+  "id": "d1d1d1d1-7777-4aaa-8bbb-d1d1d1d1d1d1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_name": "AI Authority",
+  "visibility_score": 0.412,
+  "where_to_post": [
+    "Your owned blog / long-form site (compounding SEO)",
+    "Your newsletter (capture before the algorithm)",
+    "Guest channels with existing reach"
+  ],
+  "what_to_post": [
+    "Search-intent how-to guides targeting buyer keywords",
+    "Lead magnets and gated deep-dives",
+    "Original data and bold predictions journalists cite"
+  ],
+  "when_to_post": "Increase cadence to 3-5x/week; post weekday mornings (Tue-Thu) when reach peaks.",
+  "collaborators": [
+    "Adjacent creators with larger but overlapping audiences",
+    "Industry publishers open to co-authored content"
+  ],
+  "podcasts_to_appear_on": [
+    "Mid-tier niche shows in your category (high conversion, easy yes)",
+    "Founder / operator interview podcasts",
+    "Flagship industry shows for reach"
+  ],
+  "conferences_to_speak_at": [
+    "Regional meetups and community events (low barrier to a first talk)",
+    "Vertical conferences where your buyers gather"
+  ],
+  "awards_to_apply_for": [
+    "Industry 'best of' and innovation awards for press coverage",
+    "Category-specific excellence awards aligned to your strengths"
+  ],
+  "weakest_signals": ["email_growth", "seo_score", "website_traffic"],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

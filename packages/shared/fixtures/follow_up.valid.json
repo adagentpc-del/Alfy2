@@ -1,0 +1,22 @@
+{
+  "id": "a1a1a1a1-2222-4bbb-8bbb-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "entity_kind": "lead",
+  "entity_name": "Acme Corp",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "goal_id": "80808080-1111-4aaa-8aaa-808080808080",
+  "sequence": [
+    { "day_offset": 1, "channel": "email", "template": "Quick follow-up on our chat" },
+    { "day_offset": 3, "channel": "email", "template": "Sharing a relevant case study" },
+    { "day_offset": 7, "channel": "email", "template": "Should I close the loop?" }
+  ],
+  "current_step": 1,
+  "status": "active",
+  "stop_reason": null,
+  "no_response_policy": "escalate",
+  "reactivation": true,
+  "last_touch_at": "2026-06-26T00:00:00.000Z",
+  "next_touch_at": "2026-06-28T00:00:00.000Z",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-26T00:00:00.000Z"
+}

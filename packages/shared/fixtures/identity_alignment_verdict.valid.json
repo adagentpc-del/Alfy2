@@ -1,0 +1,13 @@
+{
+  "id": "b1f5c2a0-7d3e-4e1a-9c2b-2f6a1d4e8c01",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "recommendation": "Take on a large agency retainer that requires moving back to 60-hour weeks.",
+  "aligns": false,
+  "increases_freedom": false,
+  "preserves_integrity": true,
+  "future_alyssa_proud": false,
+  "should_say_no": true,
+  "identity_overrode_optimization": true,
+  "verdict": "Say no — conflicts with a non-negotiable; identity overrides the optimization.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "f0f0f0f0-1111-4aaa-8aaa-f0f0f0f0f0f0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "workflow_name": "Auto follow-up reminders",
+  "metrics": {
+    "time_saved_hours": 20,
+    "revenue_generated_usd": 6000,
+    "cost_reduced_usd": 500,
+    "errors_reduced": 30,
+    "risk_reduced": 0.2,
+    "conversion_improvement": 0.05,
+    "operating_cost_usd": 120,
+    "model_tool_cost_usd": 40,
+    "human_time_required_hours": 2
+  },
+  "value_usd": 8000,
+  "total_cost_usd": 310,
+  "net_value_usd": 7690,
+  "roi_score": 24.81,
+  "recommendation": "scale",
+  "rationale": "Net value of $7,690 on $310 of cost (ROI 24.8x) with strong revenue and error reduction — scale it.",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

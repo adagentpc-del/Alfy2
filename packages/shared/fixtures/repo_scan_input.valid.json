@@ -1,0 +1,20 @@
+{
+  "url": "https://github.com/acme/invoice-parser",
+  "name": "invoice-parser",
+  "owner": "acme",
+  "description": "Parse PDF invoices into structured JSON.",
+  "readme": "# invoice-parser\n\nA small, well-documented library to extract line items, totals, and due dates from PDF invoices. MIT licensed. Tests included.",
+  "license": "MIT",
+  "languages": ["TypeScript"],
+  "dependencies": ["zod", "pdf-parse"],
+  "files": [
+    { "path": "src/index.ts", "content": "export function parse(buf: Buffer) { /* ... */ return {}; }" },
+    { "path": "README.md", "content": "# invoice-parser" },
+    { "path": "LICENSE", "content": "MIT License" }
+  ],
+  "stars": 420,
+  "forks": 31,
+  "open_issues": 4,
+  "contributors": 7,
+  "last_commit": "2026-06-10T00:00:00.000Z"
+}

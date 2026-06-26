@@ -1,0 +1,33 @@
+{
+  "id": "c1c1c1c1-bbbb-4eee-9eee-c1c1c1c1c1c1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "evening",
+  "date_label": "Thursday, June 25",
+  "greeting": "Evening debrief, Alyssa.",
+  "sections": [
+    {
+      "heading": "Wins",
+      "items": ["Closed the Acme proposal", "Shipped the onboarding flow"]
+    },
+    {
+      "heading": "Money Moved",
+      "items": ["$42,000 collected against MTD target"]
+    },
+    {
+      "heading": "Did Not Move",
+      "items": ["Divini pipeline reactivation still stalled"]
+    }
+  ],
+  "questions": [
+    "What got completed?",
+    "What made money?",
+    "What did not move?",
+    "What needs follow-up?",
+    "What should be delegated tomorrow?",
+    "What should be automated?",
+    "What did Alyssa learn today?"
+  ],
+  "estimated_reading_minutes": 3,
+  "saved_reflection_count": 2,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

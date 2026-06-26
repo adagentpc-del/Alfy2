@@ -1,0 +1,19 @@
+{
+  "id": "c1c1c1c1-bbbb-4aaa-8aaa-c1c1c1c1c1c1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "level": "company",
+  "name": "Move Mi",
+  "parent_id": "c0c0c0c0-aaaa-4000-8000-c0c0c0c0c0c0",
+  "own": {
+    "policies": ["data-retention-90d"],
+    "security_level": "standard",
+    "branding": "Move Mi blue",
+    "permissions": ["dispatch.read"],
+    "shared_assets": ["asset:move-mi-logo"],
+    "vendors": ["FuelCo"],
+    "sops": ["sop:crew-dispatch"],
+    "compliance": []
+  },
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

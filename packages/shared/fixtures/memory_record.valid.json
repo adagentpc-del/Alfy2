@@ -1,0 +1,20 @@
+{
+  "id": "aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaaa",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "person",
+  "title": "Dr. Lena Ortiz",
+  "body": "Primary care physician at Coastal Health. Prefers email over phone. Reviewed labs on 2026-05-12.",
+  "attributes": { "specialty": "internal medicine", "clinic": "Coastal Health", "preferred_contact": "email" },
+  "importance": 0.7,
+  "confidence": 0.9,
+  "source": "operator",
+  "source_ref": "intake:2026-05-12",
+  "keywords": ["doctor", "primary care", "coastal health", "lena ortiz"],
+  "status": "active",
+  "use_count": 3,
+  "last_used_at": "2026-06-20T14:30:00.000Z",
+  "expires_at": null,
+  "superseded_by": null,
+  "created_at": "2026-05-12T09:00:00.000Z",
+  "updated_at": "2026-06-20T14:30:00.000Z"
+}

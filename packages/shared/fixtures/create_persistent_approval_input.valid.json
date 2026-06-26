@@ -1,0 +1,15 @@
+{
+  "principal": "alyssa@x.com",
+  "label": "Auto-approve ad spend up to $500 while the launch goal is active",
+  "grant_type": "until_goal",
+  "action_class": "spend_money",
+  "action_pattern": "ad spend",
+  "business_id": null,
+  "goal_id": "80808080-1111-4aaa-8aaa-808080808080",
+  "environments": ["dev", "staging"],
+  "max_uses": null,
+  "max_amount_usd": 500,
+  "success_metrics": ["Cost per lead under $20"],
+  "duration_days": 30,
+  "review_schedule": null
+}

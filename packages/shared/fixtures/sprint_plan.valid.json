@@ -1,0 +1,52 @@
+{
+  "id": "c2e5a3b1-4d6f-4b8c-8f22-3a7d9b1e5f62",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "target_usd": 1000000,
+  "ranked_paths": [
+    {
+      "label": "Close the enterprise pilot with Acme",
+      "expected_cash_usd": 360000,
+      "velocity": 17142.857,
+      "score": 1.15,
+      "assumptions": ["Acme champion stays engaged"],
+      "risks": ["Procurement may delay signature"],
+      "required_actions": [
+        "Advance \"Close the enterprise pilot with Acme\" toward $600000 (60% in ~21d).",
+        "Use the warm relationship behind \"Close the enterprise pilot with Acme\"."
+      ]
+    },
+    {
+      "label": "Sell 20 seats of the self-serve plan",
+      "expected_cash_usd": 100000,
+      "velocity": 2222.222,
+      "score": 0.15,
+      "assumptions": ["Landing page converts at 3%"],
+      "risks": ["Ad spend may underperform"],
+      "required_actions": [
+        "Advance \"Sell 20 seats of the self-serve plan\" toward $200000 (50% in ~45d).",
+        "Close the asset gap for \"Sell 20 seats of the self-serve plan\" before pitching."
+      ]
+    }
+  ],
+  "expected_total_cash_usd": 460000,
+  "plan_7_day": [
+    "Advance \"Close the enterprise pilot with Acme\" toward $600000 (60% in ~21d).",
+    "Advance \"Sell 20 seats of the self-serve plan\" toward $200000 (50% in ~45d)."
+  ],
+  "plan_30_day": [
+    "Use the warm relationship behind \"Close the enterprise pilot with Acme\".",
+    "Close the asset gap for \"Sell 20 seats of the self-serve plan\" before pitching."
+  ],
+  "plan_90_day": [
+    "Advance \"Close the enterprise pilot with Acme\" toward $600000 (60% in ~21d).",
+    "Advance \"Sell 20 seats of the self-serve plan\" toward $200000 (50% in ~45d)."
+  ],
+  "daily_money_actions": [
+    "Advance \"Close the enterprise pilot with Acme\" toward $600000 (60% in ~21d).",
+    "Use the warm relationship behind \"Close the enterprise pilot with Acme\".",
+    "Advance \"Sell 20 seats of the self-serve plan\" toward $200000 (50% in ~45d).",
+    "Close the asset gap for \"Sell 20 seats of the self-serve plan\" before pitching."
+  ],
+  "realistic": false,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

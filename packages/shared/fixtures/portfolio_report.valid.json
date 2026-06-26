@@ -1,0 +1,30 @@
+{
+  "id": "60606060-2222-4bbb-8bbb-606060606060",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "generated_at": "2026-06-25T12:00:00.000Z",
+  "assessments": [
+    {
+      "business_name": "Move Mi",
+      "metrics": {
+        "revenue_potential": 0.8, "speed_to_cash": 0.7, "effort_required": 0.4, "stress_cost": 0.3,
+        "strategic_value": 0.7, "current_traction": 0.6, "operational_drag": 0.3, "capital_required": 0.2,
+        "team_dependency": 0.4, "monetization_path": 0.8
+      },
+      "score": 0.72,
+      "recommendation": "focus_now",
+      "rationale": "High revenue potential, fast to cash, with real traction and a clear monetization path — focus here now."
+    },
+    {
+      "business_name": "Oralia",
+      "metrics": {
+        "revenue_potential": 0.4, "speed_to_cash": 0.2, "effort_required": 0.8, "stress_cost": 0.6,
+        "strategic_value": 0.5, "current_traction": 0.1, "operational_drag": 0.6, "capital_required": 0.7,
+        "team_dependency": 0.6, "monetization_path": 0.4
+      },
+      "score": 0.21,
+      "recommendation": "pause",
+      "rationale": "Low traction, slow to cash, high effort and capital — pause and revisit when capacity frees up."
+    }
+  ],
+  "summary": "2 businesses analyzed. Focus on Move Mi now; pause Oralia."
+}

@@ -1,0 +1,15 @@
+{
+  "workflow_name": "Cold email outbound",
+  "total_cost_usd": 120.5,
+  "value_usd": 8400.0,
+  "cost_per_task": 0.241,
+  "cost_per_lead": 4.0167,
+  "cost_per_booked_call": 20.0833,
+  "cost_per_sale": 60.25,
+  "roi": 68.7137,
+  "break_even_revenue_usd": 120.5,
+  "largest_cost_category": "model",
+  "recommendations": ["cheaper_model", "local_model", "batch_processing", "upgrade_when_roi_supports"],
+  "rationale": "Model cost dominates — try a cheaper or local model. High task volume — batch to cut per-call overhead. ROI is strong — scaling/upgrading is justified.",
+  "generated_at": "2026-06-25T12:00:00.000Z"
+}

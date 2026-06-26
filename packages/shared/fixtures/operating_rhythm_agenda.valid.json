@@ -1,0 +1,22 @@
+{
+  "cadence": "weekly",
+  "date": "2026-06-25T12:00:00.000Z",
+  "agenda": [
+    "Sales Review",
+    "Pipeline",
+    "Content",
+    "AI Updates",
+    "R&D",
+    "Follow-ups",
+    "Reflection"
+  ],
+  "generates": {
+    "lessons": true,
+    "decisions": true,
+    "assets": true,
+    "sops": true,
+    "new_agents": true,
+    "archived_workflows": true,
+    "updated_goals": true
+  }
+}

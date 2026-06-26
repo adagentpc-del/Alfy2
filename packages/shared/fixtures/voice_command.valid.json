@@ -1,0 +1,8 @@
+{
+  "utterance": "Open Revenue Factory",
+  "intent": "open",
+  "category": "navigation",
+  "target": "Revenue Factory",
+  "requires_confirmation": false,
+  "spoken_response": "Opening Revenue Factory."
+}

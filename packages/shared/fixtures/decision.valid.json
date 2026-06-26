@@ -1,0 +1,33 @@
+{
+  "id": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "input_text": "URGENT: the Acme contract is overdue and the client is threatening to walk. Need to send a revised proposal today.",
+  "source": "email",
+  "categories": [
+    { "category": "business", "confidence": 0.6 },
+    { "category": "risk", "confidence": 0.5 },
+    { "category": "finance", "confidence": 0.4 }
+  ],
+  "primary_category": "business",
+  "urgency": 0.95,
+  "importance": 0.85,
+  "difficulty": 0.4,
+  "revenue_impact": 0.8,
+  "risk": 0.7,
+  "estimated_effort_minutes": 60,
+  "effort_bucket": "medium",
+  "priority_score": 0.86,
+  "priority_level": "critical",
+  "required_approvals": ["operator"],
+  "recommended_agents": ["draft.text", "research.web"],
+  "recommended_deadline": "2026-06-25T12:00:00.000Z",
+  "automation_opportunities": ["Auto-draft the follow-up proposal for review", "Set a same-day reminder until resolved"],
+  "reasons": [
+    "matched urgency signals: urgent, overdue, today",
+    "matched business signals: contract, client, proposal",
+    "matched risk signals: overdue, threatening",
+    "context.amount_usd=48000 raised revenue_impact"
+  ],
+  "explanation": "Classified as business (with risk and finance) and scored critical: an overdue, high-value client contract with a same-day deadline. Recommend drafting a revised proposal now; sending requires operator approval.",
+  "created_at": "2026-06-24T12:00:00.000Z"
+}

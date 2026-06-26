@@ -1,0 +1,23 @@
+{
+  "id": "20202020-1111-4aaa-8aaa-202020202020",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "agent_key": "sales.outreach",
+  "display_name": "Sales Outreach Agent",
+  "role": "worker",
+  "scope": ["biz:move-mi"],
+  "capabilities": {
+    "can_write": true,
+    "can_spend": false,
+    "can_external_comm": true,
+    "can_modify_production": false,
+    "can_delete": false
+  },
+  "data_boundaries": ["biz:move-mi:crm"],
+  "tool_access": ["gmail.draft", "memory.peek"],
+  "spending_limit_usd": 0,
+  "external_comm_daily_limit": 50,
+  "requires_approval_for": ["spend_money", "delete_data", "modify_production", "sign_contract", "install_package"],
+  "status": "active",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,9 @@
+{
+  "task_id": "11111111-2222-4333-8444-555566667777",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "agent": "research.web",
+  "capability": "summarize",
+  "input": { "url": "https://example.com/report" },
+  "budget": { "max_tokens": 2000, "max_cost_usd": 0.05, "timeout_ms": 30000 },
+  "trace_id": "99999999-8888-4777-8666-555544443333"
+}

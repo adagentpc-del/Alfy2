@@ -1,0 +1,10 @@
+{
+  "id": "ideas",
+  "version": "0.0.0",
+  "status": "scaffold",
+  "description": "Capture, organize, and develop ideas into structured plans. Declared surface only.",
+  "capabilities": [],
+  "requires_agents": [],
+  "irreversible_capabilities": [],
+  "owner": "founder"
+}

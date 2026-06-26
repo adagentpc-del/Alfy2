@@ -1,0 +1,33 @@
+{
+  "id": "c3c3c3c3-3333-4ccc-8ccc-c3c3c3c3c3c3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "period_label": "2026-06",
+  "findings": [
+    {
+      "component": "Reporting pipeline",
+      "kind": "slow",
+      "recommendation": "Optimize \"Reporting pipeline\" to cut its latency.",
+      "priority": 0.7
+    },
+    {
+      "component": "Legacy CSV importer",
+      "kind": "retire",
+      "recommendation": "Retire \"Legacy CSV importer\" — usage is too low to justify maintaining it.",
+      "priority": 0.9
+    },
+    {
+      "component": "Auth helpers",
+      "kind": "promote_to_infrastructure",
+      "recommendation": "Promote \"Auth helpers\" to shared infrastructure for broad reuse.",
+      "priority": 0.8
+    }
+  ],
+  "refactoring_plan": [
+    "Retire \"Legacy CSV importer\" — usage is too low to justify maintaining it.",
+    "Promote \"Auth helpers\" to shared infrastructure for broad reuse.",
+    "Optimize \"Reporting pipeline\" to cut its latency."
+  ],
+  "tech_debt": ["Reporting pipeline"],
+  "complexity_delta": -0.1,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

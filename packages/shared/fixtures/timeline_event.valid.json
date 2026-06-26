@@ -1,0 +1,25 @@
+{
+  "id": "e1e1e1e1-5555-4eee-8eee-e1e1e1e1e1e1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "product_release",
+  "title": "Launched the AI productized service v1",
+  "occurred_at": "2026-06-25T12:00:00.000Z",
+  "summary": "First public release of the productized consulting offer, replacing one-off engagements with a repeatable workflow.",
+  "business_id": "b2b2b2b2-4444-4bbb-8bbb-b2b2b2b2b2b2",
+  "related_assets": [
+    "f3f3f3f3-6666-4fff-8fff-f3f3f3f3f3f3"
+  ],
+  "related_agents": [
+    "a4a4a4a4-7777-4aaa-8aaa-a4a4a4a4a4a4"
+  ],
+  "related_people": [
+    "Alyssa"
+  ],
+  "related_businesses": [
+    "b2b2b2b2-4444-4bbb-8bbb-b2b2b2b2b2b2"
+  ],
+  "lessons_learned": [
+    "Productizing earlier would have compounded revenue sooner."
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

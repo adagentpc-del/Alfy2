@@ -1,0 +1,20 @@
+{
+  "id": "c5c5c5c5-ffff-4eee-8eee-c5c5c5c5c5c5",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "state": {
+    "businesses": 4,
+    "cash_usd": 120000,
+    "monthly_revenue_usd": 38000,
+    "monthly_burn_usd": 50000,
+    "assets": 86,
+    "contacts": 540,
+    "active_projects": 7,
+    "active_agents": 9,
+    "active_workflows": 22,
+    "active_campaigns": 5,
+    "active_goals": 6,
+    "open_risks": 3
+  },
+  "runway_months": 10,
+  "captured_at": "2026-06-25T12:00:00.000Z"
+}

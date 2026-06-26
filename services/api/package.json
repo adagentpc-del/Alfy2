@@ -1,0 +1,17 @@
+{
+  "name": "@alfy2/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "HTTP gateway: authn/z, tenant resolution, rate limiting, input validation, health/readiness.",
+  "type": "module",
+  "main": "src/main.ts",
+  "dependencies": {
+    "@alfy2/shared": "workspace:*",
+    "@alfy2/config": "workspace:*",
+    "@alfy2/core": "workspace:*"
+  },
+  "scripts": {
+    "dev": "echo 'api dev server wired in Phase 2'",
+    "typecheck": "tsc -b"
+  }
+}

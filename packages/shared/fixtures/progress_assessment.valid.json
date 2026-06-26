@@ -1,0 +1,10 @@
+{
+  "id": "d2d2d2d2-2222-4bbb-8bbb-d2d2d2d2d2d2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "initiative": "Launch the productized fixed-price audit offer",
+  "kind": "revenue_creation",
+  "outcome_score": 0.417,
+  "recommended_action": "keep",
+  "reason": "Outcome 0.417 — revenue creation; recommended action: keep.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

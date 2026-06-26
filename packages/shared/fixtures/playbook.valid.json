@@ -1,0 +1,16 @@
+{
+  "id": "50505050-1111-4aaa-8aaa-505050505050",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "domain": "sales",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "business_name": "Move Mi",
+  "name": "Move Mi — Sales Playbook",
+  "artifacts": [
+    { "kind": "sop", "title": "SOP: Outbound prospecting", "body": "1. Build list. 2. Personalize. 3. Send. 4. Follow up.", "tags": ["sales"] },
+    { "kind": "checklist", "title": "Checklist: Outbound prospecting", "body": "[ ] Build list\n[ ] Personalize\n[ ] Send\n[ ] Follow up", "tags": ["sales"] },
+    { "kind": "kpi", "title": "KPI: win_rate", "body": "Target 0.25 (ratio), higher is better.", "tags": ["kpi"] },
+    { "kind": "escalation_rule", "title": "Escalation: Deal stalls > 14 days", "body": "Flag for owner review → owner", "tags": ["escalation"] }
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

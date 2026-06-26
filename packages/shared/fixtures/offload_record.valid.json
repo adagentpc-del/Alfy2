@@ -1,0 +1,76 @@
+{
+  "id": "a1a1a1a1-1111-4aaa-8aaa-aaaaaaaaaaaa",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "meeting_transcript",
+  "understanding": {
+    "objectives": [
+      "We need to ship the pricing page update before Friday.",
+      "Let's approve the new vendor contract."
+    ],
+    "decisions": [
+      "We agreed to launch in the EU first."
+    ],
+    "problems": [
+      "The checkout flow is currently broken on mobile."
+    ],
+    "opportunities": [
+      "There is a potential upsell opportunity with the enterprise segment."
+    ],
+    "constraints": [
+      "We only have a limited budget this quarter."
+    ],
+    "risks": [
+      "There is a risk we could lose the Acme renewal."
+    ],
+    "deadlines": [
+      "We need to ship the pricing page update before Friday."
+    ],
+    "metrics": [
+      "Conversion rate target is 4% revenue lift."
+    ],
+    "urgency": "now",
+    "dependencies": [
+      "The launch depends on the legal review."
+    ]
+  },
+  "connections": [
+    "Connects to StyleCo",
+    "Links to existing knowledge"
+  ],
+  "built": [
+    "Task created: We need to ship the pricing page update before Friday.",
+    "Task created: Let's approve the new vendor contract.",
+    "Note saved: We agreed to launch in the EU first."
+  ],
+  "handled": [
+    {
+      "title": "We need to ship the pricing page update before Friday.",
+      "disposition": "automated",
+      "alyssa_can_forget": true,
+      "reason": "Routine work the system owns — automated. Alyssa can forget about it."
+    },
+    {
+      "title": "Let's approve the new vendor contract.",
+      "disposition": "needs_alyssa",
+      "alyssa_can_forget": false,
+      "reason": "Implies strategic judgment, creativity, negotiation, relationships, vision, ethics, or approval — needs Alyssa."
+    },
+    {
+      "title": "We agreed to launch in the EU first.",
+      "disposition": "automated",
+      "alyssa_can_forget": true,
+      "reason": "Routine work the system owns — automated. Alyssa can forget about it."
+    }
+  ],
+  "what_changed": "3 item(s) processed; 2 handled automatically.",
+  "why_it_matters": "1 item(s) need your judgment; the rest is owned by the system.",
+  "completed_automatically": [
+    "We need to ship the pricing page update before Friday.",
+    "We agreed to launch in the EU first."
+  ],
+  "decisions_requiring_alyssa": [
+    "Let's approve the new vendor contract."
+  ],
+  "cognitive_load_removed": 0.667,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

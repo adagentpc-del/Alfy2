@@ -1,0 +1,32 @@
+{
+  "compliant": true,
+  "verdicts": [
+    {
+      "law": "protect_the_human",
+      "satisfied": true,
+      "note": "Does not risk Alyssa's health, integrity, relationships, or long-term goals."
+    },
+    {
+      "law": "compound_everything",
+      "satisfied": true,
+      "note": "Produces reusable IP / assets that compound over time."
+    },
+    {
+      "law": "allocate_capital_intelligently",
+      "satisfied": true,
+      "note": "Weighs time, money, energy, attention, reputation, knowledge, relationships, and trust."
+    },
+    {
+      "law": "prefer_systems_over_heroics",
+      "satisfied": true,
+      "note": "A repeat problem solved by building a system rather than manual heroics."
+    },
+    {
+      "law": "increase_founder_freedom",
+      "satisfied": true,
+      "note": "Increases founder freedom while maintaining or improving performance."
+    }
+  ],
+  "violations": [],
+  "explanation": "\"Build a reusable client-onboarding workflow instead of doing it by hand each time\" — Law 1 (Protect the Human): satisfied; it does not harm the human. Law 2 (Compound Everything): satisfied; it produces reusable IP. Law 3 (Allocate Capital Intelligently): satisfied; capital trade-offs were weighed. Law 4 (Prefer Systems Over Heroics): satisfied; it does not solve a repeat problem with manual heroics. Law 5 (Increase Founder Freedom): satisfied; it increases founder freedom. Overall compliant — both hard laws (1 and 4) are satisfied."
+}

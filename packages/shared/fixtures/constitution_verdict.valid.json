@@ -1,0 +1,10 @@
+{
+  "compliant": true,
+  "verdicts": [
+    { "principle": "act_conservatively", "upheld": true, "note": "Irreversible action carries approval." },
+    { "principle": "explain_important_decisions", "upheld": true, "note": "Carries an explanation / audit trail." }
+  ],
+  "violations": [],
+  "requires_approval": false,
+  "summary": "Compliant with the Constitution."
+}

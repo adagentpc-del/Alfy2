@@ -1,0 +1,20 @@
+{
+  "id": "a1a1a1a1-1111-4aaa-8aaa-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "ira_idea",
+  "title": "Self-directed IRA for a private real-estate syndication",
+  "summary": "Considering moving part of my IRA into a self-directed custodian to invest in a multifamily syndication. Need to confirm the deal is allowed and avoids prohibited transactions.",
+  "scope": "personal",
+  "legality_notes": "compliance-sensitive — advisor review required",
+  "upside": 0.6,
+  "risk": 0.3,
+  "linked_goals": [],
+  "advisor_questions": [
+    "Does this trigger prohibited-transaction or UBIT rules?",
+    "Which custodian should I use?"
+  ],
+  "vault_asset_id": "asset:self-directed-ira-for-a-private-real-estate-syndication",
+  "next_action": "Bring \"Self-directed IRA for a private real-estate syndication\" to your CPA/attorney for review before acting.",
+  "requires_professional_review": true,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "d3f6b4c2-5e7a-4c9d-9033-4b8e0c2f6a73",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_name": "Lumen Studio",
+  "cash_collected_usd": 50000,
+  "signed_usd": 30000,
+  "invoices_sent_usd": 20000,
+  "qualified_pipeline_usd": 100000,
+  "booked_calls": 6,
+  "probability_weighted_pipeline_usd": 101500,
+  "stalled_deals": ["Umbrella invoice", "Hooli proposal", "Pied Piper lead"],
+  "next_money_action": "Push \"Umbrella invoice\" from invoice_sent to cash ($20000).",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

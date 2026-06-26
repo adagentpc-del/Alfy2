@@ -1,0 +1,71 @@
+{
+  "id": "02020202-2222-4bbb-8bbb-020202020202",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "generated_at": "2026-06-24T12:00:00.000Z",
+  "window": {
+    "from": "2026-06-01T00:00:00.000Z",
+    "to": "2026-06-24T00:00:00.000Z",
+    "observation_count": 24
+  },
+  "patterns": [
+    {
+      "signal": "performance",
+      "summary": "Performs best in the morning (avg 0.86) vs afternoon (avg 0.54).",
+      "direction": "positive",
+      "strength": 0.7,
+      "evidence_count": 8,
+      "detail": "Across 8 sessions, morning focus consistently outscored afternoon by ~0.3. Schedule the hardest work before noon."
+    },
+    {
+      "signal": "follow_up",
+      "summary": "Follow-ups are completed late 80% of the time.",
+      "direction": "negative",
+      "strength": 0.8,
+      "evidence_count": 5,
+      "detail": "4 of 5 follow-ups slipped past their due date — a recurring drop-off after the first touch."
+    }
+  ],
+  "bottlenecks": [
+    {
+      "area": "Follow-up",
+      "severity": "high",
+      "description": "Follow-ups consistently slip past their due date.",
+      "impact": "Warm opportunities go cold; revenue left on the table.",
+      "evidence_count": 5
+    },
+    {
+      "area": "Sales outreach",
+      "severity": "medium",
+      "description": "Cold outreach is repeatedly avoided.",
+      "impact": "Top-of-funnel starves; pipeline thins out.",
+      "evidence_count": 4
+    }
+  ],
+  "recommended_automations": [
+    {
+      "title": "Auto follow-up reminders",
+      "what": "Automatically schedule 24h/3d/7d follow-up nudges until a reply lands.",
+      "explanation": "Follow-ups slip 80% of the time; an automatic cadence removes the manual step that keeps getting dropped.",
+      "addresses": "Follow-up"
+    }
+  ],
+  "recommended_agents": [
+    {
+      "proposed_key": "business.followup",
+      "purpose": "Draft and track follow-ups so threads never go cold",
+      "capabilities": ["draft_followup", "track_status"],
+      "explanation": "The late-follow-up pattern is consistent enough to justify a dedicated agent that prepares the follow-up for approval.",
+      "addresses": "Follow-up"
+    }
+  ],
+  "workflow_improvements": [
+    {
+      "title": "Protect mornings for deep work",
+      "change": "Block 9-11am for the hardest task; move admin and low-stakes calls to the afternoon.",
+      "explanation": "Morning performance averages 0.86 vs 0.54 in the afternoon — align your hardest work with your peak.",
+      "addresses": "Performance"
+    }
+  ],
+  "summary": "Two clear patterns: strong mornings and slipping follow-ups. The biggest lever is automating follow-up cadence. Recommendations only — nothing was changed.",
+  "advisory_only": true
+}

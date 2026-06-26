@@ -1,0 +1,15 @@
+{
+  "type": "outreach",
+  "name": "A3 venue partner outreach",
+  "objective": "Book intro calls with hotel and venue decision-makers.",
+  "business_id": null,
+  "goal_id": null,
+  "approval_id": null,
+  "variant_a": { "name": "Case-study lead", "hypothesis": "Leading with a stadium case study books more calls.", "content": "We wrapped an NFL stadium in 48 hours." },
+  "variant_b": { "name": "Question lead", "hypothesis": "A provocative question books more calls.", "content": "What would your lobby look like fully branded?" },
+  "success_metrics": [
+    { "name": "reply_rate", "target": 0.15, "unit": "ratio", "direction": "higher_better", "primary": true }
+  ],
+  "min_conversion_rate": 0.05,
+  "max_risk": "high"
+}

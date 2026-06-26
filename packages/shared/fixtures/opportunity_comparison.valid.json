@@ -1,0 +1,30 @@
+{
+  "id": "0c0c0c0c-2222-4ccc-8ccc-0c0c0c0c0c0c",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "question": "Should we productize the consulting offer or keep billing hourly?",
+  "evaluated": [
+    {
+      "label": "Productize the consulting offer",
+      "expected_value_usd": 64000,
+      "opportunity_cost_usd": 0,
+      "composite_score": 1.02
+    },
+    {
+      "label": "Keep billing hourly",
+      "expected_value_usd": 31000,
+      "opportunity_cost_usd": 33000,
+      "composite_score": 0.344
+    }
+  ],
+  "best_financial": "Productize the consulting offer",
+  "best_strategic": "Productize the consulting offer",
+  "best_long_term": "Productize the consulting offer",
+  "best_low_risk": "Keep billing hourly",
+  "fastest": "Keep billing hourly",
+  "highest_leverage": "Productize the consulting offer",
+  "not_chosen": [
+    "Keep billing hourly: not chosen — lower expected value, less future leverage, higher stress than \"Productize the consulting offer\"."
+  ],
+  "recommendation": "Choose \"Productize the consulting offer\" — it has the highest composite score (1.02), expected value $64000.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

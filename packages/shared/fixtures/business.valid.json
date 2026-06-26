@@ -1,0 +1,38 @@
+{
+  "id": "ffffffff-1111-4fff-8fff-ffffffffffff",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "name": "Move Mi",
+  "slug": "move-mi",
+  "data_namespace": "biz:move-mi-ffffffff",
+  "template_version": "1.0.0",
+  "status": "active",
+  "departments": [
+    {
+      "kind": "ceo",
+      "name": "CEO",
+      "mission": "Set direction, prioritize, and approve.",
+      "responsibilities": ["Set strategy and the north star", "Prioritize across departments", "Approve irreversible actions"],
+      "capabilities": ["set_strategy", "prioritize", "approve"],
+      "default_agents": [],
+      "memory_scope": { "kinds": ["business", "decision", "lesson", "project"], "can_read": true, "can_write": false, "max_items": 100 },
+      "kpis": [{ "name": "north_star", "description": "Primary outcome metric", "target": "trending up" }],
+      "dashboard_card": { "title": "CEO", "subtitle": "Direction and decisions", "metric_keys": ["north_star"], "status": "active" },
+      "business_id": "ffffffff-1111-4fff-8fff-ffffffffffff",
+      "status": "active"
+    },
+    {
+      "kind": "finance",
+      "name": "Finance",
+      "mission": "Keep the business solvent and the numbers clear.",
+      "responsibilities": ["Track cash flow", "Manage invoices and expenses", "Own budgets and forecasts"],
+      "capabilities": ["track_cashflow", "manage_invoices", "budget"],
+      "default_agents": ["finance.analyze"],
+      "memory_scope": { "kinds": ["account", "subscription", "contract", "decision"], "can_read": true, "can_write": false, "max_items": 100 },
+      "kpis": [{ "name": "runway_months", "description": "Months of cash runway", "target": ">= 12" }],
+      "dashboard_card": { "title": "Finance", "subtitle": "Solvency and clarity", "metric_keys": ["runway_months"], "status": "active" },
+      "business_id": "ffffffff-1111-4fff-8fff-ffffffffffff",
+      "status": "active"
+    }
+  ],
+  "created_at": "2026-06-24T12:00:00.000Z"
+}

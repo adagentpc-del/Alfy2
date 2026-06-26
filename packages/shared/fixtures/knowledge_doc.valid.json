@@ -1,0 +1,10 @@
+{
+  "id": "0d333333-3333-4ddd-8ddd-0d3333333333",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "title": "Brand voice guidelines",
+  "body": "Direct, premium, high-conviction. Avoid em-dash-heavy writing and vague hype.",
+  "tags": ["brand", "voice", "writing"],
+  "visibility": "tenant",
+  "business_id": null,
+  "created_at": "2026-06-24T12:00:00.000Z"
+}

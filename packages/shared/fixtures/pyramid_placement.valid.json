@@ -1,0 +1,9 @@
+{
+  "id": "a5a5a5a5-5555-4eee-8eee-a5a5a5a5a5a5",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "feature": "Follow-Up Autopilot",
+  "current_level": "execute",
+  "next_level": "compound",
+  "how_to_advance": "Currently at \"execute\". To reach \"compound\": Make each execution build reusable assets that compound over time.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

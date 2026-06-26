@@ -1,0 +1,10 @@
+{
+  "id": "finance",
+  "version": "0.0.0",
+  "status": "scaffold",
+  "description": "Financial visibility & actions. Money-moving capabilities are irreversible and gated.",
+  "capabilities": ["plan_cashflow", "flag_overdue", "send_payment"],
+  "requires_agents": ["research.web", "draft.text"],
+  "irreversible_capabilities": ["send_payment"],
+  "owner": "founder"
+}

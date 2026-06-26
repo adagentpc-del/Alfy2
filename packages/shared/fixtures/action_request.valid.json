@@ -1,0 +1,13 @@
+{
+  "id": "30303030-1111-4aaa-8aaa-303030303030",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "actor": "research.web",
+  "is_agent": true,
+  "action": "Pay the A3 Visual invoice",
+  "effect": "write",
+  "action_class": "spend_money",
+  "resource": "invoice:4471",
+  "target_env": "production",
+  "amount_usd": 12400,
+  "metadata": { "vendor": "A3 Visual" }
+}

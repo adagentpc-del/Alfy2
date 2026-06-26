@@ -1,0 +1,21 @@
+{
+  "id": "70707070-3333-4ccc-8ccc-707070707070",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "source_type": "book",
+  "title": "The Mom Test",
+  "location": "asset://uploads/the-mom-test.pdf",
+  "summary": "How to talk to customers and learn if your business is a good idea when everyone is lying to you.",
+  "frameworks": ["The Mom Test framework"],
+  "tactics": ["Ask about past behavior, not future intentions", "Avoid pitching during discovery"],
+  "business_applications": ["Sharpen Move Mi customer discovery", "Improve Divini Procure validation"],
+  "applies_to": ["Move Mi", "Divini Procure"],
+  "monetization_use_cases": ["Higher-converting discovery calls", "Better-validated offers"],
+  "suggested_sops": ["SOP: Customer discovery call"],
+  "suggested_agents": ["sales.discovery"],
+  "asset_id": "asset:the-mom-test",
+  "linked_goals": ["Reach $50k MRR"],
+  "linked_campaigns": ["Retainer upsell"],
+  "linked_businesses": ["Move Mi"],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

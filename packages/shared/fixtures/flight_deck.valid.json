@@ -1,0 +1,24 @@
+{
+  "id": "d8b3f015-6c24-4e9f-ab38-7a5c2d9e4f13",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "displayed": [
+    {
+      "kind": "next_highest_leverage_action",
+      "headline": "Close the enterprise renewal before Friday — it unlocks Q3 runway.",
+      "decision_impact": 0.9
+    },
+    {
+      "kind": "cash_position",
+      "headline": "Cash at $420k; burn rising — extend runway this month.",
+      "decision_impact": 0.85
+    },
+    {
+      "kind": "top_risks",
+      "headline": "Key vendor SLA breach risk flagged on the data pipeline.",
+      "decision_impact": 0.6
+    }
+  ],
+  "suppressed_count": 1,
+  "next_highest_leverage_action": "Close the enterprise renewal before Friday — it unlocks Q3 runway.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

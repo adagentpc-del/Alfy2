@@ -1,0 +1,20 @@
+{
+  "id": "c0c0c0c0-1111-4aaa-8aaa-c0c0c0c0c0c0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "agent_name": "sales.outreach",
+  "task": "Draft retainer follow-up to a one-off customer",
+  "input": "Customer: Acme Corp; last move 2026-05-10",
+  "tools_used": ["gmail.draft", "memory.peek"],
+  "memory_used": ["mem:acme-corp", "mem:retainer-offer"],
+  "decision": "Drafted a peace-of-mind framed follow-up rather than a discount.",
+  "rationale": "Variant B (reliability) is outperforming the discount framing in the active campaign.",
+  "approval_status": "approved",
+  "cost_usd": 0.012,
+  "runtime_ms": 4200,
+  "outcome": "success",
+  "errors": [],
+  "downstream_effects": ["Draft queued in Gmail", "Follow-up task scheduled for +3 days"],
+  "value_usd": 1800,
+  "risk_level": "low",
+  "at": "2026-06-25T12:00:00.000Z"
+}

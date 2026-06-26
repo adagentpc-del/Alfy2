@@ -1,0 +1,9 @@
+{
+  "id": "e4a7c5d3-6f8b-4d0e-9144-5c9f1d3a7b84",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "task": "Draft and schedule the weekly customer newsletter from the content calendar",
+  "owner": "ai_agent",
+  "reason": "Repeatable and delegation-ready — give it to an AI agent. (time 2h, skill 0.5, risk 0.3, repeatability 0.6, readiness 0.7, SOP no, needs Alyssa no.)",
+  "hours_returned": 2,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,18 @@
+{
+  "proposed_key": "business.followup",
+  "primary_category": "business",
+  "rationale": "Following up on client proposals recurred 4 times this week; a dedicated follow-up agent would close this loop automatically.",
+  "frequency": 4,
+  "evidence_refs": [
+    "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+    "dddddddd-2222-4ddd-8ddd-dddddddddddd",
+    "dddddddd-3333-4ddd-8ddd-dddddddddddd",
+    "dddddddd-4444-4ddd-8ddd-dddddddddddd"
+  ],
+  "suggested_capabilities": ["draft_followup", "track_status"],
+  "suggested_tools": [
+    { "name": "draft.text", "description": "Draft follow-up messages for review" },
+    { "name": "research.web", "description": "Gather context on the account" }
+  ],
+  "confidence": 0.67
+}

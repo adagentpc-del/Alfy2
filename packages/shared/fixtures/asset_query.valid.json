@@ -1,0 +1,9 @@
+{
+  "principal": "adagentpc@gmail.com",
+  "text": "seed pitch deck",
+  "types": ["pitch_deck", "investor_deck"],
+  "business_id": "move-mi",
+  "tags": ["fundraising"],
+  "status": "active",
+  "limit": 10
+}

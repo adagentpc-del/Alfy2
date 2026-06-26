@@ -1,0 +1,14 @@
+{
+  "request_id": "30303030-1111-4aaa-8aaa-303030303030",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "decision": "requires_approval",
+  "reasons": [
+    "Spending money always requires explicit approval.",
+    "Targets production.",
+    "Agents are read-only by default; writes require approval."
+  ],
+  "required_approval": true,
+  "approval_id": "40404040-2222-4bbb-8bbb-404040404040",
+  "audit_id": "50505050-3333-4ccc-8ccc-505050505050",
+  "decided_at": "2026-06-24T12:00:00.000Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "c2c2c2c2-cccc-4bbb-8bbb-c2c2c2c2c2c2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "period": "monthly",
+  "period_label": "2026-06",
+  "lessons_learned": ["3 follow-up(s) were dropped this monthly."],
+  "recommended_improvements": ["Tighten Follow-Up Autopilot cadence and escalation."],
+  "workflows_to_automate": ["Automate the bottleneck: manual quote prep."],
+  "workflows_to_retire": ["stale-newsletter (success 30%)"],
+  "new_agents_to_build": ["Agent to own \"manual quote prep\"."],
+  "risks_to_address": ["Revenue leaking through missed follow-up."],
+  "next_period_priorities": ["Address: Revenue leaking through missed follow-up.", "Automate the bottleneck: manual quote prep."],
+  "summary": "Monthly reflection (2026-06): $42000 revenue, 70% goal progress, 1 item(s) to retire, 2 priorit(ies) next.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

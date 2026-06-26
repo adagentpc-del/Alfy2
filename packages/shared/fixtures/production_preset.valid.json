@@ -1,0 +1,21 @@
+{
+  "id": "d6e8f0a2-6666-4fff-8fff-d6e8f0a26666",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "brand": "decoded_podcast",
+  "intro": "Intro A",
+  "outro": "Outro B",
+  "sponsor_placement": "after_first_topic",
+  "graphics_style": "blue graphics",
+  "auto_steps": [
+    "generate chapters",
+    "generate subtitles",
+    "create clips",
+    "generate show notes",
+    "create youtube description",
+    "schedule upload",
+    "create newsletter",
+    "generate social package"
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

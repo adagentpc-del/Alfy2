@@ -1,0 +1,23 @@
+{
+  "id": "1e1e1e1e-5555-4eee-8eee-1e1e1e1e1e1e",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "ranked": [
+    {
+      "option_label": "Build the reusable onboarding SOP",
+      "score": 0.725,
+      "tier": "compounding",
+      "top_drivers": ["future_reuse", "knowledge_created", "assets_created"],
+      "why": "Leverage 0.725 (compounding) — driven most by future_reuse, knowledge_created, assets_created."
+    },
+    {
+      "option_label": "Fix this onboarding case manually now",
+      "score": 0.271,
+      "tier": "medium",
+      "top_drivers": ["time_saved", "revenue_impact", "stress_reduced"],
+      "why": "Leverage 0.271 (medium) — driven most by time_saved, revenue_impact, stress_reduced."
+    }
+  ],
+  "recommended_option": "Build the reusable onboarding SOP",
+  "note": "The fastest option (\"Fix this onboarding case manually now\") is not the highest-leverage one — \"Build the reusable onboarding SOP\" compounds further, so allocate toward it like an owner deploying capital.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

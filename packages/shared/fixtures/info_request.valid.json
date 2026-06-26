@@ -1,0 +1,14 @@
+{
+  "module": "vehicles",
+  "entity_type": "dealership",
+  "identity": "Mercedes dealership",
+  "missing_fields": [
+    { "field": "store", "prompt": "Which Mercedes store/location?", "required": true },
+    { "field": "phone", "prompt": "Phone number?", "required": true },
+    { "field": "advisor", "prompt": "Service advisor's name?", "required": true },
+    { "field": "hours", "prompt": "Hours of operation?", "required": true },
+    { "field": "preferred_contact", "prompt": "Preferred contact method?", "required": true }
+  ],
+  "reason": "No saved Mercedes dealership found. I'll ask once and remember it.",
+  "ask_once": true
+}

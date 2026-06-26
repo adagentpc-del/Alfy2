@@ -1,0 +1,22 @@
+{
+  "id": "d4d4d4d4-6666-4fff-8fff-d4d4d4d4d4d4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "entity_kind": "deal",
+  "entity_name": "Acme Corp renewal",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "goal_id": null,
+  "sequence": [
+    { "day_offset": 1, "channel": "email", "template": "Day 1 check-in" },
+    { "day_offset": 3, "channel": "email", "template": "Day 3 value follow-up" }
+  ],
+  "current_step": 1,
+  "status": "escalated",
+  "stop_reason": "escalated",
+  "no_response_policy": "escalate",
+  "reactivation": false,
+  "escalation_reason": "Buyer asked for custom contract terms — needs Alyssa's judgment.",
+  "last_touch_at": "2026-06-24T12:00:00.000Z",
+  "next_touch_at": null,
+  "created_at": "2026-06-23T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

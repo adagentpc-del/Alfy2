@@ -1,0 +1,12 @@
+{
+  "id": "a3a3a3a3-9999-4ccc-8ccc-a3a3a3a3a3a3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "feature_name": "Revenue Factory",
+  "tier": "founder_saas_feature",
+  "saas_module_candidate": true,
+  "rationale": "Per-business money cockpit — high willingness to pay.",
+  "readiness": 0.6,
+  "commercialized": false,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

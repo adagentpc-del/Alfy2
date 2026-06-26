@@ -1,0 +1,20 @@
+{
+  "id": "claude-code",
+  "name": "Claude Code",
+  "provider": "anthropic",
+  "local": false,
+  "available": true,
+  "cost_tier": "medium",
+  "context_window": 200000,
+  "strengths": {
+    "coding": 0.95,
+    "reasoning": 0.9,
+    "writing": 0.85,
+    "debugging": 0.95,
+    "planning": 0.9,
+    "research": 0.8,
+    "architecture": 0.92,
+    "summarization": 0.85
+  },
+  "notes": "Strong all-rounder; excellent at coding, debugging, and architecture."
+}

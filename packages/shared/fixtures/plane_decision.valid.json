@@ -1,0 +1,6 @@
+{
+  "allowed": false,
+  "bypass_attempt": true,
+  "missing_gates": ["identity", "approval"],
+  "reason": "Execution of \"send campaign\" tried to bypass the Control Plane — missing: identity, approval. No agent may bypass the Control Plane."
+}

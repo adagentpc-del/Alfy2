@@ -1,0 +1,9 @@
+{
+  "id": "bbbbbbbb-2222-4bbb-8bbb-bbbbbbbbbbbb",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "from_memory_id": "aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaaa",
+  "to_memory_id": "cccccccc-3333-4ccc-8ccc-cccccccccccc",
+  "relation": "treats",
+  "weight": 0.8,
+  "created_at": "2026-05-12T09:05:00.000Z"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "e3e3e3e3-3333-4ccc-8ccc-e3e3e3e3e3e3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "recommendation": "Publish the audit methodology as a reusable framework and license it",
+  "deltas": {
+    "financial": 0.2,
+    "knowledge": 0,
+    "relationship": 0.4,
+    "reputation": 0.6,
+    "operational": 0,
+    "technology": 0,
+    "automation": 0.3,
+    "intellectual_property": 0.5,
+    "health_energy": -0.2,
+    "freedom": 0.3
+  },
+  "increases": ["financial", "relationship", "reputation", "automation", "intellectual_property", "freedom"],
+  "decreases": ["health_energy"],
+  "net_capital": 0.21,
+  "compounding": 0.8,
+  "payoff_months": 6,
+  "conversion_paths": [
+    "financial → runway → bigger bets → assets → freedom",
+    "relationships → trust → deals → revenue → freedom",
+    "reputation → relationships → clients → revenue → freedom",
+    "automation → time saved → reinvestment → revenue → freedom",
+    "IP → licensing → revenue → freedom",
+    "freedom → focus → highest-leverage work → more freedom"
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

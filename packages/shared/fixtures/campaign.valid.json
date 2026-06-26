@@ -1,0 +1,44 @@
+{
+  "id": "a0a0a0a0-1111-4aaa-8aaa-a0a0a0a0a0a0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "type": "email",
+  "name": "Move Mi retainer upsell",
+  "objective": "Convert one-off movers to monthly retainers.",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "goal_id": "80808080-1111-4aaa-8aaa-808080808080",
+  "approval_id": "90909090-1111-4aaa-8aaa-909090909090",
+  "status": "active",
+  "stop_reason": null,
+  "variants": [
+    { "key": "A", "name": "Direct offer", "hypothesis": "A blunt savings offer converts best.", "content": "Save 20% with a retainer.", "traffic_weight": 0.5 },
+    { "key": "B", "name": "Peace of mind", "hypothesis": "Reliability framing converts best.", "content": "Never scramble for movers again.", "traffic_weight": 0.5 }
+  ],
+  "success_metrics": [
+    { "name": "conversion_rate", "target": 0.08, "unit": "ratio", "direction": "higher_better", "primary": true }
+  ],
+  "stop_conditions": {
+    "min_conversion_rate": 0.02,
+    "max_risk": "high",
+    "goal_id": "80808080-1111-4aaa-8aaa-808080808080",
+    "approval_id": "90909090-1111-4aaa-8aaa-909090909090"
+  },
+  "optimization_cadence": "monthly",
+  "latest_report": {
+    "generated_at": "2026-06-25T12:00:00.000Z",
+    "period_label": "Week 1",
+    "variant_results": [
+      { "variant_key": "A", "impressions": 1000, "conversions": 60, "conversion_rate": 0.06, "cost_usd": 120, "revenue_usd": 1800 },
+      { "variant_key": "B", "impressions": 1000, "conversions": 90, "conversion_rate": 0.09, "cost_usd": 120, "revenue_usd": 2700 }
+    ],
+    "winner": "B",
+    "lift": 0.5,
+    "summary": "Variant B (peace of mind) leads with a 50% lift in conversion.",
+    "recommendations": [
+      { "description": "Shift traffic toward Variant B.", "rationale": "B converts 50% better.", "expected_impact": "high" }
+    ]
+  },
+  "version": 1,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z",
+  "last_optimized_at": null
+}

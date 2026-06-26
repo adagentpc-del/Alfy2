@@ -1,0 +1,13 @@
+{
+  "id": "f6f6f6f6-2222-4bbb-8bbb-f6f6f6f6f6f6",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "business_name": "Move Mi",
+  "present": ["logo", "domain", "email", "landing_page", "pricing", "lead_list"],
+  "missing": ["social_pages", "pitch_deck", "investor_deck", "sales_deck", "one_pager", "offer", "crm", "email_templates", "sales_scripts", "onboarding_packet", "contracts", "nda", "terms", "privacy_policy", "sops", "analytics", "payment_links", "follow_up_sequence", "content_calendar"],
+  "completeness": 0.24,
+  "recommended_next": "offer",
+  "recommendation_reason": "An offer is the highest-leverage missing asset and fast to define — nothing converts without it.",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,111 @@
+{
+  "id": "01010101-1111-4aaa-8aaa-010101010101",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "idea_text": "A marketplace matching longevity clinics with patients seeking peptide and hormone therapy, with verified provider credentials.",
+  "title": "Longevity clinic marketplace",
+  "category": "opportunity",
+  "priority_score": 0.62,
+  "market_research": {
+    "summary": "Growing consumer demand for longevity and hormone optimization, fragmented supply of vetted clinics.",
+    "target_segments": ["Health-optimizing consumers 30-55", "Longevity/anti-aging clinics", "Telehealth providers"],
+    "demand_signals": ["Rising search interest in peptides and TRT", "Clinic ad spend on patient acquisition"],
+    "open_questions": ["What is real willingness-to-pay per lead?", "Which states allow this model?"],
+    "tam_hypothesis": "US wellness/longevity spend in the tens of billions; serviceable lead-gen slice in the low hundreds of millions."
+  },
+  "competitors": {
+    "competitors": [
+      { "name": "Established telehealth platforms", "kind": "direct", "notes": "Own the patient relationship but not longevity-specialized." },
+      { "name": "Clinic-run websites / referrals", "kind": "substitute", "notes": "Fragmented, no verification layer." },
+      { "name": "General directories", "kind": "indirect", "notes": "Low trust, no credentialing." }
+    ],
+    "positioning_gap": "No trusted, credential-verified marketplace specialized in longevity therapies."
+  },
+  "pricing": {
+    "model": "marketplace",
+    "tiers": [
+      { "name": "Per-qualified-lead", "price": "$40-120/lead", "includes": ["Verified patient intent", "Routing"] },
+      { "name": "Clinic subscription", "price": "$299/mo", "includes": ["Profile", "Priority placement", "Analytics"] }
+    ],
+    "rationale": "Marketplace take-rate on leads plus recurring clinic SaaS for stickiness."
+  },
+  "offer": {
+    "headline": "Get matched with a verified longevity clinic in minutes.",
+    "what_you_get": ["Credential-verified clinics", "Transparent pricing", "Private, compliant intake"],
+    "guarantee": "Only verified, licensed providers.",
+    "primary_cta": "Find my clinic"
+  },
+  "positioning": {
+    "one_liner": "The trusted marketplace for longevity care.",
+    "for_whom": "Health-optimizing adults seeking peptide/hormone therapy",
+    "unlike": "generic directories and telehealth catch-alls",
+    "because": "every clinic is credential-verified and longevity-specialized",
+    "category": "Longevity care marketplace"
+  },
+  "mvp": {
+    "goal": "Prove patients will submit qualified intake and clinics will pay for leads.",
+    "must_have": ["Patient intake flow", "Clinic profiles with verification badge", "Lead routing + notifications"],
+    "explicitly_not": ["Native mobile app", "In-app payments to clinics", "Automated medical advice"],
+    "success_metric": { "name": "paid_leads", "description": "Clinics paying for routed qualified leads", "target": ">= 20 in first 60 days" }
+  },
+  "database": {
+    "tables": [
+      { "name": "patients", "purpose": "Patient intake and intent", "key_fields": ["id", "tenant_id", "intent", "location"] },
+      { "name": "clinics", "purpose": "Clinic profiles + verification", "key_fields": ["id", "tenant_id", "name", "verified", "credentials"] },
+      { "name": "leads", "purpose": "Routed matches and status", "key_fields": ["id", "patient_id", "clinic_id", "status", "price"] }
+    ]
+  },
+  "api_needs": {
+    "endpoints": [
+      { "method": "POST", "path": "/intake", "purpose": "Submit patient intake" },
+      { "method": "GET", "path": "/clinics", "purpose": "Browse verified clinics" },
+      { "method": "POST", "path": "/leads/route", "purpose": "Route a qualified lead to a clinic" }
+    ],
+    "integrations": ["Credential-verification source", "Email/SMS notifications", "Payments (PayPal)"]
+  },
+  "required_agents": {
+    "agents": [
+      { "proposed_key": "research.web", "purpose": "Verify clinic credentials and market data", "capabilities": ["search", "summarize"] },
+      { "proposed_key": "draft.text", "purpose": "Draft clinic outreach and patient comms", "capabilities": ["draft"] }
+    ]
+  },
+  "marketing": {
+    "channels": ["SEO/content", "Paid search", "Clinic partnerships"],
+    "content_pillars": ["Longevity education", "How to vet a clinic", "Therapy explainers"],
+    "hooks": ["The longevity clinic checklist nobody gives you", "Is your TRT clinic actually legit?"]
+  },
+  "seo": {
+    "primary_keywords": ["longevity clinic near me", "peptide therapy clinic", "TRT clinic verified"],
+    "content_ideas": ["State-by-state legality guide", "Peptide therapy explainer hub"],
+    "notes": "High-intent, health-sensitive keywords; ensure compliant, non-claim language."
+  },
+  "launch": {
+    "phases": [
+      { "name": "Private beta", "goal": "Validate lead quality", "actions": ["Onboard 5 clinics", "Drive 100 intakes"] },
+      { "name": "Public launch", "goal": "Prove willingness to pay", "actions": ["Open marketplace", "Turn on lead billing"] },
+      { "name": "Scale", "goal": "Grow supply + demand", "actions": ["Add cities", "Content engine"] }
+    ]
+  },
+  "monetization": {
+    "primary": "Per-qualified-lead fees",
+    "secondary": ["Clinic subscriptions", "Featured placement"],
+    "expansion": ["Outcomes data products", "White-label for clinic networks"]
+  },
+  "risks": {
+    "risks": [
+      { "risk": "Regulatory/compliance exposure (medical, state licensure)", "severity": "high", "mitigation": "Legal review; restrict to compliant states; no medical advice; clinician sign-off." },
+      { "risk": "Cold-start supply/demand", "severity": "medium", "mitigation": "Seed clinics first; concentrate one metro." },
+      { "risk": "Lead-quality disputes", "severity": "medium", "mitigation": "Clear qualification criteria; refund policy." }
+    ],
+    "overall": "high"
+  },
+  "recommendation": {
+    "verdict": "pursue_with_changes",
+    "confidence": 0.6,
+    "rationale": "Real demand and a clear trust gap, but compliance risk is high — validate legality and lead economics before building.",
+    "next_step": "Approve to proceed, or request changes. No building begins until you approve."
+  },
+  "approved": false,
+  "status": "awaiting_approval",
+  "explanation": "Full workup complete. Strong opportunity with a trust-and-verification wedge; gated on compliance and lead-economics validation. Awaiting your approval before any build begins.",
+  "created_at": "2026-06-24T12:00:00.000Z"
+}

@@ -1,0 +1,39 @@
+{
+  "id": "b0b0b0b0-1111-4aaa-8aaa-b0b0b0b0b0b0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "solves",
+  "title": "This GitHub repo solves Move Mi",
+  "source": {
+    "ref_id": "repo:route-optimizer",
+    "kind": "github_repo",
+    "name": "route-optimizer",
+    "business_id": null,
+    "tags": ["safe"],
+    "keywords": ["routing", "logistics", "dispatch", "optimization"],
+    "attributes": { "verdict": "safe" }
+  },
+  "target": {
+    "ref_id": "biz:move-mi",
+    "kind": "business",
+    "name": "Move Mi",
+    "business_id": "00000000-0000-0000-0000-0000000000aa",
+    "tags": [],
+    "keywords": ["moving", "logistics", "dispatch", "routing"],
+    "attributes": { "sector": "logistics", "revenue_potential": "high" }
+  },
+  "rationale": "The repo's routing/dispatch capabilities directly address Move Mi's crew-routing problem.",
+  "evidence": ["Shared keywords: routing, logistics, dispatch", "Repo verdict: safe"],
+  "scores": {
+    "revenue": 0.7,
+    "probability": 0.6,
+    "effort": 0.4,
+    "risk": 0.3,
+    "strategic_value": 0.6,
+    "composite": 0.62
+  },
+  "recommended_action": "Evaluate route-optimizer for the Move Mi crew-routing workflow.",
+  "recommended_agents": ["operations", "deployment"],
+  "status": "surfaced",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

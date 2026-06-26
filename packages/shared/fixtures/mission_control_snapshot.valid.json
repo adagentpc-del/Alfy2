@@ -1,0 +1,25 @@
+{
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "enterprise_health": { "score": 0.72, "label": "watch" },
+  "company_health": {
+    "Move Mi": { "score": 0.8, "label": "healthy" },
+    "AI Authority": { "score": 0.45, "label": "at risk" }
+  },
+  "revenue_mtd_usd": 42000,
+  "weighted_pipeline_usd": 88000,
+  "cash_usd": 120000,
+  "runway_months": 2.4,
+  "active_goals": 6,
+  "blocked_items": 2,
+  "open_risks": 3,
+  "approvals_waiting": 1,
+  "top_opportunities": ["Close Acme proposal", "Reactivate Divini pipeline"],
+  "agent_health": { "score": 0.95, "label": "healthy" },
+  "automation_health": { "score": 0.88, "label": "healthy" },
+  "system_health": { "score": 1, "label": "healthy" },
+  "ai_cost_mtd_usd": 134.5,
+  "roi": 12.4,
+  "daily_priorities": ["Close the Acme proposal", "Clear the waiting approval"],
+  "headline": "URGENT: runway is 2.4 months — protect cash now.",
+  "generated_at": "2026-06-25T12:00:00.000Z"
+}

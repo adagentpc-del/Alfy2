@@ -1,0 +1,17 @@
+{
+  "title": "EU AI Act enforcement guidance published for high-risk systems",
+  "businesses_affected": ["AI Authority", "Move Mi"],
+  "needs_change": true,
+  "competitive_advantage": true,
+  "compliance_risk": true,
+  "product_opportunity": true,
+  "should_test": true,
+  "should_ignore": false,
+  "assets_agents_workflows_to_update": [
+    "Update compliance SOPs",
+    "Brief product agent",
+    "Update positioning assets"
+  ],
+  "add_to_strategy_review": "quarterly",
+  "decision": "Act and test: compliance risk — update SOPs; competitive edge — refresh positioning; product opportunity — brief the product agent; affects AI Authority, Move Mi. Add to quarterly strategy review."
+}

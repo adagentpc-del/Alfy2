@@ -1,0 +1,46 @@
+{
+  "registration": {
+    "key": "business.followup",
+    "runtime": "python",
+    "endpoint": "http://localhost:8081/agents/business_followup/run",
+    "capabilities": ["draft_followup", "track_status"],
+    "version": "0.1.0"
+  },
+  "files": [
+    { "path": "workers/alfy_workers/business_followup/__init__.py", "content": "\"\"\"business.followup agent.\"\"\"\n" },
+    { "path": "workers/alfy_workers/business_followup/config.json", "content": "{ \"key\": \"business.followup\" }\n" },
+    { "path": "workers/alfy_workers/business_followup/INSTRUCTIONS.md", "content": "# business.followup\n" },
+    { "path": "workers/alfy_workers/business_followup/agent.py", "content": "def run(task):\n    ...\n" },
+    { "path": "workers/alfy_workers/business_followup/test_agent.py", "content": "def test_smoke():\n    assert True\n" },
+    { "path": "docs/agents/business_followup.md", "content": "# Follow-up Agent\n" }
+  ],
+  "dashboard_card": {
+    "title": "Follow-up Agent",
+    "subtitle": "Keeps business threads from going cold",
+    "metric_keys": ["follow_up_coverage", "approval_rate"],
+    "status": "active"
+  },
+  "task_queue": {
+    "name": "business.followup.queue",
+    "max_concurrency": 2,
+    "retry_limit": 2
+  },
+  "success_metrics": [
+    { "name": "follow_up_coverage", "description": "Share of stale threads with a drafted follow-up", "target": ">= 90%" }
+  ],
+  "memory_scope": {
+    "kinds": ["business", "person", "company", "conversation"],
+    "can_read": true,
+    "can_write": false,
+    "max_items": 50
+  },
+  "permissions": {
+    "network": false,
+    "irreversible_actions": false,
+    "requires_approval_for": ["send_message"]
+  },
+  "doc_path": "docs/agents/business_followup.md",
+  "test_path": "workers/alfy_workers/business_followup/test_agent.py",
+  "summary": "Generated agent business.followup with 6 files; registered and live to the orchestrator.",
+  "created_at": "2026-06-24T12:00:00.000Z"
+}

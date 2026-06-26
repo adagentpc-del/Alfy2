@@ -1,0 +1,10 @@
+{
+  "id": "life",
+  "version": "0.0.0",
+  "status": "scaffold",
+  "description": "Personal life coordination: calendar priorities, commitments, reminders. Declared surface only.",
+  "capabilities": [],
+  "requires_agents": [],
+  "irreversible_capabilities": [],
+  "owner": "founder"
+}

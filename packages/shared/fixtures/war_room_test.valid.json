@@ -1,0 +1,30 @@
+{
+  "id": "b2b2b2b2-4444-4ddd-8ddd-b2b2b2b2b2b2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "surface": "cold_email",
+  "label": "Q3 outbound — subject line test",
+  "variant_a_label": "Curiosity",
+  "variant_b_label": "Direct value",
+  "metrics_a": {
+    "sent": 200, "opens": 90, "replies": 14, "clicks": 22, "booked_calls": 6, "qualified_leads": 9,
+    "closes": 2, "negative_replies": 3, "revenue_usd": 6000, "cash_collected_usd": 6000, "time_to_conversion_days": 12
+  },
+  "metrics_b": {
+    "sent": 200, "opens": 120, "replies": 10, "clicks": 18, "booked_calls": 4, "qualified_leads": 6,
+    "closes": 1, "negative_replies": 5, "revenue_usd": 3000, "cash_collected_usd": 3000, "time_to_conversion_days": 15
+  },
+  "rates_a": {
+    "open_rate": 0.45, "reply_rate": 0.07, "click_rate": 0.11, "booked_call_rate": 0.03,
+    "close_rate": 0.01, "negative_reply_rate": 0.015, "revenue_per_send_usd": 30
+  },
+  "rates_b": {
+    "open_rate": 0.6, "reply_rate": 0.05, "click_rate": 0.09, "booked_call_rate": 0.02,
+    "close_rate": 0.005, "negative_reply_rate": 0.025, "revenue_per_send_usd": 15
+  },
+  "winner": "a",
+  "recommendation": "Ship variant Curiosity: $30.00/send, 3.0% booked-call rate. Decided on revenue, not opens/clicks.",
+  "objections": ["Too expensive", "Already have a vendor"],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

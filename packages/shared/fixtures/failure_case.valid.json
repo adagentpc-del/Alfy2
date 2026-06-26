@@ -1,0 +1,29 @@
+{
+  "id": "c4c4c4c4-3333-4eee-8eee-c4c4c4c4c4c4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "security_breach",
+  "title": "Startup leaks 2M customer records via misconfigured storage bucket",
+  "what_happened": "A fast-growing startup left a cloud storage bucket publicly readable, exposing 2 million customer records including emails and hashed passwords.",
+  "timeline": [
+    "2025-01: Bucket created with default-open access during a rushed launch.",
+    "2025-04: Security researcher discovers the open bucket.",
+    "2025-05: Breach disclosed publicly and customers notified."
+  ],
+  "why_it_failed": "Speed was prioritized over a basic security review before launch.",
+  "root_cause": "No infrastructure access-control review in the deployment process.",
+  "warning_signs": [
+    "No security checklist gating deploys",
+    "Default-open configuration left unchanged"
+  ],
+  "lessons_learned": [
+    "Gate every deploy on an access-control review",
+    "Default to least-privilege on all storage"
+  ],
+  "how_alfy2_avoids_it": [
+    "Watch for: No security checklist gating deploys",
+    "Watch for: Default-open configuration left unchanged",
+    "Apply lesson: Gate every deploy on an access-control review",
+    "Apply lesson: Default to least-privilege on all storage"
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

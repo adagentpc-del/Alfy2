@@ -1,0 +1,156 @@
+{
+  "id": "eeeeeeee-1111-4eee-8eee-eeeeeeeeeeee",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "generated_at": "2026-06-24T12:00:00.000Z",
+  "horizon": "today",
+  "daily_priorities": [
+    {
+      "title": "Resolve the overdue Acme contract",
+      "detail": "Overdue, high-value client contract due today; client threatening to walk.",
+      "priority_level": "critical",
+      "score": 0.86,
+      "category": "business",
+      "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+      "due": "2026-06-25T12:00:00.000Z",
+      "required_approvals": ["operator"],
+      "recommended_agents": ["draft.text", "research.web"]
+    }
+  ],
+  "revenue_focus": [
+    {
+      "title": "Acme renewal ($48k)",
+      "detail": "Biggest near-term revenue lever.",
+      "priority_level": "critical",
+      "score": 0.8,
+      "category": "business",
+      "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+      "due": null,
+      "required_approvals": ["operator"],
+      "recommended_agents": ["draft.text"]
+    }
+  ],
+  "calendar_preparation": [
+    { "label": "Deep-work block", "when": "2026-06-24T14:00:00.000Z", "recommendation": "Protect 90 minutes for the Acme proposal at peak energy." },
+    { "label": "Pre-meeting prep", "when": "2026-06-24T16:30:00.000Z", "recommendation": "15-minute review before the 17:00 investor call." }
+  ],
+  "meeting_preparation": [
+    {
+      "title": "Investor call — Northstar Capital",
+      "when": "2026-06-24T17:00:00.000Z",
+      "attendees": ["Maya Chen"],
+      "related_memory_ids": ["aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaaa"],
+      "prep_points": ["Confirm the objective and the single ask", "Review related context memories", "Define the next step before you leave the call"],
+      "recommended_agents": ["research.web", "draft.text"]
+    }
+  ],
+  "follow_ups": [
+    {
+      "title": "Follow up: revised Acme proposal",
+      "detail": "Auto-draft the message or document for review.",
+      "priority_level": "critical",
+      "score": 0.86,
+      "category": "business",
+      "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+      "due": "2026-06-25T12:00:00.000Z",
+      "required_approvals": ["operator"],
+      "recommended_agents": ["draft.text"]
+    }
+  ],
+  "risk_alerts": [
+    {
+      "title": "Risk: Acme contract overdue",
+      "detail": "Client threatening to walk; legal/relationship exposure.",
+      "priority_level": "critical",
+      "score": 0.7,
+      "category": "business",
+      "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+      "due": null,
+      "required_approvals": ["operator"],
+      "recommended_agents": []
+    }
+  ],
+  "blocked_projects": [
+    {
+      "title": "Styling app launch — blocked on assets",
+      "detail": "Waiting on brand assets before launch.",
+      "priority_level": "medium",
+      "score": 0.5,
+      "category": "business",
+      "ref": null,
+      "due": null,
+      "required_approvals": [],
+      "recommended_agents": []
+    }
+  ],
+  "personal_reminders": [
+    {
+      "title": "Book doctor appointment",
+      "detail": "Persistent chest pain and poor sleep.",
+      "priority_level": "high",
+      "score": 0.6,
+      "category": "health",
+      "ref": null,
+      "due": "2026-06-27T12:00:00.000Z",
+      "required_approvals": [],
+      "recommended_agents": ["health.track"]
+    }
+  ],
+  "energy_optimization": {
+    "summary": "Front-load deep work this morning; batch quick wins after the afternoon dip; protect recovery.",
+    "deep_work": [
+      {
+        "title": "Draft the Acme proposal",
+        "detail": "High difficulty, high importance — do it first.",
+        "priority_level": "critical",
+        "score": 0.86,
+        "category": "business",
+        "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+        "due": null,
+        "required_approvals": [],
+        "recommended_agents": ["draft.text"]
+      }
+    ],
+    "quick_wins": [
+      {
+        "title": "Reschedule the dentist",
+        "detail": "Trivial effort.",
+        "priority_level": "low",
+        "score": 0.2,
+        "category": "personal",
+        "ref": null,
+        "due": null,
+        "required_approvals": [],
+        "recommended_agents": []
+      }
+    ],
+    "recovery": ["Take a short walk after the investor call", "Hydrate and step away from screens at midday"]
+  },
+  "decision_queue": [
+    {
+      "title": "Approve sending the revised Acme proposal",
+      "detail": "Irreversible client communication — needs your sign-off.",
+      "priority_level": "critical",
+      "score": 0.86,
+      "category": "business",
+      "ref": "dddddddd-1111-4ddd-8ddd-dddddddddddd",
+      "due": "2026-06-25T12:00:00.000Z",
+      "required_approvals": ["operator"],
+      "recommended_agents": ["draft.text"]
+    }
+  ],
+  "dashboard": {
+    "total_items": 6,
+    "critical_count": 1,
+    "high_count": 1,
+    "medium_count": 1,
+    "low_count": 1,
+    "revenue_opportunities": 1,
+    "open_risks": 1,
+    "blocked_count": 1,
+    "decisions_awaiting": 1,
+    "top_focus": "Resolve the overdue Acme contract",
+    "markdown": "# Today\n\n**Top focus:** Resolve the overdue Acme contract\n\n- 1 critical, 1 awaiting your decision, 1 open risk, 1 blocked."
+  },
+  "explanation": "Today is driven by one critical item: the overdue Acme contract. One decision awaits your approval; one risk and one blocked project need attention. Front-load the Acme proposal at peak energy before the 17:00 investor call.",
+  "notes": ["1 item needs your decision", "Chief of Staff coordinates only — no work was executed"]
+}

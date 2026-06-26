@@ -1,0 +1,11 @@
+{
+  "kind": "subscription",
+  "title": "Adobe Creative Cloud",
+  "body": "Annual plan. Renews 2027-01-15 at $599.88. Used for brand assets.",
+  "attributes": { "vendor": "Adobe", "renewal_date": "2027-01-15", "amount_usd": 599.88, "cadence": "annual" },
+  "importance": 0.55,
+  "confidence": 0.95,
+  "source": "operator",
+  "keywords": ["adobe", "creative cloud", "subscription", "renewal"],
+  "expires_at": null
+}

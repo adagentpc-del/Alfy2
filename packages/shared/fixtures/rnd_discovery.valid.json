@@ -1,0 +1,12 @@
+{
+  "id": "a3f1c7d2-0b4e-4a91-8c63-1d5e9f2a7b04",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "domain": "ai_model",
+  "title": "Frontier multimodal model with native tool use",
+  "disposition": "implement",
+  "confidence": 0.715,
+  "high_confidence": true,
+  "rationale": "AI model \"Frontier multimodal model with native tool use\" scored confidence 0.715 (relevance 0.9, upside 0.85, maturity 0.8, effort 0.3, risk 0.15). Mature, high-upside, and low-effort — implement it now.",
+  "next_step": "Scope an implementation plan for \"Frontier multimodal model with native tool use\" this sprint.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

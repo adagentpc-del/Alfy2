@@ -1,0 +1,264 @@
+{
+  "id": "c5d7e9f1-5555-4eee-8eee-c5d7e9f15555",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "source_title": "How We 10x'd Output",
+  "source_ref": "media-job:7c2a9f01-3333-4ccc-8ccc-7c2a9f013333",
+  "brand": "founderos",
+  "business_id": null,
+  "pieces": [
+    {
+      "kind": "youtube_long",
+      "index": 0,
+      "title": "Youtube Long 1 — How We 10x'd Output",
+      "asset_id": "asset:youtube-long-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "short",
+      "index": 0,
+      "title": "Short 1 — How We 10x'd Output",
+      "asset_id": "asset:short-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "short",
+      "index": 1,
+      "title": "Short 2 — How We 10x'd Output",
+      "asset_id": "asset:short-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "short",
+      "index": 2,
+      "title": "Short 3 — How We 10x'd Output",
+      "asset_id": "asset:short-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "short",
+      "index": 3,
+      "title": "Short 4 — How We 10x'd Output",
+      "asset_id": "asset:short-4-how-we-10x-d-output"
+    },
+    {
+      "kind": "short",
+      "index": 4,
+      "title": "Short 5 — How We 10x'd Output",
+      "asset_id": "asset:short-5-how-we-10x-d-output"
+    },
+    {
+      "kind": "reel",
+      "index": 0,
+      "title": "Reel 1 — How We 10x'd Output",
+      "asset_id": "asset:reel-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "reel",
+      "index": 1,
+      "title": "Reel 2 — How We 10x'd Output",
+      "asset_id": "asset:reel-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "reel",
+      "index": 2,
+      "title": "Reel 3 — How We 10x'd Output",
+      "asset_id": "asset:reel-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "reel",
+      "index": 3,
+      "title": "Reel 4 — How We 10x'd Output",
+      "asset_id": "asset:reel-4-how-we-10x-d-output"
+    },
+    {
+      "kind": "reel",
+      "index": 4,
+      "title": "Reel 5 — How We 10x'd Output",
+      "asset_id": "asset:reel-5-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 0,
+      "title": "X Post 1 — How We 10x'd Output",
+      "asset_id": "asset:x-post-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 1,
+      "title": "X Post 2 — How We 10x'd Output",
+      "asset_id": "asset:x-post-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 2,
+      "title": "X Post 3 — How We 10x'd Output",
+      "asset_id": "asset:x-post-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 3,
+      "title": "X Post 4 — How We 10x'd Output",
+      "asset_id": "asset:x-post-4-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 4,
+      "title": "X Post 5 — How We 10x'd Output",
+      "asset_id": "asset:x-post-5-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 5,
+      "title": "X Post 6 — How We 10x'd Output",
+      "asset_id": "asset:x-post-6-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 6,
+      "title": "X Post 7 — How We 10x'd Output",
+      "asset_id": "asset:x-post-7-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 7,
+      "title": "X Post 8 — How We 10x'd Output",
+      "asset_id": "asset:x-post-8-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 8,
+      "title": "X Post 9 — How We 10x'd Output",
+      "asset_id": "asset:x-post-9-how-we-10x-d-output"
+    },
+    {
+      "kind": "x_post",
+      "index": 9,
+      "title": "X Post 10 — How We 10x'd Output",
+      "asset_id": "asset:x-post-10-how-we-10x-d-output"
+    },
+    {
+      "kind": "linkedin_post",
+      "index": 0,
+      "title": "Linkedin Post 1 — How We 10x'd Output",
+      "asset_id": "asset:linkedin-post-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "linkedin_post",
+      "index": 1,
+      "title": "Linkedin Post 2 — How We 10x'd Output",
+      "asset_id": "asset:linkedin-post-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "linkedin_post",
+      "index": 2,
+      "title": "Linkedin Post 3 — How We 10x'd Output",
+      "asset_id": "asset:linkedin-post-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "linkedin_post",
+      "index": 3,
+      "title": "Linkedin Post 4 — How We 10x'd Output",
+      "asset_id": "asset:linkedin-post-4-how-we-10x-d-output"
+    },
+    {
+      "kind": "linkedin_post",
+      "index": 4,
+      "title": "Linkedin Post 5 — How We 10x'd Output",
+      "asset_id": "asset:linkedin-post-5-how-we-10x-d-output"
+    },
+    {
+      "kind": "carousel",
+      "index": 0,
+      "title": "Carousel 1 — How We 10x'd Output",
+      "asset_id": "asset:carousel-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "carousel",
+      "index": 1,
+      "title": "Carousel 2 — How We 10x'd Output",
+      "asset_id": "asset:carousel-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "carousel",
+      "index": 2,
+      "title": "Carousel 3 — How We 10x'd Output",
+      "asset_id": "asset:carousel-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "newsletter",
+      "index": 0,
+      "title": "Newsletter 1 — How We 10x'd Output",
+      "asset_id": "asset:newsletter-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "blog",
+      "index": 0,
+      "title": "Blog 1 — How We 10x'd Output",
+      "asset_id": "asset:blog-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "podcast_clip",
+      "index": 0,
+      "title": "Podcast Clip 1 — How We 10x'd Output",
+      "asset_id": "asset:podcast-clip-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "podcast_clip",
+      "index": 1,
+      "title": "Podcast Clip 2 — How We 10x'd Output",
+      "asset_id": "asset:podcast-clip-2-how-we-10x-d-output"
+    },
+    {
+      "kind": "podcast_clip",
+      "index": 2,
+      "title": "Podcast Clip 3 — How We 10x'd Output",
+      "asset_id": "asset:podcast-clip-3-how-we-10x-d-output"
+    },
+    {
+      "kind": "podcast_clip",
+      "index": 3,
+      "title": "Podcast Clip 4 — How We 10x'd Output",
+      "asset_id": "asset:podcast-clip-4-how-we-10x-d-output"
+    },
+    {
+      "kind": "podcast_clip",
+      "index": 4,
+      "title": "Podcast Clip 5 — How We 10x'd Output",
+      "asset_id": "asset:podcast-clip-5-how-we-10x-d-output"
+    },
+    {
+      "kind": "website_article",
+      "index": 0,
+      "title": "Website Article 1 — How We 10x'd Output",
+      "asset_id": "asset:website-article-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "email",
+      "index": 0,
+      "title": "Email 1 — How We 10x'd Output",
+      "asset_id": "asset:email-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "sales_asset",
+      "index": 0,
+      "title": "Sales Asset 1 — How We 10x'd Output",
+      "asset_id": "asset:sales-asset-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "pr_angle",
+      "index": 0,
+      "title": "Pr Angle 1 — How We 10x'd Output",
+      "asset_id": "asset:pr-angle-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "speaker_story",
+      "index": 0,
+      "title": "Speaker Story 1 — How We 10x'd Output",
+      "asset_id": "asset:speaker-story-1-how-we-10x-d-output"
+    },
+    {
+      "kind": "case_study",
+      "index": 0,
+      "title": "Case Study 1 — How We 10x'd Output",
+      "asset_id": "asset:case-study-1-how-we-10x-d-output"
+    }
+  ],
+  "total_pieces": 42,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

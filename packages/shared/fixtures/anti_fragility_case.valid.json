@@ -1,0 +1,18 @@
+{
+  "id": "c3c3c3c3-3333-4ccc-8ccc-c3c3c3c3c3c3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "type": "security_incident",
+  "title": "Public storage bucket exposed 2M customer records",
+  "root_cause": "A control gap allowed access or exposure that a review should have caught.",
+  "preventable": true,
+  "reusable_lesson": "Default to least-privilege and gate every change on a security review.",
+  "new_safeguard": "Least-privilege default plus a mandatory access-control review on every deploy.",
+  "new_automation": "Automated config scan that flags open or over-permissive resources.",
+  "new_agent": "Security-review agent that audits access controls pre-deploy.",
+  "new_sop": "SOP: every deploy passes an access-control review before release.",
+  "system_redesign": "Embed a security gate into the deployment pipeline.",
+  "recovery_days": 3,
+  "learning_gained": 0.9,
+  "future_risk_reduction": 0.85,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

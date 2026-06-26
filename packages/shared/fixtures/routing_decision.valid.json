@@ -1,0 +1,13 @@
+{
+  "task": "coding",
+  "chosen_model_id": "gpt-codex",
+  "ranked": [
+    { "model_id": "gpt-codex", "score": 0.97 },
+    { "model_id": "claude-code", "score": 0.95 },
+    { "model_id": "gpt-5.5", "score": 0.9 },
+    { "model_id": "openclaw", "score": 0.8 },
+    { "model_id": "local-llama", "score": 0.65 }
+  ],
+  "fallbacks": ["claude-code", "gpt-5.5", "openclaw"],
+  "rationale": "gpt-codex scores highest for coding (0.97). Fallbacks include claude-code from a different provider (anthropic) so routing never depends on a single provider."
+}

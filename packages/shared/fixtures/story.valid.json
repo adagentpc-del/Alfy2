@@ -1,0 +1,19 @@
+{
+  "id": "5e1f3c2a-1111-4aaa-8aaa-5e1f3c2a1111",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "source": "client_story",
+  "hook": "A client came to us drowning in manual ops and skeptical it could change.",
+  "conflict": "But every tool they tried just added more dashboards to babysit.",
+  "lesson": "We learned that the win was removing decisions, not adding features.",
+  "emotion": "gratitude",
+  "transformation": "Now their team ships in a day what used to take a month.",
+  "why_it_matters": "We learned that the win was removing decisions, not adding features.",
+  "audience": "prospects and clients",
+  "business_tie_in": "Move Mi",
+  "cta": "Book a call to see if we can do the same for you.",
+  "proof_needed": ["metric/result", "client quote"],
+  "best_channels": ["case_study", "sales"],
+  "urgency": "evergreen",
+  "business_id": "9b2d4f6a-2222-4bbb-9bbb-9b2d4f6a2222",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

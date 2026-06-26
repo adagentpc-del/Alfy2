@@ -1,0 +1,20 @@
+{
+  "id": "f4f4f4f4-4444-4ddd-8ddd-f4f4f4f4f4f4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "decision": "Speak at the industry conference instead of running a paid ad sprint",
+  "horizons": [
+    { "horizon": "immediate", "value": 0.5, "note": "moderate projected value today (0.5)." },
+    { "horizon": "30_day", "value": 0.61, "note": "moderate projected value in 30 days (0.61)." },
+    { "horizon": "90_day", "value": 0.75, "note": "strong projected value in 90 days (0.75)." },
+    { "horizon": "1_year", "value": 0.92, "note": "strong projected value in a year (0.92)." },
+    { "horizon": "5_year", "value": 0.8, "note": "strong projected value in five years (0.8)." }
+  ],
+  "doors_opened": [
+    "Relationships with three potential anchor clients",
+    "An evergreen talk recording usable as a sales asset",
+    "Inbound speaking invitations next year"
+  ],
+  "long_term_leverage": 0.848,
+  "recommendation": "Optimize for the doors this opens — long-term leverage (0.848) outweighs the immediate payoff (0.5); play the compounding game.",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

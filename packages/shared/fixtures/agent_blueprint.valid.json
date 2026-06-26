@@ -1,0 +1,38 @@
+{
+  "key": "business.followup",
+  "runtime": "python",
+  "version": "0.1.0",
+  "description": "Drafts and tracks follow-ups on client proposals and open business threads.",
+  "capabilities": ["draft_followup", "track_status"],
+  "tools": [
+    { "name": "draft.text", "description": "Draft follow-up messages for review" }
+  ],
+  "memory_scope": {
+    "kinds": ["business", "person", "company", "conversation"],
+    "can_read": true,
+    "can_write": false,
+    "max_items": 50
+  },
+  "permissions": {
+    "network": false,
+    "irreversible_actions": false,
+    "requires_approval_for": ["send_message"]
+  },
+  "instructions": "Identify open business threads that have gone quiet for 3+ days. For each, draft a concise, on-brand follow-up and place it in the decision queue for operator approval. Never send anything yourself.",
+  "success_metrics": [
+    { "name": "follow_up_coverage", "description": "Share of stale threads with a drafted follow-up", "target": ">= 90%" },
+    { "name": "approval_rate", "description": "Drafts approved without major edits", "target": ">= 70%" }
+  ],
+  "dashboard_card": {
+    "title": "Follow-up Agent",
+    "subtitle": "Keeps business threads from going cold",
+    "metric_keys": ["follow_up_coverage", "approval_rate"],
+    "status": "proposed"
+  },
+  "task_queue": {
+    "name": "business.followup.queue",
+    "max_concurrency": 2,
+    "retry_limit": 2
+  },
+  "approved": true
+}

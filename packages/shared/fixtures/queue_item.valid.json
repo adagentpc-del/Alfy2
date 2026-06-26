@@ -1,0 +1,14 @@
+{
+  "id": "d4d4d4d4-5555-4eee-8eee-d4d4d4d4d4d4",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "bucket": "money_action",
+  "category": "revenue",
+  "title": "Send the Acme Corp proposal to pull $18k forward",
+  "business_id": "00000000-0000-0000-0000-0000000000aa",
+  "value_usd": 18000,
+  "due": "2026-06-26T00:00:00.000Z",
+  "actionable": true,
+  "done": false,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

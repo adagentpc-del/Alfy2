@@ -1,0 +1,14 @@
+{
+  "what_changed": "Three invoices crossed 30 days overdue since the last check.",
+  "why_it_matters": "Overdue receivables are the fastest lever on near-term cash position.",
+  "next_actions": [
+    { "label": "Draft reminder emails for the 3 overdue invoices", "reversible": true, "payload": { "invoice_ids": ["INV-1001", "INV-1002", "INV-1003"] } },
+    { "label": "Send payment via processor", "reversible": false, "payload": { "amount_usd": 0 } }
+  ],
+  "confidence": 0.82,
+  "evidence": [
+    { "source": "events:9f1c0b2a-1111-4aaa-8bbb-222233334444", "ref": "AR_SNAPSHOT" },
+    { "source": "memory:ar.aging" }
+  ],
+  "explanation": "Compared the current AR aging snapshot to the prior one; three invoices moved into the 30+ bucket. Proposed a reversible reminder action and flagged the irreversible payment action for approval."
+}

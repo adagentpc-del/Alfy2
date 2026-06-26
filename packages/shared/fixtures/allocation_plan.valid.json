@@ -1,0 +1,19 @@
+{
+  "id": "a1a1a1a1-1111-4aaa-8aaa-a1a1a1a1a1a1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "horizon": "quarterly",
+  "question": "What should we stop investing in?",
+  "highest_roi": "Launch AI productized service",
+  "highest_leverage": "Launch AI productized service",
+  "highest_compounding": "Launch AI productized service",
+  "highest_strategic_value": "Launch AI productized service",
+  "highest_founder_freedom": "Launch AI productized service",
+  "recommendation": "For the quarterly horizon (What should we stop investing in?) invest in \"Launch AI productized service\" — it is strongest across leverage, compounding, strategic value, and founder freedom (combined 3.25/4).",
+  "tradeoffs": [
+    "Launch AI productized service depletes: time, energy"
+  ],
+  "stop_investing_in": [
+    "Manual one-off client work"
+  ],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

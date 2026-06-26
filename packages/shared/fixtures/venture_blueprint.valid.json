@@ -1,0 +1,13 @@
+{
+  "id": "c8c8c8c8-2222-4bbb-8bbb-c8c8c8c8c8c8",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "idea": "A premium relocation concierge for executives",
+  "business_name": "A premium relocation",
+  "stages": [
+    { "stage": "discovery", "title": "Discovery", "summary": "Define the problem and for whom.", "items": ["Problem statement", "Target user", "Why now"], "open_questions": ["Who feels this pain most acutely?"] },
+    { "stage": "pricing", "title": "Pricing", "summary": "Price on outcome, not hours.", "items": ["Price points", "Tiers", "Anchor"], "open_questions": ["What is the value delivered vs price?"] }
+  ],
+  "status": "awaiting_approval",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

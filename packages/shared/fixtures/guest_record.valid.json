@@ -1,0 +1,21 @@
+{
+  "id": "a2a2a2a2-8888-4bbb-8bbb-a2a2a2a2a2a2",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "direction": "inbound_guest",
+  "name": "Maya Chen",
+  "context": "Founder of an AI ops startup; deep expertise in agent automation",
+  "relevance": 0.9,
+  "credibility": 0.8,
+  "audience_fit": 0.8,
+  "business_value": 0.7,
+  "rank_score": 0.81,
+  "status": "candidate",
+  "pitch_angle": "what most founders get wrong about automating their operations",
+  "draft_outreach": "Hi Maya Chen, I host \"Decoded with Alyssa DelTorre\" and would love to have you on. Given your work in Founder of an AI ops startup; deep expertise in agent automation, what most founders get wrong about automating their operations. It's a relaxed, high-signal conversation — would you be up for it?",
+  "outreach_approved": false,
+  "booked_date": null,
+  "episode_link": "",
+  "relationship_value": 0.5,
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

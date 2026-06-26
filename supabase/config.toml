@@ -1,0 +1,2 @@
+# Supabase CLI config. Run `supabase link --project-ref <ref>` to set this to your project.
+project_id = "YOUR_PROJECT_REF"

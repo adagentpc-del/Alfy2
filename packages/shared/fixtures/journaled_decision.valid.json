@@ -1,0 +1,33 @@
+{
+  "id": "d1d1d1d1-3333-4ddd-8ddd-d1d1d1d1d1d1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "decision": "Hire a fractional COO instead of a full-time operations lead",
+  "alternatives": [
+    "Hire a full-time operations lead",
+    "Stay founder-led on operations"
+  ],
+  "reasoning": "A fractional COO gives senior operating leverage at a fraction of the cost while we validate the org need.",
+  "data_available": [
+    "Current ops hours/week",
+    "Comp benchmarks for full-time vs fractional"
+  ],
+  "assumptions": [
+    "Operations needs are part-time for the next two quarters"
+  ],
+  "risks": [
+    "Fractional bandwidth may be insufficient during launch spikes"
+  ],
+  "expected_outcome": "Reclaim 10+ founder hours/week with maintained delivery quality.",
+  "category": "hiring",
+  "business_id": "b2b2b2b2-4444-4bbb-8bbb-b2b2b2b2b2b2",
+  "actual_outcome": "",
+  "lessons_learned": [],
+  "reviews_due": {
+    "30_day": "2026-07-25T12:00:00.000Z",
+    "90_day": "2026-09-23T12:00:00.000Z",
+    "1_year": "2027-06-25T12:00:00.000Z"
+  },
+  "reviewed_windows": [],
+  "decided_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

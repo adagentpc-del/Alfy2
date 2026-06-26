@@ -1,0 +1,23 @@
+{
+  "id": "30303030-4444-4ddd-8ddd-303030303030",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "solution_title": "Self-serve onboarding checklist generator",
+  "helps": [
+    "another_business",
+    "another_agent",
+    "future_founderos_users",
+    "clients"
+  ],
+  "recommended_shared_forms": [
+    "shared_infrastructure",
+    "shared_workflow",
+    "shared_agent",
+    "founderos_feature",
+    "shared_asset",
+    "shared_knowledge"
+  ],
+  "estimated_future_uses": 120,
+  "multiplication_score": 1,
+  "recommend_share": true,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

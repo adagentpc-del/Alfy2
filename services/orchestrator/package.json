@@ -1,0 +1,17 @@
+{
+  "name": "@alfy2/orchestrator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Planner + Dispatcher + Signal->Action assembler + Event/Decision log writer.",
+  "type": "module",
+  "main": "src/main.ts",
+  "dependencies": {
+    "@alfy2/shared": "workspace:*",
+    "@alfy2/config": "workspace:*",
+    "@alfy2/core": "workspace:*"
+  },
+  "scripts": {
+    "dev": "echo 'orchestrator dev server wired in Phase 2'",
+    "typecheck": "tsc -b"
+  }
+}

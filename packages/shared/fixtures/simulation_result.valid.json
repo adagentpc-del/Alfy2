@@ -1,0 +1,35 @@
+{
+  "id": "d0d0d0d0-1111-4aaa-8aaa-d0d0d0d0d0d0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "hiring_vs_automation",
+  "name": "Hire a follow-up coordinator vs automate follow-ups",
+  "horizon_days": 180,
+  "best_case": {
+    "label": "best",
+    "assumptions": ["Automation captures 90% of follow-ups", "No new hire needed"],
+    "projection": { "net_savings_usd": 42000, "follow_up_coverage": 0.9 },
+    "narrative": "Automation handles nearly all follow-ups; the salary is avoided and coverage rises.",
+    "probability": 0.3
+  },
+  "likely_case": {
+    "label": "likely",
+    "assumptions": ["Automation captures 70%", "Light human oversight"],
+    "projection": { "net_savings_usd": 26000, "follow_up_coverage": 0.7 },
+    "narrative": "Automation covers most follow-ups with occasional human cleanup.",
+    "probability": 0.5
+  },
+  "worst_case": {
+    "label": "worst",
+    "assumptions": ["Automation captures 40%", "A hire is still needed"],
+    "projection": { "net_savings_usd": -8000, "follow_up_coverage": 0.4 },
+    "narrative": "Automation underperforms and a hire becomes necessary anyway.",
+    "probability": 0.2
+  },
+  "expected_value": 23800,
+  "risks": [
+    { "description": "Automation quality may erode trust if replies feel robotic.", "likelihood": "medium", "impact": "high", "mitigation": "Keep human approval on the first 30 days of drafts." }
+  ],
+  "recommendation": "Start with automation plus light oversight; revisit hiring only if coverage stays below 60%.",
+  "decision_needed": "Approve the automation-first path, or commit to a hire now?",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

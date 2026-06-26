@@ -1,0 +1,10 @@
+{
+  "id": "c2f8d5b3-4a6e-4b1c-9d2f-3e7a8b1c0d22",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "module": "memory",
+  "primary_stage": "capture",
+  "feeds_stage": "organize",
+  "in_loop": true,
+  "note": "memory primarily capture, feeding organize",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

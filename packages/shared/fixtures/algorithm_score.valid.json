@@ -1,0 +1,13 @@
+{
+  "algorithm": "priority",
+  "subject": "Ship the AI Authority launch sequence",
+  "phase": "rules_based",
+  "score": 0.8,
+  "confidence": 1,
+  "why": "Scored 0.8 — high urgency, importance, and revenue impact.",
+  "data_used": ["urgency", "importance", "revenue_impact"],
+  "data_missing": [],
+  "recommended_action": "Do this next.",
+  "requires_approval": false,
+  "overridden": false
+}

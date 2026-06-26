@@ -1,0 +1,16 @@
+{
+  "id": "30303030-2222-4bbb-8bbb-303030303030",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "financial_data",
+  "statement": "Move Mi MRR is $22,000 as of May 2026.",
+  "source": "QuickBooks export 2026-05-31",
+  "confidence": 0.9,
+  "owner": "alyssa@x.com",
+  "last_verified_at": "2026-05-31T00:00:00.000Z",
+  "freshness": "aging",
+  "update_trigger": "Monthly close",
+  "memory_id": "mem:move-mi-mrr",
+  "tags": ["finance", "move-mi"],
+  "created_at": "2026-06-01T00:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

@@ -1,0 +1,7 @@
+{
+  "source": "email",
+  "kind": "invoice",
+  "content": "Invoice #4471 from A3 Visual — $12,400 due 2026-07-05 for the stadium banner fabrication. Net 30.",
+  "attachments": ["invoice-4471.pdf"],
+  "context": { "amount_usd": 12400 }
+}

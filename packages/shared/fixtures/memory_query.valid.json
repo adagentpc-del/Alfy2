@@ -1,0 +1,9 @@
+{
+  "text": "primary care doctor",
+  "keywords": ["doctor"],
+  "kinds": ["person", "doctor"],
+  "min_importance": 0.3,
+  "min_confidence": 0.5,
+  "limit": 5,
+  "include_archived": false
+}

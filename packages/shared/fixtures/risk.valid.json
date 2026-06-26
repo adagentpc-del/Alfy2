@@ -1,0 +1,17 @@
+{
+  "id": "c1c1c1c1-1111-4ccc-8ccc-c1c1c1c1c1c1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "category": "legal",
+  "title": "Acme master agreement auto-renews on unfavorable terms",
+  "severity": 0.8,
+  "likelihood": 0.6,
+  "exposure": 0.48,
+  "owner": "Alyssa",
+  "mitigation": "Serve notice of non-renewal and renegotiate before the 30-day window closes.",
+  "deadline": "2026-07-15T12:00:00.000Z",
+  "escalation_trigger": "Counterparty confirms auto-renewal in writing.",
+  "affected_businesses": ["00000000-0000-0000-0000-0000000000aa"],
+  "status": "open",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

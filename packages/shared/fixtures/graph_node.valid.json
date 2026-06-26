@@ -1,0 +1,9 @@
+{
+  "id": "c3c3c3c3-dddd-4ccc-8ccc-c3c3c3c3c3c3",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "person",
+  "name": "Alberto",
+  "ref_id": "contact:alberto",
+  "tags": ["procurement", "divini"],
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

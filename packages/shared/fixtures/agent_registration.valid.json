@@ -1,0 +1,7 @@
+{
+  "key": "research.web",
+  "runtime": "python",
+  "endpoint": "http://localhost:8081/run",
+  "capabilities": ["search", "summarize"],
+  "version": "0.0.0"
+}

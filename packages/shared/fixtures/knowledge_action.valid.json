@@ -1,0 +1,19 @@
+{
+  "id": "80808080-4444-4ddd-8ddd-808080808080",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "idea": "Run a discovery-call script based on The Mom Test to validate the retainer offer.",
+  "action_item": "Build and pilot a Mom-Test discovery-call script for Move Mi retainer prospects.",
+  "business_use_case": "Higher-converting, better-validated retainer offers for Move Mi.",
+  "implementation_plan": ["Draft the script", "Pilot on 10 calls", "Measure conversion", "Roll out if it lifts close rate"],
+  "revenue_hypothesis": "A validated discovery script lifts retainer close rate by 5 points, ~$3k MRR.",
+  "required_assets": ["Discovery-call script", "Objection cheat sheet"],
+  "required_agents": ["sales.discovery"],
+  "test_plan": ["A/B the new script vs current", "Track close rate over 2 weeks"],
+  "owner": "alyssa@x.com",
+  "deadline": "2026-07-15T00:00:00.000Z",
+  "dashboard_card": "Discovery script pilot — close rate vs baseline",
+  "disposition": "use_now",
+  "operating_manual": "Move Mi Discovery Call SOP: open with rapport, ask about the last move, surface pain, confirm budget, propose retainer.",
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

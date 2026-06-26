@@ -1,0 +1,22 @@
+{
+  "id": "b1d4f2a0-3c5e-4a7b-9e11-2f6c8a0d4e51",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "verdicts": [
+    {
+      "label": "Build the FounderOS template library",
+      "composite_score": 0.51,
+      "opportunity_cost": 0,
+      "disposition": "package_founderos",
+      "reason": "Composite 0.51 (return 0.6, leverage 0.7, compounding 0.8, risk 0.3, liquidity 0.2, payback 6mo). Compounding and packageable — package into FounderOS."
+    },
+    {
+      "label": "Run a paid pilot of the new service",
+      "composite_score": 0.193,
+      "opportunity_cost": 0.318,
+      "disposition": "invest",
+      "reason": "Composite 0.193 (return 0.35, leverage 0.4, compounding 0.3, risk 0.4, liquidity 0.3, payback 3mo). Strong composite — invest."
+    }
+  ],
+  "top_pick": "Build the FounderOS template library",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

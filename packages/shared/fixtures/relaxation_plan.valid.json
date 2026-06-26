@@ -1,0 +1,15 @@
+{
+  "id": "c1c1c1c1-1111-4aaa-8aaa-c1c1c1c1c1c1",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "items": [
+    { "title": "Approve the Q3 marketing budget", "bucket": "approval_only" },
+    { "title": "Close the enterprise deal with the anchor client", "bucket": "must_do" },
+    { "title": "Reconcile last month's invoices", "bucket": "can_delegate" },
+    { "title": "Send the weekly client status emails", "bucket": "can_automate" },
+    { "title": "Reformat the old internal wiki", "bucket": "can_ignore" },
+    { "title": "Draft the conference talk for next quarter", "bucket": "can_wait" }
+  ],
+  "must_do": ["Close the enterprise deal with the anchor client"],
+  "offload_ratio": 0.667,
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

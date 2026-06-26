@@ -1,0 +1,5 @@
+{
+  "text": "URGENT: the Acme contract is overdue and the client is threatening to walk. Need to send a revised proposal today.",
+  "source": "email",
+  "context": { "amount_usd": 48000, "deadline": "2026-06-24T23:00:00.000Z" }
+}

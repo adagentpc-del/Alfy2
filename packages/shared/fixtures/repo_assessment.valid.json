@@ -1,0 +1,40 @@
+{
+  "id": "10101010-1111-4aaa-8aaa-101010101010",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "url": "https://github.com/acme/invoice-parser",
+  "name": "invoice-parser",
+  "scanned_at": "2026-06-24T12:00:00.000Z",
+  "verdict": "safe",
+  "evaluation": [
+    { "dimension": "project_purpose", "score": 0.9, "summary": "Clear purpose: parse PDF invoices to JSON." },
+    { "dimension": "maturity", "score": 0.7, "summary": "420 stars, recent commits, active." },
+    { "dimension": "architecture", "score": 0.7, "summary": "Small, single-responsibility library." },
+    { "dimension": "documentation", "score": 0.8, "summary": "README with usage and tests." },
+    { "dimension": "dependencies", "score": 0.8, "summary": "Two well-known dependencies." },
+    { "dimension": "security", "score": 0.95, "summary": "No security findings." },
+    { "dimension": "maintenance", "score": 0.8, "summary": "Recent commit; few open issues." },
+    { "dimension": "license", "score": 1.0, "summary": "MIT — permissive." },
+    { "dimension": "community", "score": 0.6, "summary": "Modest but real community." },
+    { "dimension": "implementation_difficulty", "score": 0.3, "summary": "Low — drop-in library." }
+  ],
+  "overall_quality": 0.78,
+  "security_findings": [],
+  "security_summary": "No threats detected across malicious scripts, credential harvesting, suspicious dependencies, obfuscation, network abuse, crypto mining, vulnerabilities, or unsafe permissions.",
+  "business_case": {
+    "business_applications": ["Automate invoice intake for Finance", "Feed the Executive Inbox's invoice handling"],
+    "which_businesses": ["a3-visual", "move-mi"],
+    "implementation_roadmap": [
+      { "name": "Integrate", "goal": "Wrap the library behind an agent", "actions": ["Add to workers", "Map output to memory"] },
+      { "name": "Pilot", "goal": "Validate on real invoices", "actions": ["Run on 20 invoices", "Check accuracy"] }
+    ],
+    "required_agents": [
+      { "proposed_key": "finance.analyze", "purpose": "Use parsed invoices in finance workflows", "capabilities": ["parse_invoice"] }
+    ],
+    "estimated_effort": "small",
+    "estimated_effort_hours": 12,
+    "estimated_roi": "High — removes manual invoice data entry across businesses.",
+    "roi_level": "high"
+  },
+  "executed": false,
+  "explanation": "Static scan only — nothing was executed. Clean security review and solid quality; SAFE. Generated a finance-focused business case and recommended a parsing agent."
+}

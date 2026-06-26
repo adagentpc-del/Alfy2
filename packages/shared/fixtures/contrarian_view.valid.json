@@ -1,0 +1,40 @@
+{
+  "subject": "Autonomous AI sales agents",
+  "mainstream_view": "Autonomous AI sales agents will replace most SDR teams within two years.",
+  "contrarian_view": "The opposing case: Autonomous AI sales agents will replace most SDR teams within two years. — but the consensus on Autonomous AI sales agents likely overstates the upside and underweights what has to go right.",
+  "evidence_for_mainstream": [
+    "Consensus momentum and visible early wins support the mainstream view of Autonomous AI sales agents.",
+    "Most commentary on Autonomous AI sales agents repeats the same optimistic narrative."
+  ],
+  "evidence_for_contrarian": [
+    "Pilot conversion rates have lagged human SDRs in regulated verticals.",
+    "Buyers report fatigue with obviously automated outreach.",
+    "Adoption and durability of Autonomous AI sales agents are unproven beyond early enthusiasts.",
+    "Incentives behind the mainstream view of Autonomous AI sales agents may inflate its prospects."
+  ],
+  "ignored_risks": [
+    "Second-order effects of Autonomous AI sales agents are routinely overlooked.",
+    "Downside scenarios for Autonomous AI sales agents are rarely priced in."
+  ],
+  "questionable_assumptions": [
+    "Assumes Autonomous AI sales agents scales linearly without friction.",
+    "Assumes today's tailwinds behind Autonomous AI sales agents persist."
+  ],
+  "adoption_barriers": [
+    "Switching costs and inertia slow real-world adoption of Autonomous AI sales agents.",
+    "Integration and change-management overhead for Autonomous AI sales agents are underestimated."
+  ],
+  "compliance_concerns": [
+    "Regulatory and data-governance exposure around Autonomous AI sales agents is unresolved.",
+    "Audit and accountability requirements for Autonomous AI sales agents may lag deployment."
+  ],
+  "business_model_weaknesses": [
+    "Unit economics of Autonomous AI sales agents may not survive at scale.",
+    "Defensibility and pricing power for Autonomous AI sales agents are unclear."
+  ],
+  "execution_risks": [
+    "Delivering Autonomous AI sales agents reliably is harder than the demo suggests.",
+    "Talent, dependencies, and timelines for Autonomous AI sales agents carry slippage risk."
+  ],
+  "recommendation": "Hold both views; pressure-test the key assumption before committing — avoid hype-driven decisions."
+}

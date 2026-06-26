@@ -1,0 +1,37 @@
+{
+  "id": "c0c0c0c0-3333-4ccc-8ccc-c0c0c0c0c0c0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "task_title": "Quarterly investor update template",
+  "recommended_forms": [
+    "automation",
+    "agent",
+    "workflow",
+    "knowledge_article",
+    "sop",
+    "playbook",
+    "training_doc",
+    "podcast_topic",
+    "blog",
+    "social_post",
+    "newsletter",
+    "template",
+    "checklist",
+    "sales_asset",
+    "founderos_feature",
+    "consulting_framework"
+  ],
+  "metrics": {
+    "reuse_frequency": 0.6,
+    "businesses_using": 0.4,
+    "revenue_generated": 0.7,
+    "time_saved": 0.5,
+    "automation_potential": 0.8,
+    "knowledge_value": 0.6,
+    "strategic_importance": 0.7,
+    "longevity": 0.5
+  },
+  "compounding_score": 0.6,
+  "recommend_create_reusable": true,
+  "lineage_id": "11111111-3333-4ccc-8ccc-111111111111",
+  "created_at": "2026-06-25T12:00:00.000Z"
+}

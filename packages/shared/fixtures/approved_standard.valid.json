@@ -1,0 +1,14 @@
+{
+  "id": "e0e0e0e0-1111-4aaa-8aaa-e0e0e0e0e0e0",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "kind": "naming_convention",
+  "name": "Agent key naming",
+  "version": "1.0.0",
+  "status": "approved",
+  "summary": "Agent keys must be lowercase dotted slugs (e.g. sales.outreach).",
+  "body": "All agent keys follow `<area>.<role>` in lowercase kebab/dot form. No spaces, no capitals.",
+  "rules": ["name:slug"],
+  "tags": ["naming", "agents"],
+  "created_at": "2026-06-25T12:00:00.000Z",
+  "updated_at": "2026-06-25T12:00:00.000Z"
+}

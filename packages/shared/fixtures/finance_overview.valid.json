@@ -1,0 +1,41 @@
+{
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "total_monthly_revenue_usd": 120000,
+  "total_monthly_expenses_usd": 78000,
+  "net_cash_flow_usd": 42000,
+  "total_tax_exposure_usd": 10500,
+  "businesses": [
+    {
+      "business_name": "Alfy Studios",
+      "monthly_revenue_usd": 80000,
+      "monthly_expenses_usd": 48000,
+      "monthly_profit_usd": 32000,
+      "profit_margin": 0.4,
+      "tax_exposure_usd": 8000,
+      "cash_runway_months": null,
+      "best_next_financial_action": "Collect the $15000 in outstanding receivables.",
+      "risks": [],
+      "opportunities": [
+        "Strong margin — room to reinvest in growth or owner pay.",
+        "Collect $15000 in receivables to free up cash."
+      ]
+    },
+    {
+      "business_name": "Northwind Consulting",
+      "monthly_revenue_usd": 40000,
+      "monthly_expenses_usd": 30000,
+      "monthly_profit_usd": 10000,
+      "profit_margin": 0.25,
+      "tax_exposure_usd": 2500,
+      "cash_runway_months": null,
+      "best_next_financial_action": "Maintain margin and reinvest profit deliberately.",
+      "risks": [],
+      "opportunities": []
+    }
+  ],
+  "personal_net_worth_usd": 285000,
+  "personal_monthly_net_usd": 6200,
+  "headline": "Finances are healthy — keep margins up and reinvest deliberately.",
+  "money_actions_require_approval": true,
+  "generated_at": "2026-06-25T12:00:00.000Z"
+}

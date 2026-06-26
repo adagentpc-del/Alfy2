@@ -1,0 +1,6 @@
+{
+  "allowed": false,
+  "bypass_attempt": true,
+  "missing_layers": ["policy", "audit"],
+  "reason": "Execution of \"Campaign\" tried to bypass a layer — missing: policy, audit. No execution may bypass policy, approvals, or audit."
+}
