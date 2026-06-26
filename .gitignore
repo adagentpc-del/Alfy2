@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+SUPABASE_PAT.txt
 
 # Node / pnpm
 node_modules/

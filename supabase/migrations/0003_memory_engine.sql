@@ -23,6 +23,13 @@
 -- usage stats evolve over the record's life. Each row is one durable fact the
 -- engine can recall, score, link, and prune.
 -- -----------------------------------------------------------------------------
+-- Immutable helper: array_to_string is not marked immutable, so it cannot be used
+-- directly inside a STORED generated column. This thin wrapper is deterministic and
+-- safe to label immutable (text[] -> space-joined text).
+create or replace function alfy_array_join(arr text[])
+returns text language sql immutable
+as $$ select array_to_string(coalesce(arr, '{}'::text[]), ' ') $$;
+
 create table if not exists memories (
   id            uuid        primary key default gen_random_uuid(),
   tenant_id     uuid        not null,
@@ -57,7 +64,7 @@ create table if not exists memories (
                     'english',
                     coalesce(title, '') || ' ' ||
                     coalesce(body, '')  || ' ' ||
-                    array_to_string(keywords, ' ')
+                    alfy_array_join(keywords)
                   )
                 ) stored
 );

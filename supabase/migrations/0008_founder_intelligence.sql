@@ -94,6 +94,12 @@ create index if not exists grants_tenant_principal_idx on grants (tenant_id, pri
 -- are authored documents (title + body + tags) searchable across the tenant or
 -- scoped to a single business. Mutable.
 -- -----------------------------------------------------------------------------
+-- Immutable helper (idempotent; also defined in 0003): array_to_string is not
+-- marked immutable and cannot be used directly in a STORED generated column.
+create or replace function alfy_array_join(arr text[])
+returns text language sql immutable
+as $$ select array_to_string(coalesce(arr, '{}'::text[]), ' ') $$;
+
 create table if not exists knowledge_docs (
   id           uuid        primary key default gen_random_uuid(),
   tenant_id    uuid        not null,
@@ -108,7 +114,7 @@ create table if not exists knowledge_docs (
                    'english',
                    coalesce(title, '') || ' ' ||
                    coalesce(body, '')  || ' ' ||
-                   array_to_string(tags, ' ')
+                   alfy_array_join(tags)
                  )
                ) stored,
   created_at   timestamptz not null default now(),

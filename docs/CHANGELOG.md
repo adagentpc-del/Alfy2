@@ -4,6 +4,18 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Deployed
+- **DATABASE IS LIVE** (2026-06-26) — all **223 migrations applied** to the Supabase project
+  `oxromxpjoiifvamxjluz` (ALFY2 org) via the Management API. Verified: **157 tables, all 157 with
+  RLS enabled, 464 RLS policies**; default-operator tenant seeded
+  (`00000000-0000-0000-0000-000000000001`). Code is on GitHub (`adagentpc-del/Alfy2`, `main`).
+  This was the first time the migrations ran against a real Postgres; three latent SQL bugs were
+  found and fixed: `array_to_string(...)` is not `IMMUTABLE` so it can't sit in a STORED generated
+  column — wrapped in an `alfy_array_join()` immutable helper in `0003_memory_engine.sql` and
+  `0008_founder_intelligence.sql`; and reserved word `window` used as a column name in
+  `0028_pattern_observability.sql` — now quoted as `"window"`. These three fixes are committed
+  locally and must be pushed so GitHub matches the live DB.
+
 ### Added
 - **Executive Operating Manual — persistence** (migration `0196`, `executive_operating_manuals`): the assembled
   manual (`ExecutiveOperatingManualDocSchema`) is now stored as an **append-only** point-in-time snapshot

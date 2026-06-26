@@ -75,7 +75,7 @@ create table if not exists pattern_reports (
   id                          uuid          primary key default gen_random_uuid(),
   tenant_id                   uuid          not null,
   generated_at                timestamptz   not null default now(),
-  window                      jsonb         not null default '{}'::jsonb,
+  "window"                    jsonb         not null default '{}'::jsonb,
   patterns                    jsonb         not null default '[]'::jsonb,
   bottlenecks                 jsonb         not null default '[]'::jsonb,
   strengths                   jsonb         not null default '[]'::jsonb,
