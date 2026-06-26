@@ -15,3 +15,10 @@ export { PgApprovalRequestRepository } from "./api-approval-repository.js";
 export { PgFounderCapacityRepository } from "./founder-capacity-repository.js";
 export { PgMissionControlReadModel } from "./mission-control-read-model.js";
 export { PgMissionControlAlertRepository } from "./mission-control-alert-repository.js";
+export { PgRevOpsReadModel } from "./revops-read-model.js";
+export { PgDecisionRecordRepository } from "./decision-record-repository.js";
+export {
+  PgCapitalAccountRepository,
+  PgCapitalAllocationRepository,
+  PgCapitalRunwayRepository,
+} from "./capital-allocation-repository.js";

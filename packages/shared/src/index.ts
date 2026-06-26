@@ -1689,3 +1689,13 @@ export {
 
 // Founder Energy + Capacity Layer (§31) — uniquely prefixed; no barrel collisions.
 export * from "./contracts/founder-capacity.js";
+
+// Revenue Operating System (§33) — RevOps brief + fastest-path-to-cash.
+export * from "./contracts/revops.js";
+
+// Decision Engine (§35) — decision record + 13 principle lenses. (Status enum named
+// DecisionRecordStatus to avoid collision with build-from-brainstorm's DecisionStatus.)
+export * from "./contracts/decision-record.js";
+
+// Capital Allocation (§34) — Profit-First buckets + runway.
+export * from "./contracts/capital-allocation.js";

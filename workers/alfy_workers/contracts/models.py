@@ -13016,6 +13016,80 @@ class ApiApprovalRequest(BaseModel):
     decided_at: datetime | None = None
 
 
+# ===========================================================================
+# Advisory Decision Engine (mirror of decision-record.ts, §35). Named with a
+# Decision* prefix; distinct from the Decision/DecisionInput mirrors (decision.ts)
+# and the security ApprovalRequest mirror above.
+# ===========================================================================
+
+DecisionLens = Literal[
+    "capital_allocation",
+    "inversion_risk",
+    "customer_obsession",
+    "offer_acquisition",
+    "operations_people",
+    "leverage_wealth",
+    "principles_truth",
+    "message_clarity",
+    "attention_distribution",
+    "funnels",
+    "behavioral_economics",
+    "cash_discipline",
+    "investor_discipline",
+]
+DecisionType = Literal[
+    "pricing",
+    "hire",
+    "spend",
+    "launch",
+    "partnership",
+    "capital",
+    "pivot",
+    "legal",
+]
+DecisionReversibility = Literal["one_way_door", "two_way_door"]
+# Named DecisionRecordStatus (not DecisionStatus) to match the shared barrel, where
+# DecisionStatus is already taken by the build-from-brainstorm contract.
+DecisionRecordStatus = Literal["open", "approved", "rejected", "deferred"]
+
+
+class DecisionLensReading(BaseModel):
+    """Mirror of DecisionLensReadingSchema (decision-record.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lens: DecisionLens
+    reading: str
+    score: int = Field(ge=0, le=10)
+    caution: str = ""
+
+
+class DecisionRecord(BaseModel):
+    """Mirror of DecisionRecordSchema (decision-record.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    title: str
+    summary: str = ""
+    decision_type: DecisionType
+    risks: list[str] = Field(default_factory=list)
+    upside: str = ""
+    downside: str = ""
+    assumptions: list[str] = Field(default_factory=list)
+    reversibility: DecisionReversibility
+    required_data: list[str] = Field(default_factory=list)
+    lens_analysis: list[DecisionLensReading] = Field(default_factory=list)
+    recommendation: str = ""
+    approval_required: bool = True
+    status: DecisionRecordStatus = "open"
+    created_at: datetime
+    updated_at: str | None = None
+    decided_at: str | None = None
+
+
 # ---------------------------------------------------------------------------
 # Founder Energy + Capacity Layer (§31) — mirror of founder-capacity.ts
 # ---------------------------------------------------------------------------
@@ -13048,7 +13122,152 @@ class FounderCapacitySnapshot(BaseModel):
     created_at: datetime
 
 
+# ---------------------------------------------------------------------------
+# Capital Allocation Engine (Profit-First) (§34) — mirror of capital-allocation.ts
+#
+# HARD RULE (Constitution / Part I §13): Alfie NEVER moves money. Every allocation is
+# recommended=True, approved=False; the transfer is approved + executed by the founder.
+# ---------------------------------------------------------------------------
+
+CapitalBucket = Literal[
+    "operating",
+    "taxes",
+    "owner_pay",
+    "reserve",
+    "growth",
+    "tools",
+    "contractors",
+    "legal",
+    "investment",
+]
+
+CapitalMode = Literal["profit_first", "growth", "emergency"]
+
+
+class CapitalAccount(BaseModel):
+    """Mirror of CapitalAccountSchema (capital-allocation.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID
+    bucket: CapitalBucket
+    target_pct: float = Field(ge=0, le=1)
+    balance: float = 0
+    created_at: datetime
+    updated_at: str | None = None
+
+
+class CapitalAllocation(BaseModel):
+    """Mirror of CapitalAllocationSchema (capital-allocation.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID
+    inflow_usd: float
+    split: dict[str, float]
+    mode: CapitalMode
+    recommended: bool = True
+    approved: bool = False
+    created_at: datetime
+
+
+class CapitalRunway(BaseModel):
+    """Mirror of CapitalRunwaySchema (capital-allocation.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID
+    as_of: datetime
+    cash_usd: float
+    monthly_burn_usd: float
+    runway_days: int
+    min_reserve_usd: float
+    mode: CapitalMode
+    created_at: datetime
+
+
+
+# ---- Revenue Operating System (§33) — RevOps brief + fastest-path-to-cash --------------------
+RevOpsFunnelStage = Literal[
+    "traffic", "lead", "qualified", "meeting", "proposal", "close",
+    "delivery", "upsell", "referral", "case_study", "retention",
+]
+
+
+class RevOpsMoneyAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: str
+    action: str
+    business: str
+    expected_revenue_usd: float
+    due: str | None = None
+    status: str
+
+
+class RevOpsStalledDeal(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: str
+    title: str
+    business: str
+    days_stalled: int
+
+
+class RevOpsTopOpportunity(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: str
+    title: str
+    business: str
+    expected_revenue_usd: float
+    probability: float
+    score: float
+
+
+class RevOpsBrief(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: str | None = None
+    as_of: datetime
+    pipeline_value_usd: float = 0
+    open_opportunities: int = 0
+    money_actions_due: list[RevOpsMoneyAction] = Field(default_factory=list)
+    stalled_deals: list[RevOpsStalledDeal] = Field(default_factory=list)
+    top_opportunities: list[RevOpsTopOpportunity] = Field(default_factory=list)
+    created_at: datetime
+
+
+class FastestPathStep(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    opportunity_id: str
+    title: str
+    business: str
+    expected_revenue_usd: float
+    probability: float
+    speed_to_cash_days: float
+    action: str
+
+
+class FastestPathPlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business: str | None = None
+    target_usd: float
+    steps: list[FastestPathStep] = Field(default_factory=list)
+    projected_total_usd: float = 0
+    projected_days: float = 0
+    created_at: datetime
+
+
 __all__ = [
+    "RevOpsFunnelStage", "RevOpsMoneyAction", "RevOpsStalledDeal", "RevOpsTopOpportunity",
+    "RevOpsBrief", "FastestPathStep", "FastestPathPlan",
     "Evidence",
     "Action",
     "SignalToAction",
@@ -14114,4 +14333,17 @@ __all__ = [
     # Founder Energy + Capacity Layer
     "FounderWorkMode",
     "FounderCapacitySnapshot",
+    # Advisory Decision Engine
+    "DecisionLens",
+    "DecisionType",
+    "DecisionReversibility",
+    "DecisionRecordStatus",
+    "DecisionLensReading",
+    "DecisionRecord",
+    # Capital Allocation Engine (Profit-First)
+    "CapitalBucket",
+    "CapitalMode",
+    "CapitalAccount",
+    "CapitalAllocation",
+    "CapitalRunway",
 ]

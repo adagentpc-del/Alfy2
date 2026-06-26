@@ -323,6 +323,45 @@ export {
   type MissionControlAlertStatus,
 } from "./mission-control/alert-service.js";
 
+// Revenue Operating System (§33) — revenue brief + fastest-path-to-cash over the revenue tables.
+export { RevOpsEngine, InMemoryRevOpsReadModel } from "./revops/engine.js";
+export type { RevOpsEngineOptions, FastestPathInput } from "./revops/engine.js";
+export type {
+  RevOpsReadModel,
+  RevOpsAggregate,
+  RevOpsOpportunity,
+  RevOpsActionRow,
+} from "./revops/read-model.js";
+
+// Decision Engine (§35) — principle-lens advisory record + reversibility gate.
+export {
+  AdvisoryDecisionEngine,
+  type AdvisoryDecisionEngineOptions,
+  type EvaluateDecisionInput,
+} from "./decision-engine/engine.js";
+export { LENSES_BY_TYPE, ALL_DECISION_LENSES } from "./decision-engine/lenses.js";
+export { InMemoryDecisionRecordRepository } from "./decision-engine/in-memory-repository.js";
+export type { DecisionRecordRepository, DecisionListFilter } from "./decision-engine/repository.js";
+
+// Capital Allocation (§34) — Profit-First buckets + runway (recommend-only; never moves money).
+export {
+  CapitalAllocationEngine,
+  DEFAULT_CAPITAL_POLICY,
+  type CapitalAllocationEngineOptions,
+  type AllocateInput,
+  type ComputeRunwayInput,
+} from "./capital-allocation/engine.js";
+export {
+  InMemoryCapitalAccountRepository,
+  InMemoryCapitalAllocationRepository,
+  InMemoryCapitalRunwayRepository,
+} from "./capital-allocation/in-memory-repository.js";
+export type {
+  CapitalAccountRepository,
+  CapitalAllocationRepository,
+  CapitalRunwayRepository,
+} from "./capital-allocation/repository.js";
+
 // Continuous Improvement Engine (evaluate workflows; recommend simplify/automate/remove/merge/split/delegate)
 export { ContinuousImprovementEngine } from "./continuous-improvement/engine.js";
 

@@ -103,7 +103,7 @@
     "multiplication:smoke": "tsx scripts/multiplication-smoke.mts",
     "leverage:smoke": "tsx scripts/leverage-smoke.mts",
     "laws:smoke": "tsx scripts/immutable-laws-smoke.mts",
-    "capital:smoke": "tsx scripts/capital-allocator-smoke.mts",
+    "capital:smoke": "tsx scripts/capital-allocation-smoke.mts",
     "oppcost:smoke": "tsx scripts/opportunity-cost-smoke.mts",
     "journal:smoke": "tsx scripts/decision-journal-smoke.mts",
     "timeline:smoke": "tsx scripts/memory-timeline-smoke.mts",
@@ -137,7 +137,9 @@
     "apiapproval:smoke": "tsx scripts/api-approval-smoke.mts",
     "apigw:smoke": "tsx scripts/api-gateway-smoke.mts",
     "missioncontrol:smoke": "tsx scripts/mission-control-smoke.mts",
-    "foundercap:smoke": "tsx scripts/founder-capacity-smoke.mts"
+    "foundercap:smoke": "tsx scripts/founder-capacity-smoke.mts",
+    "revops:smoke": "tsx scripts/revops-smoke.mts",
+    "decision:smoke2": "tsx scripts/decision-engine-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

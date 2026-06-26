@@ -4,6 +4,9 @@ import type {
   MissionControlEngine,
   MissionControlAlertService,
   FounderCapacityEngine,
+  RevOpsEngine,
+  AdvisoryDecisionEngine,
+  CapitalAllocationEngine,
 } from "@alfy2/core";
 
 /**
@@ -16,6 +19,9 @@ export interface RequestRepos {
   missionControl: MissionControlEngine;
   missionControlAlerts: MissionControlAlertService;
   founderCapacity: FounderCapacityEngine;
+  revops: RevOpsEngine;
+  decisions: AdvisoryDecisionEngine;
+  capital: CapitalAllocationEngine;
 }
 
 /**

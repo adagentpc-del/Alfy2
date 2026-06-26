@@ -7,6 +7,9 @@ import {
   MissionControlEngine,
   MissionControlAlertService,
   FounderCapacityEngine,
+  RevOpsEngine,
+  AdvisoryDecisionEngine,
+  CapitalAllocationEngine,
 } from "@alfy2/core";
 import {
   Db,
@@ -15,6 +18,11 @@ import {
   PgMissionControlReadModel,
   PgMissionControlAlertRepository,
   PgFounderCapacityRepository,
+  PgRevOpsReadModel,
+  PgDecisionRecordRepository,
+  PgCapitalAccountRepository,
+  PgCapitalAllocationRepository,
+  PgCapitalRunwayRepository,
 } from "@alfy2/db";
 import { createApp } from "./app.js";
 import { makeJwksVerifier } from "./auth/jwks.js";
@@ -53,12 +61,22 @@ async function main(): Promise<void> {
           new PgMissionControlAlertRepository(q),
         );
         const founderCapacity = new FounderCapacityEngine(new PgFounderCapacityRepository(q));
+        const revops = new RevOpsEngine(new PgRevOpsReadModel(q));
+        const decisions = new AdvisoryDecisionEngine(new PgDecisionRecordRepository(q));
+        const capital = new CapitalAllocationEngine({
+          accounts: new PgCapitalAccountRepository(q),
+          allocations: new PgCapitalAllocationRepository(q),
+          runway: new PgCapitalRunwayRepository(q),
+        });
         const ctx: RequestRepos = {
           inbox,
           gate,
           missionControl,
           missionControlAlerts,
           founderCapacity,
+          revops,
+          decisions,
+          capital,
         };
         return fn(ctx);
       },

@@ -21,6 +21,15 @@ import {
   InMemoryMissionControlAlertRepository,
   FounderCapacityEngine,
   InMemoryFounderCapacityRepository,
+  RevOpsEngine,
+  InMemoryRevOpsReadModel,
+  type RevOpsAggregate,
+  AdvisoryDecisionEngine,
+  InMemoryDecisionRecordRepository,
+  CapitalAllocationEngine,
+  InMemoryCapitalAccountRepository,
+  InMemoryCapitalAllocationRepository,
+  InMemoryCapitalRunwayRepository,
 } from "@alfy2/core";
 import { createApp } from "../services/api/src/app.js";
 import type { AppDeps, RequestRepos } from "../services/api/src/app.js";
@@ -63,8 +72,27 @@ const missionControlAlerts = new MissionControlAlertService(
   new InMemoryMissionControlAlertRepository(),
 );
 
+const revopsFixture: RevOpsAggregate = {
+  as_of: "2026-06-26T12:00:00.000Z",
+  opportunities: [
+    { id: "o1", title: "Henderson move", business: "move_mi", expected_revenue_usd: 2400, probability: 0.8, score: 90, speed_to_cash_days: 3, status: "open", updated_at: "2026-06-25T12:00:00.000Z" },
+    { id: "o2", title: "Office relocation", business: "move_mi", expected_revenue_usd: 5800, probability: 0.5, score: 70, speed_to_cash_days: 10, status: "open", updated_at: "2026-06-24T12:00:00.000Z" },
+  ],
+  money_actions: [],
+};
+const revops = new RevOpsEngine(new InMemoryRevOpsReadModel(revopsFixture));
+const advisoryDecisions = new AdvisoryDecisionEngine(new InMemoryDecisionRecordRepository());
+const capital = new CapitalAllocationEngine({
+  accounts: new InMemoryCapitalAccountRepository(),
+  allocations: new InMemoryCapitalAllocationRepository(),
+  runway: new InMemoryCapitalRunwayRepository(),
+});
+
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
-  const ctx: RequestRepos = { inbox, gate, missionControl, missionControlAlerts, founderCapacity };
+  const ctx: RequestRepos = {
+    inbox, gate, missionControl, missionControlAlerts, founderCapacity, revops,
+    decisions: advisoryDecisions, capital,
+  };
   return fn(ctx);
 };
 
@@ -268,6 +296,41 @@ let approvalId = "";
   assert.equal(capacity?.recommended_mode, snap.recommended_mode, "latest matches the check-in");
 }
 
+// --- 9. Revenue OS: RevOps brief, Decision Engine, Capital Allocation ----------------------------
+
+{
+  const brief = await app.request("/revops/brief", { method: "GET", headers: authHeader(token) });
+  assert.equal(brief.status, 200, "revops brief → 200");
+  const b = (await brief.json()) as { pipeline_value_usd: number; open_opportunities: number };
+  assert.equal(b.pipeline_value_usd, 8200, "pipeline = sum of open opps (2400 + 5800)");
+  assert.equal(b.open_opportunities, 2, "two open opportunities");
+
+  const fp = await app.request("/revops/fastest-path?target=6000", { method: "GET", headers: authHeader(token) });
+  assert.equal(fp.status, 200, "fastest-path → 200");
+  const plan = (await fp.json()) as { steps: unknown[]; projected_total_usd: number };
+  assert.ok(plan.steps.length >= 1, "fastest-path returns steps");
+
+  const dec = await app.request("/decisions/evaluate", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ title: "Raise a fund", decision_type: "capital", reversibility: "one_way_door" }),
+  });
+  assert.equal(dec.status, 201, "decision evaluate → 201");
+  const record = (await dec.json()) as { approval_required: boolean; lens_analysis: unknown[] };
+  assert.equal(record.approval_required, true, "one-way-door capital decision requires approval");
+  assert.ok(record.lens_analysis.length >= 1, "lens analysis present");
+
+  const alloc = await app.request("/capital/allocate", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ business_id: "00000000-0000-0000-0000-0000000000aa", inflow_usd: 1000 }),
+  });
+  assert.equal(alloc.status, 201, "capital allocate → 201");
+  const a = (await alloc.json()) as { split: Record<string, number>; approved: boolean };
+  const sum = Object.values(a.split).reduce((x, y) => x + y, 0);
+  assert.ok(Math.abs(sum - 1000) < 0.01, "allocation split sums to the inflow");
+  assert.equal(a.approved, false, "allocation is recommend-only — never auto-approved");
+}
+
 console.log(
-  "API GATEWAY SMOKE OK — auth 401s, inbox ingest+list, approval gate parks (202) and clears (200) once approved, mission-control snapshot+brief, founder capacity check-in, health 200.",
+  "API GATEWAY SMOKE OK — auth 401s, inbox, approval gate park/clear, mission-control, founder capacity, " +
+    "revops brief + fastest-path, decision gate, capital allocation (recommend-only), health 200.",
 );
