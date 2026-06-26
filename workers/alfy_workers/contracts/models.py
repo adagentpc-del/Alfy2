@@ -11918,6 +11918,75 @@ class SwarmReport(BaseModel):
     created_at: datetime
 
 
+# ===========================================================================
+# Business Operating Profile + Context Stack (mirror of business-profile.ts)
+# ===========================================================================
+
+BusinessTier = Literal["tier_1", "tier_2", "tier_3"]
+BusinessProfileStatus = Literal["active", "paused", "archived"]
+BusinessContextLayer = Literal[
+    "security_compliance", "global_rules", "founder_profile", "department_instructions",
+    "role_instructions", "skill_playbook", "business_profile", "project_context",
+    "relationship_history", "source_of_truth", "task_instructions",
+]
+
+
+class ProfileOffer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1)
+    price: str = ""
+    terms: str = ""
+
+
+class BusinessOperatingProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    tier: BusinessTier = "tier_1"
+    identity: str = ""
+    mission: str = ""
+    revenue_model: str = ""
+    offers: list[ProfileOffer] = Field(default_factory=list)
+    pricing_notes: str = ""
+    target_audiences: list[str] = Field(default_factory=list)
+    brand_voice: str = ""
+    approved_language: list[str] = Field(default_factory=list)
+    banned_language: list[str] = Field(default_factory=list)
+    growth_channels: list[str] = Field(default_factory=list)
+    platform_connections: list[str] = Field(default_factory=list)
+    source_of_truth_systems: list[str] = Field(default_factory=list)
+    active_campaigns: list[str] = Field(default_factory=list)
+    current_priorities: list[str] = Field(default_factory=list)
+    compliance_risks: list[str] = Field(default_factory=list)
+    compliance_caution: str = ""
+    ai_skills_used: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    improvement_backlog: list[str] = Field(default_factory=list)
+    status: BusinessProfileStatus = "active"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class ContextStackEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    layer: BusinessContextLayer
+    content: list[str] = Field(default_factory=list)
+
+
+class ContextStack(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    task: str = Field(min_length=1)
+    layers: list[ContextStackEntry] = Field(default_factory=list)
+    brand_voice: str = ""
+    banned_language: list[str] = Field(default_factory=list)
+    compliance_caution: str = ""
+    created_at: datetime
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -12882,4 +12951,9 @@ __all__ = [
     "SwarmCandidate",
     "SwarmCluster",
     "SwarmReport",
+    # Business Operating Profile + Context Stack
+    "ProfileOffer",
+    "BusinessOperatingProfile",
+    "ContextStackEntry",
+    "ContextStack",
 ]

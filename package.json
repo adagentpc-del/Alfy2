@@ -124,7 +124,8 @@
     "peopleops:smoke": "tsx scripts/people-ops-smoke.mts",
     "deptos:smoke": "tsx scripts/department-os-smoke.mts",
     "aiorg:smoke": "tsx scripts/ai-org-smoke.mts",
-    "swarm:smoke": "tsx scripts/swarm-lab-smoke.mts"
+    "swarm:smoke": "tsx scripts/swarm-lab-smoke.mts",
+    "bizprofile:smoke": "tsx scripts/business-profile-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

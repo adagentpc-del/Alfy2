@@ -1646,3 +1646,6 @@ export * from "./contracts/revenue-command.js";
 
 // Swarm Lab — R&D's bounded swarm.
 export * from "./contracts/swarm-lab.js";
+
+// Business Operating Profiles + Context Stack (business-aware execution).
+export * from "./contracts/business-profile.js";

@@ -4,6 +4,26 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — R&D / Swarm Lab + Business Operating Profiles (native features, LIVE)
+- **R&D department + Swarm Lab** (`SwarmLabEngine`) — added R&D as the **13th department**, and a
+  bounded swarm as its capability: parallel exploration that **refuses to run without a delegation
+  packet** (chain of command), is permission-scoped to draft/recommend only, produces non-executing
+  candidates, converges + ranks them, reports up to the R&D Lead, and promotes top picks into the
+  approval-gated pipeline. This is how Alfy² borrows swarm-style parallelism without losing
+  accountability. Contract `swarm-lab.ts`, migration `0229` (4 tables + RLS, live).
+- **Business Operating Profiles + Context Stack** (`BusinessProfileEngine`) — powers business-aware
+  execution ("same global skill, different business execution"). Seeds the 5 Tier-1 profiles
+  (Alfie2, Move Mi, Divini Procure, Divini Partners, StrataLogic) with mission, revenue model,
+  offers, brand voice, **banned language**, channels, source-of-truth, compliance caution, KPIs, and
+  backlog. `buildContextStack` assembles the canonical **11-layer context** (security first) scoped
+  to one business; `enforceNoCrossBusiness` **throws** if two business contexts are mixed (Move Mi
+  marketing can't use Divini pricing; StrataLogic carries health disclaimers; Black Flag bans
+  aggressive sales language). Contract `business-profile.ts`, migration `0230` (2 tables + RLS, live).
+  NOTE: the broader "AI Organization Operating System" master spec was ~95% already live (AI Org
+  chain-of-command, Department OS, CRO, scorecards, KPIs, learning engines) — per the verify/merge
+  rule it was NOT rebuilt; only these two genuine gaps were added. Database now **203 tables, all
+  RLS-on**; full `tsc -b` green; smokes pass; **582 pytest**.
+
 ### Added — AI Organization + CRO/Revenue Command (native features, LIVE)
 - **AI Organization / Chain of Command** (`AiOrgEngine`) — turns the agent set into an accountable
   AI company. Seeds **78 role cards** (4 executives, 11 department leaders, 63 employees) across 12

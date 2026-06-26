@@ -760,3 +760,15 @@ export { RevenueCommandEngine, type RevenueCommandEngineOptions } from "./revenu
 
 // Swarm Lab — R&D department's bounded swarm (parallel exploration → approval-gated pipeline)
 export { SwarmLabEngine, type SwarmLabOptions, type SwarmGenerator } from "./swarm-lab/engine.js";
+
+// Business Operating Profiles + Context Stack (business-aware execution; no cross-business mixing)
+export {
+  BusinessProfileEngine,
+  TIER1_PROFILES,
+  CONTEXT_STACK_LAYER_ORDER,
+  type BusinessProfileEngineOptions,
+  type UpsertBusinessProfileInput,
+  type ListProfilesFilter,
+  type ContextLayerContent,
+  type BuildContextStackInput,
+} from "./business-profile/engine.js";
