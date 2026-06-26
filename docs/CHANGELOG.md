@@ -4,6 +4,33 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — Review Cadence + Expert Council + Org Health + Incentive Ecosystem (native features, LIVE)
+- **Executive Review Cadence + Master Docs** (`ReviewCadenceEngine`) — structured monthly/quarterly/
+  yearly reviews for each business AND the portfolio: collect department reports → assemble a
+  board-quality master doc (exact section set per level + meeting agenda) → capture Alyssa's feedback
+  (→ decisions/priorities/tasks/SOP changes/paused-killed/next-review goals). Migration `0231` (3 tables).
+- **Expert Knowledge Council + Framework Library** (`ExpertCouncilEngine`) — a private advisory board:
+  seeds 15 frameworks across 9 lenses (Hormozi, Gary Vee, Brunson, StoryBrand, Cialdini, Buffett,
+  Munger, Naval, Dunford, Voss, Codie Sanchez…); lens selector, multi-lens application, conflict
+  resolver, principle-to-execution converter, testing loop, advisory-board mode, "what would the
+  greats do" — all ADAPTED to Alyssa's businesses (never imitation), money/investing approval-gated.
+  Migration `0232` (4 tables).
+- **Org Health / CODO** (`OrgHealthEngine`) — AI-employee wellness track (workload/failure/overload →
+  split/automate/simplify, never "work harder"), communication auditor (10-dimension score), train-
+  not-replace correction loop, org-health report, monthly CEO coaching report (what only Alyssa can
+  do, what AI should own, decision fatigue, founder health). Migration `0233` (5 tables).
+- **Incentive Alignment + Referral Ecosystem + Value Exchange** (`IncentiveEcosystemEngine`) —
+  protects the business first; value-exchange scoring, referral programs, rev-share (payouts approval-
+  gated), ecosystem health score, win-win-win review (approves only if all three parties win);
+  rejects extractive designs. Migration `0234` (5 tables).
+- Plus added **Creative Production** (14th) and **Organizational Development / CODO** (15th)
+  departments to the Department OS seed (now 15 departments / 94 AI employees). NOTE: per the
+  verify/merge rule, the rest of the giant spec (capital allocation, creative asset production,
+  relationship tracking, conversion psychology, generic visibility, framework detection, learning
+  loops) was mapped to existing live engines and NOT rebuilt. All four engines built by parallel
+  agents, integrated + verified by the orchestrator. Database now **220 tables, all RLS-on**; full
+  `tsc -b` green; all smokes pass; **599 pytest**.
+
 ### Added — R&D / Swarm Lab + Business Operating Profiles (native features, LIVE)
 - **R&D department + Swarm Lab** (`SwarmLabEngine`) — added R&D as the **13th department**, and a
   bounded swarm as its capability: parallel exploration that **refuses to run without a delegation

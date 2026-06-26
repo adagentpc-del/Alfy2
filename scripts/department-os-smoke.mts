@@ -16,8 +16,8 @@ const e = new DepartmentOsEngine({ clock: () => NOW, idFactory: id });
 
 // 1. Seed the operating company.
 const { departments, aiEmployees } = e.seedDefaultDepartments(TENANT);
-assert.equal(departments.length, 13, "seeds exactly 13 departments");
-assert.equal(e.listDepartments(TENANT).length, 13, "13 departments persisted");
+assert.equal(departments.length, 15, "seeds exactly 15 departments");
+assert.equal(e.listDepartments(TENANT).length, 15, "15 departments persisted");
 
 // Every department has an operating loop AND KPIs.
 assert.ok(
@@ -41,6 +41,8 @@ for (const k of [
   "people_operations",
   "fundraising_development",
   "research_development",
+  "creative_production",
+  "organizational_development",
 ]) {
   assert.ok(keys.has(k), `department "${k}" seeded`);
 }
@@ -68,7 +70,7 @@ assert.equal(employeeCount, e.listAiEmployees(TENANT).length, "all seeded AI emp
 
 // Idempotent re-seed does not duplicate.
 e.seedDefaultDepartments(TENANT);
-assert.equal(e.listDepartments(TENANT).length, 13, "re-seed does not duplicate departments");
+assert.equal(e.listDepartments(TENANT).length, 15, "re-seed does not duplicate departments");
 assert.equal(e.listAiEmployees(TENANT).length, employeeCount, "re-seed does not duplicate AI employees");
 
 // 2. Record some KPIs — each linked to a business outcome.
@@ -94,7 +96,7 @@ assert.equal(e.listKpiRecords(TENANT).length, 2, "KPI records appended");
 const clean = e.validateGovernance(TENANT);
 assert.equal(clean.ok, true, "seeded set passes governance");
 assert.equal(clean.violations.length, 0, "no governance violations for seeded set");
-assert.equal(clean.departments_checked, 13, "governance checked all departments");
+assert.equal(clean.departments_checked, 15, "governance checked all departments");
 
 // 4. Introduce violations and assert they are flagged.
 // (a) AI employee without a department.
@@ -128,5 +130,5 @@ assert.throws(
 );
 
 console.log(
-  `DEPARTMENT OS SMOKE OK — 13 departments (incl. R&D), ${employeeCount} AI employees, governance enforced`,
+  `DEPARTMENT OS SMOKE OK — 15 departments (incl. R&D, Creative, Org Dev), ${employeeCount} AI employees, governance enforced`,
 );

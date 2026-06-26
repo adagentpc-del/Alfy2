@@ -11987,6 +11987,477 @@ class ContextStack(BaseModel):
     created_at: datetime
 
 
+# ===========================================================================
+# Executive Review Cadence + Master Docs (mirror of review-cadence.ts)
+# ===========================================================================
+
+ReviewLevel = Literal[
+    "monthly_business", "monthly_portfolio", "quarterly_business",
+    "quarterly_portfolio", "yearly_business", "yearly_portfolio",
+]
+ReviewMeetingMode = Literal["monthly_operator", "quarterly_ceo", "yearly_portfolio"]
+ReviewStatus = Literal[
+    "collecting", "drafted", "sent_for_review", "reviewed", "actioned", "archived",
+]
+
+
+class ReviewDepartmentReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    review_id: UUID
+    department_key: str = Field(min_length=1)
+    wins: list[str] = Field(default_factory=list)
+    failures: list[str] = Field(default_factory=list)
+    kpis: dict[str, float] = Field(default_factory=dict)
+    risks: list[str] = Field(default_factory=list)
+    blockers: list[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
+    decisions_needed: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class ReviewSection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    title: str = Field(min_length=1)
+    body: str = ""
+
+
+class ReviewKpiTable(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1)
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ApprovalChecklistItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    item: str = Field(min_length=1)
+    checked: bool = False
+
+
+class MasterReviewDoc(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str | None = None
+    level: ReviewLevel
+    period: str = Field(min_length=1)
+    meeting_mode: ReviewMeetingMode
+    executive_summary: str = ""
+    sections: list[ReviewSection] = Field(default_factory=list)
+    kpi_tables: list[ReviewKpiTable] = Field(default_factory=list)
+    decisions_needed: list[str] = Field(default_factory=list)
+    recommended_actions: list[str] = Field(default_factory=list)
+    risks: list[str] = Field(default_factory=list)
+    priorities: list[str] = Field(default_factory=list)
+    data_sources: list[str] = Field(default_factory=list)
+    approval_checklist: list[ApprovalChecklistItem] = Field(default_factory=list)
+    follow_up_tasks: list[str] = Field(default_factory=list)
+    agenda: list[str] = Field(default_factory=list)
+    status: ReviewStatus = "collecting"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class ReviewFeedback(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    review_id: UUID
+    decisions: list[str] = Field(default_factory=list)
+    updated_priorities: list[str] = Field(default_factory=list)
+    new_tasks: list[str] = Field(default_factory=list)
+    sop_changes: list[str] = Field(default_factory=list)
+    paused_or_killed: list[str] = Field(default_factory=list)
+    next_review_goals: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+# ===========================================================================
+# Expert Knowledge Council + Framework Library (mirror of expert-council.ts)
+# ===========================================================================
+
+ExpertLensKind = Literal[
+    "offer_pricing", "marketing_attention", "sales_persuasion", "operations_scaling",
+    "wealth_investing", "psychology_behavior", "product_growth", "leadership_culture",
+    "negotiation_deals", "nonprofit_fundraising",
+]
+FrameworkTestStatus = Literal[
+    "untested", "testing", "validated", "adapted", "rejected", "archived",
+]
+
+
+class ExpertFramework(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    expert: str = Field(min_length=1)
+    discipline: ExpertLensKind
+    source: str = ""
+    principle: str = Field(min_length=1)
+    framework_name: str = Field(min_length=1)
+    best_use_case: str = ""
+    bad_use_case: str = ""
+    misuse_risk: str = ""
+    adapted_for_alyssa: str = ""
+    business_applications: list[str] = Field(default_factory=list)
+    implementation_steps: list[str] = Field(default_factory=list)
+    kpi: str = ""
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    test_status: FrameworkTestStatus = "untested"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class LensRecommendation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    lens: ExpertLensKind
+    recommendation: str = Field(min_length=1)
+
+
+class LensApplication(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    objective: str = Field(min_length=1)
+    business_key: str = ""
+    selected_lenses: list[ExpertLensKind] = Field(default_factory=list)
+    recommendations: list[LensRecommendation] = Field(default_factory=list)
+    conflicts: list[str] = Field(default_factory=list)
+    chosen_strategy: str = ""
+    execution_steps: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
+    approval_needed: bool = False
+    created_at: datetime
+
+
+class PrincipleConversion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    principle: str = Field(min_length=1)
+    businesses: list[str] = Field(default_factory=list)
+    departments: list[str] = Field(default_factory=list)
+    agents: list[str] = Field(default_factory=list)
+    templates_needed: list[str] = Field(default_factory=list)
+    sops_needed: list[str] = Field(default_factory=list)
+    campaign_use: str = ""
+    product_use: str = ""
+    kpi: str = ""
+    recommended_test: str = ""
+    created_at: datetime
+
+
+class BoardLensView(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    lens_name: str = Field(min_length=1)
+    recommendation: str = Field(min_length=1)
+
+
+class AdvisoryBoardReview(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    decision: str = Field(min_length=1)
+    lenses_run: list[BoardLensView] = Field(default_factory=list)
+    tradeoffs: list[str] = Field(default_factory=list)
+    decision_required: str = ""
+    fastest_safe_next_step: str = ""
+    created_at: datetime
+
+
+# ===========================================================================
+# Org Health / CODO (mirror of org-health.ts)
+# ===========================================================================
+
+WellnessRecommendation = Literal[
+    "ok", "split_responsibilities", "add_specialist", "improve_automation",
+    "improve_delegation", "simplify_sops", "pause", "retire",
+]
+FailureDiagnosis = Literal[
+    "wrong_business_context", "wrong_audience", "wrong_skill", "missing_source_data",
+    "unclear_instructions", "outdated_memory", "insufficient_examples", "weak_prompt",
+    "wrong_model", "missing_approval_rule", "poor_handoff",
+]
+CorrectionUpdate = Literal[
+    "instructions", "skill_playbook", "business_profile", "templates",
+    "examples", "source_of_truth", "qa_checklist",
+]
+
+
+class AgentWellnessSnapshot(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    agent: str = Field(min_length=1)
+    workload: int = Field(ge=0)
+    waiting_tasks: int = Field(ge=0)
+    avg_response_ms: float = Field(ge=0)
+    approval_delay_ms: float = Field(ge=0)
+    failure_rate: float = Field(ge=0, le=1)
+    handoff_success: float = Field(ge=0, le=1)
+    context_size: int = Field(ge=0)
+    cost_per_run: float = Field(ge=0)
+    token_efficiency: float = Field(ge=0, le=1)
+    overloaded: bool
+    recommendation: WellnessRecommendation
+    created_at: datetime
+
+
+class CommunicationAudit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    from_agent: str = Field(min_length=1)
+    to_agent: str = Field(min_length=1)
+    packet_id: UUID | None = None
+    clarity: float = Field(ge=0, le=1)
+    completeness: float = Field(ge=0, le=1)
+    context: float = Field(ge=0, le=1)
+    resource_availability: float = Field(ge=0, le=1)
+    ambiguity: float = Field(ge=0, le=1)
+    handoff_quality: float = Field(ge=0, le=1)
+    business_awareness: float = Field(ge=0, le=1)
+    goal_awareness: float = Field(ge=0, le=1)
+    kpi_awareness: float = Field(ge=0, le=1)
+    approval_awareness: float = Field(ge=0, le=1)
+    score: float = Field(ge=0, le=1)
+    issues: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class AgentCorrection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    agent: str = Field(min_length=1)
+    failure_diagnosis: FailureDiagnosis
+    updates_made: list[CorrectionUpdate] = Field(default_factory=list)
+    notes: str = ""
+    created_at: datetime
+
+
+class OrgHealthReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    period: str = Field(min_length=1)
+    org_health_score: float = Field(ge=0, le=100)
+    bottlenecks: list[str] = Field(default_factory=list)
+    overloaded_agents: list[str] = Field(default_factory=list)
+    underutilized_agents: list[str] = Field(default_factory=list)
+    approval_delays: list[str] = Field(default_factory=list)
+    repeated_mistakes: list[str] = Field(default_factory=list)
+    outdated_sops: list[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+class CeoCoachingReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    period: str = Field(min_length=1)
+    too_much_time_on: list[str] = Field(default_factory=list)
+    only_alyssa_can_do: list[str] = Field(default_factory=list)
+    ai_should_own: list[str] = Field(default_factory=list)
+    humans_should_own: list[str] = Field(default_factory=list)
+    should_disappear: list[str] = Field(default_factory=list)
+    decision_fatigue_points: list[str] = Field(default_factory=list)
+    perfectionism_points: list[str] = Field(default_factory=list)
+    missed_opportunities: list[str] = Field(default_factory=list)
+    leverage_increased: list[str] = Field(default_factory=list)
+    leverage_decreased: list[str] = Field(default_factory=list)
+    founder_health_indicators: list[str] = Field(default_factory=list)
+    recommended_focus_next_month: list[str] = Field(default_factory=list)
+    created_at: datetime
+
+
+# ===========================================================================
+# Incentive Alignment + Referral Ecosystem (mirror of incentive-ecosystem.ts)
+# ===========================================================================
+
+EcosystemParticipantKind = Literal[
+    "vendor", "venue", "developer", "investor", "sponsor", "donor", "customer",
+    "partner", "employee", "contractor", "platform_user", "referral_source",
+]
+IncentiveType = Literal[
+    "revenue_share", "referral_reward", "visibility", "preferred_placement",
+    "early_access", "status_tier", "exclusive_resource", "discount", "done_for_you",
+    "faster_response", "reporting_insights", "networking_intro", "content_feature",
+    "case_study",
+]
+IncentiveVerdict = Literal["recommend", "revise", "reject"]
+RevSharePayoutStatus = Literal["pending", "approved", "paid", "disputed"]
+ReferralProgramStatus = Literal["active", "paused"]
+
+
+class IncentiveEvaluation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    participant_kind: EcosystemParticipantKind
+    incentive_type: IncentiveType
+    what_they_want: str = ""
+    what_they_give: str = ""
+    what_they_receive: str = ""
+    business_upside: float = Field(default=0, ge=0, le=1)
+    participant_upside: float = Field(default=0, ge=0, le=1)
+    cost_to_deliver: float = Field(default=0, ge=0, le=1)
+    margin_impact: float = Field(default=0, ge=0, le=1)
+    retention_impact: float = Field(default=0, ge=0, le=1)
+    referral_likelihood: float = Field(default=0, ge=0, le=1)
+    reputation_impact: float = Field(default=0, ge=0, le=1)
+    abuse_risk: float = Field(default=0, ge=0, le=1)
+    value_exchange_score: float = Field(default=0, ge=0, le=100)
+    approval_required: bool = False
+    verdict: IncentiveVerdict = "revise"
+    notes: str = ""
+    created_at: datetime
+
+
+class EvaluateIncentiveInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business_key: str = Field(min_length=1)
+    participant_kind: EcosystemParticipantKind
+    incentive_type: IncentiveType
+    what_they_want: str = ""
+    what_they_give: str = ""
+    what_they_receive: str = ""
+    business_upside: float = Field(default=0, ge=0, le=1)
+    participant_upside: float = Field(default=0, ge=0, le=1)
+    cost_to_deliver: float = Field(default=0, ge=0, le=1)
+    margin_impact: float = Field(default=0, ge=0, le=1)
+    retention_impact: float = Field(default=0, ge=0, le=1)
+    referral_likelihood: float = Field(default=0, ge=0, le=1)
+    reputation_impact: float = Field(default=0, ge=0, le=1)
+    abuse_risk: float = Field(default=0, ge=0, le=1)
+    involves_money: bool = False
+    notes: str = ""
+
+
+class ReferralProgram(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    who_can_refer: str = ""
+    who_they_refer: str = ""
+    reward: str = ""
+    tracking_method: str = ""
+    payout_logic: str = ""
+    eligibility: str = ""
+    fraud_prevention: str = ""
+    relationship_protection: str = ""
+    follow_up_sequence: list[str] = Field(default_factory=list)
+    status: ReferralProgramStatus = "active"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class CreateReferralProgramInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business_key: str = Field(min_length=1)
+    who_can_refer: str = ""
+    who_they_refer: str = ""
+    reward: str = ""
+    tracking_method: str = ""
+    payout_logic: str = ""
+    eligibility: str = ""
+    fraud_prevention: str = ""
+    relationship_protection: str = ""
+    follow_up_sequence: list[str] = Field(default_factory=list)
+    status: ReferralProgramStatus = "active"
+
+
+class RevShareRecord(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    source_partner: str = ""
+    referred_party: str = ""
+    transaction_ref: str = ""
+    fee_pct: float = 0
+    payout_pct: float = 0
+    payout_trigger: str = ""
+    payout_status: RevSharePayoutStatus = "pending"
+    agreement_status: str = ""
+    created_at: datetime
+
+
+class RecordRevShareInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business_key: str = Field(min_length=1)
+    source_partner: str = ""
+    referred_party: str = ""
+    transaction_ref: str = ""
+    fee_pct: float = 0
+    payout_pct: float = 0
+    payout_trigger: str = ""
+    agreement_status: str = ""
+
+
+class EcosystemHealthScore(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    value_created: float = Field(default=0, ge=0, le=1)
+    incentive_fairness: float = Field(default=0, ge=0, le=1)
+    referral_activity: float = Field(default=0, ge=0, le=1)
+    repeat_participation: float = Field(default=0, ge=0, le=1)
+    trust_signals: float = Field(default=0, ge=0, le=1)
+    disputes: int = Field(default=0, ge=0)
+    payout_timeliness: float = Field(default=0, ge=0, le=1)
+    retention: float = Field(default=0, ge=0, le=1)
+    satisfaction: float = Field(default=0, ge=0, le=1)
+    score: float = Field(default=0, ge=0, le=100)
+    created_at: datetime
+
+
+class ScoreEcosystemHealthInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    value_created: float = Field(default=0, ge=0, le=1)
+    incentive_fairness: float = Field(default=0, ge=0, le=1)
+    referral_activity: float = Field(default=0, ge=0, le=1)
+    repeat_participation: float = Field(default=0, ge=0, le=1)
+    trust_signals: float = Field(default=0, ge=0, le=1)
+    disputes: int = Field(default=0, ge=0)
+    payout_timeliness: float = Field(default=0, ge=0, le=1)
+    retention: float = Field(default=0, ge=0, le=1)
+    satisfaction: float = Field(default=0, ge=0, le=1)
+
+
+class WinWinWinReview(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_key: str = Field(min_length=1)
+    proposal: str = ""
+    alyssa_wins: bool = False
+    participant_wins: bool = False
+    end_customer_wins: bool = False
+    builds_trust: bool = False
+    encourages_repeat: bool = False
+    creates_referrals: bool = False
+    verdict: IncentiveVerdict = "revise"
+    created_at: datetime
+
+
+class WinWinWinReviewInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    business_key: str = Field(min_length=1)
+    proposal: str = ""
+    alyssa_wins: bool = False
+    participant_wins: bool = False
+    end_customer_wins: bool = False
+    builds_trust: bool = False
+    encourages_repeat: bool = False
+    creates_referrals: bool = False
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -12956,4 +13427,48 @@ __all__ = [
     "BusinessOperatingProfile",
     "ContextStackEntry",
     "ContextStack",
+    # Executive Review Cadence + Master Docs
+    "ReviewLevel",
+    "ReviewMeetingMode",
+    "ReviewStatus",
+    "ReviewDepartmentReport",
+    "ReviewSection",
+    "ReviewKpiTable",
+    "ApprovalChecklistItem",
+    "MasterReviewDoc",
+    "ReviewFeedback",
+    # Expert Knowledge Council + Framework Library
+    "ExpertLensKind",
+    "FrameworkTestStatus",
+    "ExpertFramework",
+    "LensRecommendation",
+    "LensApplication",
+    "PrincipleConversion",
+    "BoardLensView",
+    "AdvisoryBoardReview",
+    # Org Health / CODO
+    "WellnessRecommendation",
+    "FailureDiagnosis",
+    "CorrectionUpdate",
+    "AgentWellnessSnapshot",
+    "CommunicationAudit",
+    "AgentCorrection",
+    "OrgHealthReport",
+    "CeoCoachingReport",
+    # Incentive Alignment + Referral Ecosystem
+    "EcosystemParticipantKind",
+    "IncentiveType",
+    "IncentiveVerdict",
+    "RevSharePayoutStatus",
+    "ReferralProgramStatus",
+    "IncentiveEvaluation",
+    "EvaluateIncentiveInput",
+    "ReferralProgram",
+    "CreateReferralProgramInput",
+    "RevShareRecord",
+    "RecordRevShareInput",
+    "EcosystemHealthScore",
+    "ScoreEcosystemHealthInput",
+    "WinWinWinReview",
+    "WinWinWinReviewInput",
 ]

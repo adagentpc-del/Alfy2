@@ -1649,3 +1649,9 @@ export * from "./contracts/swarm-lab.js";
 
 // Business Operating Profiles + Context Stack (business-aware execution).
 export * from "./contracts/business-profile.js";
+
+// Executive Review Cadence, Expert Council, Org Health (CODO), Incentive Ecosystem. (Uniquely prefixed.)
+export * from "./contracts/review-cadence.js";
+export * from "./contracts/expert-council.js";
+export * from "./contracts/org-health.js";
+export * from "./contracts/incentive-ecosystem.js";

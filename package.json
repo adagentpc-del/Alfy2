@@ -125,7 +125,11 @@
     "deptos:smoke": "tsx scripts/department-os-smoke.mts",
     "aiorg:smoke": "tsx scripts/ai-org-smoke.mts",
     "swarm:smoke": "tsx scripts/swarm-lab-smoke.mts",
-    "bizprofile:smoke": "tsx scripts/business-profile-smoke.mts"
+    "bizprofile:smoke": "tsx scripts/business-profile-smoke.mts",
+    "reviewcadence:smoke": "tsx scripts/review-cadence-smoke.mts",
+    "council:smoke": "tsx scripts/expert-council-smoke.mts",
+    "orghealth:smoke": "tsx scripts/org-health-smoke.mts",
+    "ecosystem:smoke": "tsx scripts/incentive-ecosystem-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

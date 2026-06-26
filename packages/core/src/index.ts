@@ -772,3 +772,49 @@ export {
   type ContextLayerContent,
   type BuildContextStackInput,
 } from "./business-profile/engine.js";
+
+// Executive Review Cadence + Master Docs (monthly/quarterly/yearly business + portfolio reviews)
+export {
+  ReviewCadenceEngine,
+  type ReviewCadenceEngineOptions,
+  type OpenReviewInput,
+  type SubmitDepartmentReportInput,
+  type CaptureFeedbackInput,
+  type ListReviewsFilter,
+} from "./review-cadence/engine.js";
+
+// Expert Knowledge Council + Framework Library (the greats; lens application + conflict resolution)
+export {
+  ExpertCouncilEngine,
+  DEFAULT_FRAMEWORKS,
+  type ExpertCouncilEngineOptions,
+  type AddFrameworkInput,
+  type ApplyLensesInput,
+  type ConvertPrincipleInput,
+  type RunAdvisoryBoardInput,
+  type WhatWouldTheGreatsDoInput,
+  type ListFrameworksFilter,
+} from "./expert-council/engine.js";
+
+// Org Health / CODO (wellness, communication audits, train-not-replace corrections, CEO coaching)
+export {
+  OrgHealthEngine,
+  recommendWellness,
+  WORKLOAD_HIGH,
+  APPROVAL_DELAY_HIGH_MS,
+  FAILURE_RATE_HIGH,
+  FAILURE_RATE_PAUSE,
+  WORKLOAD_UNDERUTILIZED,
+  COMM_DIMENSION_THRESHOLD,
+  COMM_AMBIGUITY_THRESHOLD,
+  COMM_SCORE_LOW,
+  type OrgHealthEngineOptions,
+  type RecordWellnessInput,
+  type AuditCommunicationInput,
+  type RecordCorrectionInput,
+  type CeoCoachingSeeds,
+  type WeeklyOrgReview,
+} from "./org-health/engine.js";
+
+// Incentive Alignment + Referral Ecosystem + Value Exchange (protect business first; approve money)
+export { IncentiveEcosystemEngine, type IncentiveEcosystemEngineOptions } from "./incentive-ecosystem/engine.js";
