@@ -5340,6 +5340,80 @@ class CaptureRecordInput(BaseModel):
 
 # --- mission-control.ts mirror ---
 
+# §28 read-model (Release 1)
+
+MissionControlAlertSeverity = Literal["info", "warn", "critical"]
+MissionControlAlertCategory = Literal[
+    "revenue", "cash", "risk", "agent", "approval", "health", "launch"
+]
+MissionControlAlertStatus = Literal["open", "acknowledged", "escalated", "resolved"]
+
+
+class MissionControlAlert(BaseModel):
+    """Mirror of MissionControlAlertSchema (mission-control.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    severity: MissionControlAlertSeverity
+    category: MissionControlAlertCategory
+    title: str
+    detail: str = ""
+    source_ref: str = ""
+    requires_approval: bool = False
+    routed_to: str = "mission_control"
+    status: MissionControlAlertStatus = "open"
+    created_at: datetime
+    updated_at: str | None = None
+
+
+class MissionControlPriority(BaseModel):
+    """Mirror of MissionControlPrioritySchema (mission-control.ts)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    rank: int = Field(ge=1, le=3)
+    title: str
+    why: str = ""
+    category: MissionControlAlertCategory
+
+
+class MissionControlSnapshot(BaseModel):
+    """Mirror of MissionControlSnapshotSchema (mission-control.ts, §28 read-model)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    as_of: datetime
+    revenue_today: float = 0
+    cash_position: float = 0
+    cash_runway_days: float | None = None
+    kpi_status: dict[str, Any] = Field(default_factory=dict)
+    approval_queue: list[dict[str, Any]] = Field(default_factory=list)
+    critical_alerts: list[MissionControlAlert] = Field(default_factory=list)
+    blocked_tasks: list[dict[str, Any]] = Field(default_factory=list)
+    active_builds: list[dict[str, Any]] = Field(default_factory=list)
+    agent_activity: dict[str, Any] = Field(default_factory=dict)
+    department_health: dict[str, Any] = Field(default_factory=dict)
+    business_health: dict[str, Any] = Field(default_factory=dict)
+    follow_ups_due: list[dict[str, Any]] = Field(default_factory=list)
+    meetings: list[dict[str, Any]] = Field(default_factory=list)
+    risk_alerts: list[MissionControlAlert] = Field(default_factory=list)
+    founder_capacity: dict[str, Any] = Field(default_factory=dict)
+    top_priorities: list[MissionControlPriority] = Field(default_factory=list)
+    revenue_opportunities: list[dict[str, Any]] = Field(default_factory=list)
+    launch_readiness: dict[str, Any] = Field(default_factory=dict)
+    open_loops: list[dict[str, Any]] = Field(default_factory=list)
+    created_at: datetime
+
+
+# Earlier reading-snapshot placeholder (superseded by the §28 read-model above; kept in lockstep
+# with the MissionControlReading* Zod exports so the original mission smoke + fixtures still validate).
+
 
 class HealthReading(BaseModel):
     """Mirror of HealthReadingSchema (mission-control.ts)."""
@@ -5350,8 +5424,8 @@ class HealthReading(BaseModel):
     label: str = Field(min_length=1)
 
 
-class MissionControlInput(BaseModel):
-    """Mirror of MissionControlInputSchema (mission-control.ts)."""
+class MissionControlReadingInput(BaseModel):
+    """Mirror of MissionControlReadingInputSchema (mission-control.ts)."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -5374,8 +5448,8 @@ class MissionControlInput(BaseModel):
     daily_priorities: list[str] = Field(default_factory=list)
 
 
-class MissionControlSnapshot(BaseModel):
-    """Mirror of MissionControlSnapshotSchema (mission-control.ts)."""
+class MissionControlReadingSnapshot(BaseModel):
+    """Mirror of MissionControlReadingSnapshotSchema (mission-control.ts)."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -13336,9 +13410,12 @@ __all__ = [
     "InstitutionalRecordKind",
     "InstitutionalRecord",
     "CaptureRecordInput",
-    "HealthReading",
-    "MissionControlInput",
+    "MissionControlAlert",
+    "MissionControlPriority",
     "MissionControlSnapshot",
+    "HealthReading",
+    "MissionControlReadingInput",
+    "MissionControlReadingSnapshot",
     "ImprovementAction",
     "ImprovementMetrics",
     "EvaluateWorkflowInput",

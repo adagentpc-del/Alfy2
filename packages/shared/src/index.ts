@@ -1017,12 +1017,24 @@ export {
 } from "./contracts/institutional-memory.js";
 
 export {
-  HealthReadingSchema,
-  MissionControlInputSchema,
+  MissionControlAlertSeveritySchema,
+  MissionControlAlertCategorySchema,
+  MissionControlAlertStatusSchema,
+  MissionControlAlertSchema,
+  MissionControlPrioritySchema,
   MissionControlSnapshotSchema,
-  type HealthReading,
-  type MissionControlInput,
+  HealthReadingSchema,
+  MissionControlReadingInputSchema,
+  MissionControlReadingSnapshotSchema,
+  type MissionControlAlertSeverity,
+  type MissionControlAlertCategory,
+  type MissionControlAlertStatus,
+  type MissionControlAlert,
+  type MissionControlPriority,
   type MissionControlSnapshot,
+  type HealthReading,
+  type MissionControlReadingInput,
+  type MissionControlReadingSnapshot,
 } from "./contracts/mission-control.js";
 
 export {

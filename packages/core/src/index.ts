@@ -302,8 +302,19 @@ export { DigitalTwin } from "./digital-twin/twin.js";
 // Institutional Memory (decision rationale + experiments + lessons; "what did we know and why")
 export { InstitutionalMemory, InstitutionalMemoryError } from "./institutional-memory/ledger.js";
 
-// Executive Mission Control (the primary one-screen dashboard; composes Tower + CFO + Observability)
-export { MissionControl } from "./mission-control/engine.js";
+// Executive Mission Control — Layer 0 CEO read-model (§28: compose snapshot + alerts + priorities + briefs)
+export {
+  MissionControlEngine,
+  type MissionControlEngineOptions,
+} from "./mission-control/engine.js";
+export {
+  InMemoryMissionControlReadModel,
+  type MissionControlReadModel,
+  type MissionControlAggregate,
+  type MissionControlPendingApproval,
+} from "./mission-control/read-model.js";
+// Earlier one-screen reading-snapshot assembler (placeholder superseded by the §28 engine above)
+export { MissionControlSnapshotAssembler } from "./mission-control/reading-snapshot.js";
 
 // Continuous Improvement Engine (evaluate workflows; recommend simplify/automate/remove/merge/split/delegate)
 export { ContinuousImprovementEngine } from "./continuous-improvement/engine.js";

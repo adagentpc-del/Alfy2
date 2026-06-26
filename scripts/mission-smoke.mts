@@ -5,15 +5,15 @@
  * priorities are capped at five. Run with: `tsx scripts/mission-smoke.mts`.
  */
 import assert from "node:assert/strict";
-import { MissionControl } from "@alfy2/core";
-import { MissionControlInputSchema } from "@alfy2/shared";
+import { MissionControlSnapshotAssembler } from "@alfy2/core";
+import { MissionControlReadingInputSchema } from "@alfy2/shared";
 
 const TENANT = "00000000-0000-0000-0000-000000000001";
 const NOW = new Date("2026-06-25T12:00:00.000Z");
 void TENANT;
-const mc = new MissionControl({ clock: () => NOW });
+const mc = new MissionControlSnapshotAssembler({ clock: () => NOW });
 
-const assemble = (input: Record<string, unknown>) => mc.assemble(TENANT, MissionControlInputSchema.parse(input));
+const assemble = (input: Record<string, unknown>) => mc.assemble(TENANT, MissionControlReadingInputSchema.parse(input));
 
 // === 1. Health readings get labels. ===
 const healthy = assemble({

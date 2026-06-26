@@ -1,25 +1,76 @@
 {
+  "id": "11111111-1111-1111-1111-111111111111",
   "tenant_id": "00000000-0000-0000-0000-000000000001",
-  "enterprise_health": { "score": 0.72, "label": "watch" },
-  "company_health": {
-    "Move Mi": { "score": 0.8, "label": "healthy" },
-    "AI Authority": { "score": 0.45, "label": "at risk" }
-  },
-  "revenue_mtd_usd": 42000,
-  "weighted_pipeline_usd": 88000,
-  "cash_usd": 120000,
-  "runway_months": 2.4,
-  "active_goals": 6,
-  "blocked_items": 2,
-  "open_risks": 3,
-  "approvals_waiting": 1,
-  "top_opportunities": ["Close Acme proposal", "Reactivate Divini pipeline"],
-  "agent_health": { "score": 0.95, "label": "healthy" },
-  "automation_health": { "score": 0.88, "label": "healthy" },
-  "system_health": { "score": 1, "label": "healthy" },
-  "ai_cost_mtd_usd": 134.5,
-  "roi": 12.4,
-  "daily_priorities": ["Close the Acme proposal", "Clear the waiting approval"],
-  "headline": "URGENT: runway is 2.4 months — protect cash now.",
-  "generated_at": "2026-06-25T12:00:00.000Z"
+  "business_id": null,
+  "as_of": "2026-06-25T12:00:00.000Z",
+  "revenue_today": 4200,
+  "cash_position": 120000,
+  "cash_runway_days": 45,
+  "kpi_status": { "green": 4, "amber": 1, "red": 1, "worst": "Logistics" },
+  "approval_queue": [
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "action_class": "move_money",
+      "risk": "critical",
+      "summary": "Wire $25k to supplier",
+      "requires_approval": true,
+      "created_at": "2026-06-24T06:00:00.000Z"
+    }
+  ],
+  "critical_alerts": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "tenant_id": "00000000-0000-0000-0000-000000000001",
+      "business_id": null,
+      "severity": "critical",
+      "category": "risk",
+      "title": "High-risk action awaiting approval",
+      "detail": "move_money: Wire $25k to supplier",
+      "source_ref": "22222222-2222-2222-2222-222222222222",
+      "requires_approval": true,
+      "routed_to": "ceo",
+      "status": "open",
+      "created_at": "2026-06-25T12:00:00.000Z",
+      "updated_at": null
+    }
+  ],
+  "blocked_tasks": [{ "id": "b1", "label": "Vendor contract stuck in legal" }],
+  "active_builds": [{ "label": "Mission Control dashboard", "pct": 0.6 }],
+  "agent_activity": { "active": 3, "idle": 1 },
+  "department_health": { "Revenue": "green", "Logistics": "red" },
+  "business_health": { "Move Mi": "green" },
+  "follow_ups_due": [{ "id": "f1", "label": "Acme proposal", "due": "2026-06-26" }],
+  "meetings": [{ "id": "m1", "label": "Investor sync", "at": "2026-06-25T15:00:00.000Z" }],
+  "risk_alerts": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "tenant_id": "00000000-0000-0000-0000-000000000001",
+      "business_id": null,
+      "severity": "critical",
+      "category": "risk",
+      "title": "High-risk action awaiting approval",
+      "detail": "move_money: Wire $25k to supplier",
+      "source_ref": "22222222-2222-2222-2222-222222222222",
+      "requires_approval": true,
+      "routed_to": "ceo",
+      "status": "open",
+      "created_at": "2026-06-25T12:00:00.000Z",
+      "updated_at": null
+    }
+  ],
+  "founder_capacity": { "score": 0.7, "mode": "normal" },
+  "top_priorities": [
+    {
+      "rank": 1,
+      "title": "Approve: Wire $25k to supplier",
+      "why": "High-risk move_money is awaiting your approval.",
+      "category": "approval"
+    }
+  ],
+  "revenue_opportunities": [
+    { "label": "Close Acme proposal", "value": 25000, "status": "hot" }
+  ],
+  "launch_readiness": { "Divini": 0.85 },
+  "open_loops": [{ "id": "b1", "label": "Vendor contract stuck in legal" }],
+  "created_at": "2026-06-25T12:00:00.000Z"
 }
