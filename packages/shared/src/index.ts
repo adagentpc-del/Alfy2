@@ -1615,3 +1615,22 @@ export {
   type RegisterConnectorInput, type ConnectorDefinition, type ConnectInput, type Connection,
   type ResolveConnectionInput, type ConnectionResolution,
 } from "./contracts/connections.js";
+
+export {
+  BrainstormInputSourceSchema, BrainstormInputKindSchema, BrainstormThreadStatusSchema,
+  BrainstormDecisionCategorySchema, DecisionStatusSchema, BrainstormRiskSchema, StrategyLayerSchema,
+  PromptCategorySchema, BuildAgentKindSchema, BuildTaskStatusSchema, BuildTaskPrioritySchema,
+  TaskComplexitySchema, QaVerdictSchema, ApprovalActionSchema, QueueControlSchema,
+  BrainstormThreadSchema, BrainstormInputSchema, IngestBrainstormInputSchema, DecisionCardSchema,
+  StrategyLayerEntrySchema, StrategyMapSchema, BuildPromptCardSchema, BuildPromptPackSchema,
+  BuildTaskSchema, ApprovalSummarySchema, ApproveQueueInputSchema, AgentRunLogSchema, QaCheckSchema,
+  QaResultSchema, BrainstormChangelogEntrySchema,
+  type BrainstormInputSource, type BrainstormInputKind, type BrainstormThreadStatus,
+  type BrainstormDecisionCategory, type DecisionStatus, type BrainstormRisk, type StrategyLayer,
+  type PromptCategory, type BuildAgentKind, type BuildTaskStatus, type BuildTaskPriority,
+  type TaskComplexity, type QaVerdict, type ApprovalAction, type QueueControl,
+  type BrainstormThread, type BrainstormInput, type IngestBrainstormInput, type DecisionCard,
+  type StrategyLayerEntry, type StrategyMap, type BuildPromptCard, type BuildPromptPack,
+  type BuildTask, type ApprovalSummary, type ApproveQueueInput, type AgentRunLog, type QaCheck,
+  type QaResult, type BrainstormChangelogEntry,
+} from "./contracts/build-from-brainstorm.js";

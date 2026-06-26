@@ -10727,6 +10727,260 @@ class ConnectionResolution(BaseModel):
     reason: str = Field(min_length=1)
 
 
+# ===========================================================================
+# Build From Brainstorm (mirror of build-from-brainstorm.ts)
+# ===========================================================================
+
+BrainstormInputSource = Literal[
+    "voice", "text", "pasted_notes", "chatgpt_import", "claude_import",
+    "doc_upload", "screenshot", "video_summary",
+]
+BrainstormInputKind = Literal[
+    "final_decision", "possible_idea", "rejected_idea", "emotional_context",
+    "clarification", "unresolved_question", "feature_request", "business_rule",
+    "ui_ux_note", "technical_instruction", "compliance_risk_note", "prompt_logic",
+    "algorithm_rule", "future_idea",
+]
+BrainstormThreadStatus = Literal[
+    "open", "decisions_extracted", "strategy_mapped", "prompts_generated",
+    "queued", "awaiting_approval", "building", "completed",
+]
+BrainstormDecisionCategory = Literal[
+    "confirmed_decision", "unresolved_decision", "rejected_idea", "assumption",
+    "dependency", "open_question", "business_goal", "system_requirement",
+    "feature_requirement", "workflow_change", "content_update", "prompt_update",
+    "schema_change", "automation_change", "agent_instruction", "qa_requirement",
+]
+DecisionStatus = Literal["confirmed", "needs_review", "rejected", "parked"]
+BrainstormRisk = Literal["low", "medium", "high", "critical"]
+StrategyLayer = Literal[
+    "strategic", "product", "prompt", "workflow", "technical", "ui_ux", "compliance_risk",
+]
+PromptCategory = Literal[
+    "product", "ui_ux", "frontend", "backend", "database_schema",
+    "prompt_engineering", "automation", "qa_testing", "documentation", "compliance_review",
+]
+BuildAgentKind = Literal[
+    "design_ui", "frontend", "backend", "schema", "prompt",
+    "automation", "qa", "documentation", "compliance",
+]
+BuildTaskStatus = Literal[
+    "draft", "needs_review", "approved", "queued", "running", "blocked",
+    "failed", "needs_human_input", "completed", "qa_passed", "deployed", "rolled_back",
+]
+BuildTaskPriority = Literal["low", "medium", "high", "critical"]
+TaskComplexity = Literal["trivial", "small", "medium", "large", "xl"]
+QaVerdict = Literal["passed", "failed", "needs_review", "partial_pass"]
+ApprovalAction = Literal["approve_all", "approve_selected", "revise_before_running", "cancel"]
+QueueControl = Literal[
+    "approve_all", "approve_selected", "reject_selected", "revise_task",
+    "move_to_parking_lot", "run_approved", "pause_queue", "retry_failed", "rollback_task",
+]
+
+
+class BrainstormThread(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    business_id: UUID | None = None
+    title: str = Field(min_length=1)
+    status: BrainstormThreadStatus = "open"
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class BrainstormInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    source: BrainstormInputSource
+    raw_text: str = Field(min_length=1)
+    kind: BrainstormInputKind
+    actionable: bool = False
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    created_at: datetime
+
+
+class IngestBrainstormInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    thread_id: UUID
+    source: BrainstormInputSource = "text"
+    raw_text: str = Field(min_length=1)
+    kind: BrainstormInputKind | None = None
+
+
+class DecisionCard(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    title: str = Field(min_length=1)
+    category: BrainstormDecisionCategory
+    source_input_ids: list[UUID] = Field(default_factory=list)
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    status: DecisionStatus = "needs_review"
+    why_it_matters: str = ""
+    related_task_ids: list[UUID] = Field(default_factory=list)
+    risk_level: BrainstormRisk = "low"
+    approval_required: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class StrategyLayerEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    layer: StrategyLayer
+    what_user_wants: list[str] = Field(default_factory=list)
+    why_it_matters: list[str] = Field(default_factory=list)
+    product_changes: list[str] = Field(default_factory=list)
+    agents_needed: list[BuildAgentKind] = Field(default_factory=list)
+    files_systems_affected: list[str] = Field(default_factory=list)
+    dependencies: list[str] = Field(default_factory=list)
+    needs_approval: bool = False
+    do_not_build_yet: bool = False
+
+
+class StrategyMap(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    layers: list[StrategyLayerEntry] = Field(default_factory=list)
+    parked_decision_ids: list[UUID] = Field(default_factory=list)
+    created_at: datetime
+
+
+class BuildPromptCard(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    category: PromptCategory
+    task_title: str = Field(min_length=1)
+    objective: str = ""
+    context: str = ""
+    requirements: list[str] = Field(default_factory=list)
+    affected_area: str = ""
+    acceptance_criteria: list[str] = Field(default_factory=list)
+    constraints: list[str] = Field(default_factory=list)
+    dependencies: list[str] = Field(default_factory=list)
+    test_steps: list[str] = Field(default_factory=list)
+    rollback_notes: str = ""
+    recommended_agent: BuildAgentKind
+    decision_ids: list[UUID] = Field(default_factory=list)
+    created_at: datetime
+
+
+class BuildPromptPack(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    prompt_ids: list[UUID] = Field(default_factory=list)
+    created_at: datetime
+
+
+class BuildTask(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    prompt_id: UUID | None = None
+    name: str = Field(min_length=1)
+    status: BuildTaskStatus = "draft"
+    priority: BuildTaskPriority = "medium"
+    assigned_agent: BuildAgentKind
+    estimated_complexity: TaskComplexity = "medium"
+    dependencies: list[UUID] = Field(default_factory=list)
+    approved: bool = False
+    approved_at: datetime | None = None
+    execution_log: list[str] = Field(default_factory=list)
+    result: str = ""
+    qa_state: QaVerdict | None = None
+    rollback_available: bool = False
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class ApprovalSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    task_ids: list[UUID] = Field(default_factory=list)
+    affected_files_modules: list[str] = Field(default_factory=list)
+    risks: list[str] = Field(default_factory=list)
+    dependencies: list[str] = Field(default_factory=list)
+    includes_database_changes: bool = False
+    includes_ui_changes: bool = False
+    includes_production_deploy: bool = False
+    highest_risk: BrainstormRisk = "low"
+    created_at: datetime
+
+
+class ApproveQueueInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    thread_id: UUID
+    action: ApprovalAction
+    task_ids: list[UUID] = Field(default_factory=list)
+
+
+class AgentRunLog(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    task_id: UUID
+    agent: BuildAgentKind
+    started_at: datetime
+    finished_at: datetime | None = None
+    files_touched: list[str] = Field(default_factory=list)
+    changes_made: list[str] = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+    blockers: list[str] = Field(default_factory=list)
+    completion_result: Literal["completed", "failed", "needs_human_input", "blocked"]
+    qa_result: QaVerdict | None = None
+    changelog_entry_id: UUID | None = None
+
+
+class QaCheck(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1)
+    passed: bool
+    detail: str = ""
+
+
+class QaResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    task_id: UUID
+    verdict: QaVerdict
+    checks: list[QaCheck] = Field(default_factory=list)
+    failure_reason: str | None = None
+    recommended_fix: str | None = None
+    retry_prompt: str | None = None
+    human_review_required: bool = False
+    created_at: datetime
+
+
+class BrainstormChangelogEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: UUID
+    tenant_id: UUID
+    thread_id: UUID
+    created_at: datetime
+    brainstorm_source: str = ""
+    decisions_extracted: int = Field(default=0, ge=0)
+    tasks_completed: list[str] = Field(default_factory=list)
+    tasks_failed: list[str] = Field(default_factory=list)
+    files_modules_changed: list[str] = Field(default_factory=list)
+    qa_results_summary: str = ""
+    deployment_status: Literal["none", "staged", "deployed", "rolled_back"] = "none"
+    rollback_notes: str = ""
+    next_recommended_actions: list[str] = Field(default_factory=list)
+
+
 __all__ = [
     "Evidence",
     "Action",
@@ -11571,4 +11825,20 @@ __all__ = [
     "Connection",
     "ResolveConnectionInput",
     "ConnectionResolution",
+    # Build From Brainstorm
+    "BrainstormThread",
+    "BrainstormInput",
+    "IngestBrainstormInput",
+    "DecisionCard",
+    "StrategyLayerEntry",
+    "StrategyMap",
+    "BuildPromptCard",
+    "BuildPromptPack",
+    "BuildTask",
+    "ApprovalSummary",
+    "ApproveQueueInput",
+    "AgentRunLog",
+    "QaCheck",
+    "QaResult",
+    "BrainstormChangelogEntry",
 ]

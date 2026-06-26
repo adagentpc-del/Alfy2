@@ -119,7 +119,8 @@
     "execteam:smoke": "tsx scripts/exec-team-smoke.mts",
     "readmodels:smoke": "tsx scripts/readmodels-smoke.mts",
     "connections:smoke": "tsx scripts/connections-smoke.mts",
-    "db:smoke": "tsx scripts/db-smoke.mts"
+    "db:smoke": "tsx scripts/db-smoke.mts",
+    "brainstorm:smoke": "tsx scripts/build-from-brainstorm-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

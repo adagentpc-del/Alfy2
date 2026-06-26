@@ -4,6 +4,17 @@ All notable changes to Alfy². Format: [Keep a Changelog](https://keepachangelog
 Versioning: the platform foundation is pre-1.0; expect breaking changes between phases.
 
 ## [Unreleased]
+### Added — Build From Brainstorm (native feature, LIVE)
+- **Build From Brainstorm** — the bridge from raw founder conversation to an approval-gated build.
+  Full 9-stage pipeline: brain dump → classify inputs (14 kinds; conversation is INPUT, never a
+  command) → extract Decision Cards → 7-layer Strategy Map → Build Prompt Pack (10 categories) →
+  Build Queue (12 statuses) → **Approval Gate** → agent execution (9 agent kinds) → QA → Changelog.
+  NON-NEGOTIABLE RULE enforced in code and proven by smoke: `runApproved` executes nothing until the
+  queue is explicitly approved. Contract `build-from-brainstorm.ts` (+ Pydantic mirror, +5 contract
+  tests), engine `packages/core/src/build-from-brainstorm/`, migration `0224` (11 tables + RLS,
+  **applied live** to Supabase oxromxpjoiifvamxjluz → 168 tables). Verified: `tsc -b` green,
+  `pnpm run brainstorm:smoke`, 553 pytest passing. (UI tabs are the Phase-2 thin-UI brick.)
+
 ### Added — Phase 2 runtime layer (persistence, bricks 1–2)
 - **Executive Inbox persistence (brick 2).** New `InboxRepository` port + `InMemoryInboxRepository`
   in `@alfy2/core`; `ExecutiveInbox` now accepts an optional `inbox` store and persists every

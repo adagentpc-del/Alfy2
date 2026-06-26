@@ -720,3 +720,9 @@ export { DeveloperCommandCenterEngine } from "./developer-command-center/engine.
 
 // Connections Hub (register platforms at runtime; scoped connections; business→master resolution)
 export { ConnectionsHub, UnknownConnectorError } from "./connections/engine.js";
+
+// Build From Brainstorm (brain dump → decisions → strategy → prompt pack → approval-gated build)
+export {
+  BuildFromBrainstormEngine,
+  type BuildFromBrainstormOptions,
+} from "./build-from-brainstorm/engine.js";
