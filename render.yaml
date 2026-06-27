@@ -7,7 +7,7 @@ services:
     plan: free
     region: oregon
     rootDir: .
-    buildCommand: corepack enable && pnpm install --prod=false
+    buildCommand: corepack enable && pnpm install --prod=false --no-frozen-lockfile
     startCommand: pnpm --filter @alfy2/api exec tsx src/main.ts
     healthCheckPath: /healthz
     autoDeploy: true
