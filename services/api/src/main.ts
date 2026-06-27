@@ -91,16 +91,42 @@ async function main(): Promise<void> {
       businessId,
     );
 
+  // Auth strategy: JWKS (verify real Supabase JWTs) by default; "token" accepts a single shared
+  // personal-access secret so the dashboard can read live data without a login flow.
+  let verifyToken: AppDeps["verifyToken"];
+  if (config.ALFY_AUTH_MODE === "token") {
+    const expected = config.ALFY_API_TOKEN;
+    if (expected === undefined || expected.length < 16) {
+      console.error("[api] FATAL: ALFY_AUTH_MODE=token requires ALFY_API_TOKEN (>=16 chars).");
+      process.exit(1);
+      return;
+    }
+    console.warn(
+      "[api] auth mode = TOKEN (single shared personal access token). Use JWKS for multi-user.",
+    );
+    verifyToken = async (token: string) => {
+      // Constant-time-ish compare is overkill here; a length+equality check is sufficient for a
+      // single-operator personal token. A mismatch throws → 401.
+      if (token !== expected) throw new Error("bad token");
+      return { sub: "operator" };
+    };
+  } else {
+    verifyToken = makeJwksVerifier(config.SUPABASE_URL);
+  }
+
   const deps: AppDeps = {
     config: { defaultTenantId: config.ALFY_DEFAULT_TENANT_ID },
-    verifyToken: makeJwksVerifier(config.SUPABASE_URL),
+    verifyToken,
     scope,
+    corsOrigins: config.ALFY_CORS_ORIGINS.split(",").map((o) => o.trim()).filter((o) => o.length > 0),
   };
 
   const app = createApp(deps);
 
-  serve({ fetch: app.fetch, port: config.ALFY_API_PORT });
-  console.log(`[api] listening on :${config.ALFY_API_PORT}`);
+  // Render (and most hosts) inject the port to bind via process.env.PORT; fall back to config.
+  const port = process.env["PORT"] ? Number(process.env["PORT"]) : config.ALFY_API_PORT;
+  serve({ fetch: app.fetch, port, hostname: "0.0.0.0" });
+  console.log(`[api] listening on :${port}`);
 }
 
 main().catch((err: unknown) => {

@@ -90,17 +90,20 @@
     <section class="view active" id="mc">
       <div class="head">
         <h1>Mission control</h1>
-        <span class="chip">Founder mode · normal</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="chip">Founder mode · normal</span>
+          <button class="btn" onclick="connect()">Connect</button>
+        </div>
       </div>
       <div class="sub">Friday, Jun 26 · one screen for everything that needs you</div>
-      <div class="preview-banner">Preview — numbers are illustrative. Live data arrives once the API is connected.</div>
+      <div class="preview-banner" id="mc-banner">Preview — numbers are illustrative. Click <b>Connect</b> to point at your live API.</div>
 
       <div class="metrics">
-        <div class="metric"><div class="l">Revenue today</div><div class="v">$1,240</div><div class="d up">▲ vs 7-day avg</div></div>
-        <div class="metric"><div class="l">Cash position</div><div class="v">$18,600</div><div class="d neutral">across businesses</div></div>
-        <div class="metric"><div class="l">Runway</div><div class="v">94 days</div><div class="d up">healthy</div></div>
-        <div class="metric"><div class="l">Founder capacity</div><div class="v">72</div><div class="d neutral">deep work protected</div></div>
-        <div class="metric"><div class="l">Needs you</div><div class="v">4</div><div class="d warn">1 high-risk</div></div>
+        <div class="metric"><div class="l">Revenue today</div><div class="v" id="mc-rev">$1,240</div><div class="d up">▲ vs 7-day avg</div></div>
+        <div class="metric"><div class="l">Cash position</div><div class="v" id="mc-cash">$18,600</div><div class="d neutral">across businesses</div></div>
+        <div class="metric"><div class="l">Runway</div><div class="v" id="mc-runway">94 days</div><div class="d up">healthy</div></div>
+        <div class="metric"><div class="l">Founder capacity</div><div class="v" id="mc-cap">72</div><div class="d neutral">deep work protected</div></div>
+        <div class="metric"><div class="l">Needs you</div><div class="v" id="mc-needs">4</div><div class="d warn">1 high-risk</div></div>
       </div>
 
       <div class="sec">⚠ Critical alerts</div>
@@ -208,6 +211,43 @@
     document.getElementById(b.dataset.view).classList.add('active');
     window.scrollTo(0,0);
   }));
+
+  // --- live data: stores API base + personal token in this browser only, never on the page ---------
+  function connect(){
+    const api = window.prompt('API URL (e.g. https://alfie-api.onrender.com):', localStorage.getItem('alfie_api')||'');
+    if(api===null) return;
+    const token = window.prompt('Your API token:', localStorage.getItem('alfie_token')||'');
+    if(token===null) return;
+    localStorage.setItem('alfie_api', api.trim().replace(/\/+$/,''));
+    localStorage.setItem('alfie_token', token.trim());
+    loadLive();
+  }
+  async function loadLive(){
+    const api = localStorage.getItem('alfie_api');
+    const token = localStorage.getItem('alfie_token');
+    const banner = document.getElementById('mc-banner');
+    if(!api || !token) return; // no creds → stay on preview
+    const money = n => '$' + Number(n||0).toLocaleString();
+    try{
+      const res = await fetch(api + '/mission-control', { headers: { Authorization: 'Bearer ' + token } });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const s = data.snapshot || {};
+      document.getElementById('mc-rev').textContent = money(s.revenue_today);
+      document.getElementById('mc-cash').textContent = money(s.cash_position);
+      document.getElementById('mc-runway').textContent = (s.cash_runway_days==null ? '—' : s.cash_runway_days + ' days');
+      const cap = (s.founder_capacity && s.founder_capacity.score!=null) ? s.founder_capacity.score : '—';
+      document.getElementById('mc-cap').textContent = cap;
+      document.getElementById('mc-needs').textContent = Array.isArray(s.approval_queue) ? s.approval_queue.length : 0;
+      banner.style.background = 'var(--greenbg,#e7f1ec)';
+      banner.style.color = 'var(--green,#2f6f5e)';
+      banner.style.borderColor = '#bfe0d2';
+      banner.innerHTML = 'Live · connected to ' + api + ' · updated ' + new Date().toLocaleTimeString();
+    }catch(e){
+      banner.textContent = 'Could not reach the API (' + (e && e.message || 'error') + '). Showing preview — click Connect to retry.';
+    }
+  }
+  loadLive();
 </script>
 </body>
 </html>

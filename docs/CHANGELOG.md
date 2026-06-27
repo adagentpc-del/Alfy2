@@ -1,3 +1,7 @@
+### Added — API hosting (Render) + live-data dashboard connection
+- API now Render-ready: binds to `process.env.PORT`, CORS (allows alfy2.vercel.app + *.vercel.app + localhost), and a `token` auth mode (`ALFY_AUTH_MODE=token` + `ALFY_API_TOKEN`) so the dashboard can read live data with a single personal access token — no login flow, token never in the repo or public page. `render.yaml` Blueprint + `docs/DEPLOY_API_RENDER.md` runbook.
+- Dashboard (`apps/web/index.html`): a **Connect** button stores your API URL + token in the browser only and pulls live Mission Control data (revenue, cash, runway, capacity, approvals) — falls back to preview when not connected. Full tsc -b green; gateway smoke (10 scenarios) green.
+
 ### Fixed — bug-fix scan of the runtime (security + correctness)
 - **fix(security):** approval gate now BINDS an approval to its exact route + method + action_class and CONSUMES it (one-time use → status expired) — an approval can no longer be replayed or used to unlock a different gated action. (`ApprovalGateService.consume` + gate middleware checks.)
 - **fix:** `business_id` (x-business-id header and capital route bodies) is validated as a UUID → returns 400 instead of a Postgres 500. (`services/api/src/util.ts isUuid`.)

@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import type { AppDeps, AppEnv } from "./types.js";
 import { authMiddleware } from "./middleware/auth.js";
 import { tenantMiddleware } from "./middleware/tenant.js";
@@ -32,6 +33,28 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   });
 
   app.notFound((c) => c.json({ error: "not_found" }, 404));
+
+  // CORS first so browser preflight (OPTIONS) succeeds before auth. Allows the configured origins,
+  // plus any *.vercel.app (preview deploys) and localhost (dev).
+  const allowed = new Set(deps.corsOrigins ?? []);
+  app.use(
+    "*",
+    cors({
+      origin: (origin) => {
+        if (origin === "" || origin === undefined) return undefined;
+        if (
+          allowed.has(origin) ||
+          origin.endsWith(".vercel.app") ||
+          origin.startsWith("http://localhost")
+        ) {
+          return origin;
+        }
+        return undefined;
+      },
+      allowHeaders: ["Authorization", "Content-Type", "x-business-id", "x-approval-id"],
+      allowMethods: ["GET", "POST", "OPTIONS"],
+    }),
+  );
 
   // Liveness/readiness first, no auth.
   app.route("/", healthRoutes());

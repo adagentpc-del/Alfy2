@@ -52,6 +52,8 @@ export interface AppDeps {
   ) => Promise<T>;
   clock?: () => Date;
   idFactory?: () => string;
+  /** Browser origins allowed via CORS. Production wires these from config; tests may omit. */
+  corsOrigins?: string[];
 }
 
 /** Hono context variables set by the middleware chain. */

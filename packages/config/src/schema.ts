@@ -19,6 +19,17 @@ export const ConfigSchema = z.object({
   ALFY_DEFAULT_TENANT_ID: z.string().uuid(),
   ALFY_API_PORT: z.coerce.number().int().positive().default(8080),
   ALFY_ORCHESTRATOR_PORT: z.coerce.number().int().positive().default(8090),
+  // Gateway auth strategy. "jwks" verifies Supabase JWTs (production default). "token" accepts a
+  // single shared bearer secret (ALFY_API_TOKEN) — a personal access token for a single operator,
+  // so the dashboard can read live data without a full login flow. The token is a secret; it lives in
+  // env + the operator's browser only, never in any committed file or public page.
+  ALFY_AUTH_MODE: z.enum(["jwks", "token"]).default("jwks"),
+  ALFY_API_TOKEN: z.string().min(16).optional(),
+  // Comma-separated list of browser origins allowed to call the API (CORS). Defaults cover local dev
+  // and the Vercel dashboard.
+  ALFY_CORS_ORIGINS: z
+    .string()
+    .default("http://localhost:8080,http://localhost:3000,https://alfy2.vercel.app"),
 
   // --- Supabase (secrets) ---
   SUPABASE_URL: z.string().url(),
@@ -53,4 +64,5 @@ export const SECRET_KEYS = [
   "SUPABASE_ANON_KEY",
   "DATABASE_URL",
   "AI_PROVIDER_API_KEY",
+  "ALFY_API_TOKEN",
 ] as const satisfies ReadonlyArray<keyof Config>;
