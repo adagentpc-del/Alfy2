@@ -22,3 +22,7 @@ export {
   PgCapitalAllocationRepository,
   PgCapitalRunwayRepository,
 } from "./capital-allocation-repository.js";
+export {
+  PgDelegationPacketRepository,
+  PgAgentReportRepository,
+} from "./ai-org-delegation-repository.js";

@@ -1,3 +1,7 @@
+### Added — AI Org runtime: the chain of command is now operational via the API
+- `DelegationRuntime` (core) + `DelegationPacketRepository`/`AgentReportRepository` ports + InMemory + `PgDelegationPacketRepository`/`PgAgentReportRepository` (@alfy2/db) over the existing `ai_org_delegation_packets` + `ai_org_agent_reports` tables (no new migration/contract — reuses the ai-org contract). Enforces the non-negotiable rule: an agent cannot submit a report until its delegation packet is ACCEPTED.
+- `services/api` routes: `POST /org/packets`, `POST /org/packets/:id/accept`, `GET /org/packets`, `GET /org/packets/:id/reports`, `POST /org/reports` (409 if no accepted packet), `POST /org/reports/:id/review`. Gateway smoke now covers 10 scenarios. Full tsc -b green. (Collision avoided: runtime input types Runtime*-aliased; existing AiOrgEngine untouched.)
+
 ### Added — Release 6: Revenue Operating System (migrations 0242-0243)
 - **RevOps** (`RevOpsEngine` + `PgRevOpsReadModel`): live revenue brief over revenue_opportunities + revenue_money_actions — pipeline value, open count, stalled deals (>14d), top opportunities, due money actions; plus **fastest-path-to-cash** (ranks open opps by expected-value-per-day to hit a target, e.g. $6k). No new table.
 - **Decision Engine** (`AdvisoryDecisionEngine` + `decision_records`, migration 0242): structured decision record + 13 principle lenses selected by decision type + reversibility gate — one-way-door / money / legal decisions require approval. Lenses are criteria, never impersonations.

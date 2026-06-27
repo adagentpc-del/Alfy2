@@ -139,7 +139,8 @@
     "missioncontrol:smoke": "tsx scripts/mission-control-smoke.mts",
     "foundercap:smoke": "tsx scripts/founder-capacity-smoke.mts",
     "revops:smoke": "tsx scripts/revops-smoke.mts",
-    "decision:smoke2": "tsx scripts/decision-engine-smoke.mts"
+    "decision:smoke2": "tsx scripts/decision-engine-smoke.mts",
+    "aiorgruntime:smoke": "tsx scripts/ai-org-runtime-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

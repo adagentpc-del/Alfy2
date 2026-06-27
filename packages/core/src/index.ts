@@ -362,6 +362,26 @@ export type {
   CapitalRunwayRepository,
 } from "./capital-allocation/repository.js";
 
+// AI Org runtime (§8/§9) — delegation packet + report-back persistence (no work without an accepted
+// packet). Input types are Runtime*-aliased to avoid collision with the in-memory AiOrgEngine exports.
+export {
+  DelegationRuntime,
+  type DelegationRuntimeRepos,
+  type DelegationRuntimeOptions,
+  type IssuePacketInput as RuntimeIssuePacketInput,
+  type SubmitReportInput as RuntimeSubmitReportInput,
+  type ReviewReportInput as RuntimeReviewReportInput,
+} from "./ai-org-runtime/service.js";
+export {
+  InMemoryDelegationPacketRepository,
+  InMemoryAgentReportRepository,
+} from "./ai-org-runtime/in-memory-repository.js";
+export type {
+  DelegationPacketRepository,
+  DelegationPacketListFilter,
+  AgentReportRepository,
+} from "./ai-org-runtime/repository.js";
+
 // Continuous Improvement Engine (evaluate workflows; recommend simplify/automate/remove/merge/split/delegate)
 export { ContinuousImprovementEngine } from "./continuous-improvement/engine.js";
 

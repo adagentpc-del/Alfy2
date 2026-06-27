@@ -10,6 +10,7 @@ import { approvalRoutes } from "./routes/approvals.js";
 import { missionControlRoutes } from "./routes/mission-control.js";
 import { founderRoutes } from "./routes/founder.js";
 import { businessOpsRoutes } from "./routes/business-ops.js";
+import { orgRoutes } from "./routes/org.js";
 
 export type { AppDeps, AppEnv, AppVariables, RequestRepos } from "./types.js";
 export { GATED_ROUTES } from "./middleware/approval-gate.js";
@@ -46,6 +47,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   app.route("/", missionControlRoutes(deps));
   app.route("/", founderRoutes(deps));
   app.route("/", businessOpsRoutes(deps));
+  app.route("/", orgRoutes(deps));
 
   return app;
 }

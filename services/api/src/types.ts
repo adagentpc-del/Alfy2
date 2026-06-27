@@ -7,6 +7,7 @@ import type {
   RevOpsEngine,
   AdvisoryDecisionEngine,
   CapitalAllocationEngine,
+  DelegationRuntime,
 } from "@alfy2/core";
 
 /**
@@ -22,6 +23,7 @@ export interface RequestRepos {
   revops: RevOpsEngine;
   decisions: AdvisoryDecisionEngine;
   capital: CapitalAllocationEngine;
+  delegation: DelegationRuntime;
 }
 
 /**

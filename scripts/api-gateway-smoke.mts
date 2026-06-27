@@ -30,6 +30,9 @@ import {
   InMemoryCapitalAccountRepository,
   InMemoryCapitalAllocationRepository,
   InMemoryCapitalRunwayRepository,
+  DelegationRuntime,
+  InMemoryDelegationPacketRepository,
+  InMemoryAgentReportRepository,
 } from "@alfy2/core";
 import { createApp } from "../services/api/src/app.js";
 import type { AppDeps, RequestRepos } from "../services/api/src/app.js";
@@ -88,10 +91,15 @@ const capital = new CapitalAllocationEngine({
   runway: new InMemoryCapitalRunwayRepository(),
 });
 
+const delegation = new DelegationRuntime({
+  packets: new InMemoryDelegationPacketRepository(),
+  reports: new InMemoryAgentReportRepository(),
+});
+
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
   const ctx: RequestRepos = {
     inbox, gate, missionControl, missionControlAlerts, founderCapacity, revops,
-    decisions: advisoryDecisions, capital,
+    decisions: advisoryDecisions, capital, delegation,
   };
   return fn(ctx);
 };
@@ -330,7 +338,42 @@ let approvalId = "";
   assert.equal(a.approved, false, "allocation is recommend-only — never auto-approved");
 }
 
+// --- 10. AI Org: delegation packet + report-back (no work without an accepted packet) ------------
+
+{
+  const issue = await app.request("/org/packets", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ assigning_employee: "CRO", assigned_agent: "email-agent", objective: "Draft Move Mi reply" }),
+  });
+  assert.equal(issue.status, 201, "issue packet → 201");
+  const packet = (await issue.json()) as { id: string; status: string };
+  assert.equal(packet.status, "issued", "new packet is issued, not accepted");
+
+  // submitting before acceptance is blocked
+  const early = await app.request("/org/reports", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ packet_id: packet.id, agent: "email-agent", output_produced: "draft" }),
+  });
+  assert.equal(early.status, 409, "report before acceptance → 409 (no work without an accepted packet)");
+
+  const accept = await app.request(`/org/packets/${packet.id}/accept`, { method: "POST", headers: authHeader(token) });
+  assert.equal(accept.status, 200, "accept packet → 200");
+
+  const report = await app.request("/org/reports", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ packet_id: packet.id, agent: "email-agent", output_produced: "draft reply", execution_status: "done", verification_status: "self_checked" }),
+  });
+  assert.equal(report.status, 201, "report after acceptance → 201");
+  const r = (await report.json()) as { id: string };
+
+  const review = await app.request(`/org/reports/${r.id}/review`, {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ execution_status: "done", verification_status: "verified" }),
+  });
+  assert.equal(review.status, 200, "review report → 200");
+}
+
 console.log(
-  "API GATEWAY SMOKE OK — auth 401s, inbox, approval gate park/clear, mission-control, founder capacity, " +
-    "revops brief + fastest-path, decision gate, capital allocation (recommend-only), health 200.",
+  "API GATEWAY SMOKE OK — auth, inbox, approval gate park/clear, mission-control, founder capacity, " +
+    "revops brief + fastest-path, decision gate, capital allocation, AI-org delegation+report-back, health 200.",
 );

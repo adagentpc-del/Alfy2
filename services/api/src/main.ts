@@ -10,6 +10,7 @@ import {
   RevOpsEngine,
   AdvisoryDecisionEngine,
   CapitalAllocationEngine,
+  DelegationRuntime,
 } from "@alfy2/core";
 import {
   Db,
@@ -23,6 +24,8 @@ import {
   PgCapitalAccountRepository,
   PgCapitalAllocationRepository,
   PgCapitalRunwayRepository,
+  PgDelegationPacketRepository,
+  PgAgentReportRepository,
 } from "@alfy2/db";
 import { createApp } from "./app.js";
 import { makeJwksVerifier } from "./auth/jwks.js";
@@ -68,6 +71,10 @@ async function main(): Promise<void> {
           allocations: new PgCapitalAllocationRepository(q),
           runway: new PgCapitalRunwayRepository(q),
         });
+        const delegation = new DelegationRuntime({
+          packets: new PgDelegationPacketRepository(q),
+          reports: new PgAgentReportRepository(q),
+        });
         const ctx: RequestRepos = {
           inbox,
           gate,
@@ -77,6 +84,7 @@ async function main(): Promise<void> {
           revops,
           decisions,
           capital,
+          delegation,
         };
         return fn(ctx);
       },
