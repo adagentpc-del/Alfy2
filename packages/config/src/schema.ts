@@ -33,8 +33,11 @@ export const ConfigSchema = z.object({
 
   // --- Supabase (secrets) ---
   SUPABASE_URL: z.string().url(),
-  SUPABASE_ANON_KEY: z.string().min(1),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // The gateway does NOT use these at runtime (it verifies JWTs via SUPABASE_URL's JWKS and talks to
+  // Postgres via DATABASE_URL). They're optional so the API boots without them; connectors that need
+  // them validate their own presence when used. (Naming varies — anon == publishable.)
+  SUPABASE_ANON_KEY: z.string().min(1).optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   // Direct Postgres connection string (Supabase pooler) used by @alfy2/db for the RLS GUC pattern.
   // Optional so config still loads before the persistence layer is wired; the Db factory throws a
   // clear error if it is needed but missing.
