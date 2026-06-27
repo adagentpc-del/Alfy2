@@ -54,35 +54,45 @@ function iso(v: Date | string): string {
 export class PgMissionControlReadModel implements MissionControlReadModel {
   constructor(private readonly q: Querier) {}
 
-  async aggregate(_tenantId: string, _businessId?: string): Promise<MissionControlAggregate> {
+  async aggregate(tenantId: string, _businessId?: string): Promise<MissionControlAggregate> {
+    // Explicit tenant_id predicates are defense-in-depth alongside the connection's app.tenant_id GUC
+    // + RLS — matching every other adapter in this package.
     const [approvals, openInbox, blocked, opps, follows, capacity] = await Promise.all([
       this.q.query(
         `select id, action_class, risk, summary, requires_approval, created_at
-           from api_approval_requests where status = 'pending'
+           from api_approval_requests where tenant_id = $1 and status = 'pending'
            order by created_at asc limit 50`,
+        [tenantId],
       ),
       this.q.query(
-        `select count(*)::int as c from inbox_items where status in ('new','reviewed')`,
+        `select count(*)::int as c from inbox_items
+          where tenant_id = $1 and status in ('new','reviewed')`,
+        [tenantId],
       ),
       this.q.query(
         `select id, coalesce(nullif(next_action, ''), left(content, 80)) as label
            from inbox_items
-          where status = 'new' and urgency_level in ('high','critical')
+          where tenant_id = $1 and status = 'new' and urgency_level in ('high','critical')
           order by urgency desc limit 20`,
+        [tenantId],
       ),
       this.q.query(
         `select title, expected_revenue_usd, status from revenue_opportunities
-          where status not in ('closed_won','closed_lost','dead')
+          where tenant_id = $1 and status not in ('closed_won','closed_lost','dead')
           order by score desc nulls last limit 5`,
+        [tenantId],
       ),
       this.q.query(
         `select id, entity_name, next_touch_at from follow_ups
-          where status = 'active' and next_touch_at is not null and next_touch_at <= now()
+          where tenant_id = $1 and status = 'active'
+            and next_touch_at is not null and next_touch_at <= now()
           order by next_touch_at asc limit 20`,
+        [tenantId],
       ),
       this.q.query(
         `select capacity_score, recommended_mode from founder_capacity_snapshots
-          order by as_of desc limit 1`,
+          where tenant_id = $1 order by as_of desc limit 1`,
+        [tenantId],
       ),
     ]);
 

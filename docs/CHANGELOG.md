@@ -1,3 +1,10 @@
+### Fixed — bug-fix scan of the runtime (security + correctness)
+- **fix(security):** approval gate now BINDS an approval to its exact route + method + action_class and CONSUMES it (one-time use → status expired) — an approval can no longer be replayed or used to unlock a different gated action. (`ApprovalGateService.consume` + gate middleware checks.)
+- **fix:** `business_id` (x-business-id header and capital route bodies) is validated as a UUID → returns 400 instead of a Postgres 500. (`services/api/src/util.ts isUuid`.)
+- **fix(security):** `PgMissionControlReadModel` now adds explicit `tenant_id = $1` predicates to all six queries (defense-in-depth alongside RLS), matching every other adapter. Validated live.
+- **fix:** `/org/reports` resolves packet state in one transaction and returns precise 404/409/201 codes without echoing raw error/DB messages to the client.
+- Scan result: no CRITICAL bugs; SQL parameterization, tenant isolation in handlers, async/await, null-handling, and gate coverage all verified clean. tsc -b green, 11 smokes pass, 650 pytest.
+
 ### Added — AI Org runtime: the chain of command is now operational via the API
 - `DelegationRuntime` (core) + `DelegationPacketRepository`/`AgentReportRepository` ports + InMemory + `PgDelegationPacketRepository`/`PgAgentReportRepository` (@alfy2/db) over the existing `ai_org_delegation_packets` + `ai_org_agent_reports` tables (no new migration/contract — reuses the ai-org contract). Enforces the non-negotiable rule: an agent cannot submit a report until its delegation packet is ACCEPTED.
 - `services/api` routes: `POST /org/packets`, `POST /org/packets/:id/accept`, `GET /org/packets`, `GET /org/packets/:id/reports`, `POST /org/reports` (409 if no accepted packet), `POST /org/reports/:id/review`. Gateway smoke now covers 10 scenarios. Full tsc -b green. (Collision avoided: runtime input types Runtime*-aliased; existing AiOrgEngine untouched.)

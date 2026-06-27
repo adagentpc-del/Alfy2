@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../types.js";
 import type { EvaluateDecisionInput } from "@alfy2/core";
+import { isUuid } from "../util.js";
 
 /**
  * Revenue Operating System routes (auth + tenant): RevOps brief + fastest-path-to-cash, the advisory
@@ -101,8 +102,8 @@ export function businessOpsRoutes(deps: AppDeps): Hono<AppEnv> {
     }
     const business_id = body["business_id"];
     const inflow_usd = body["inflow_usd"];
-    if (typeof business_id !== "string" || typeof inflow_usd !== "number" || inflow_usd <= 0) {
-      return c.json({ error: "business_id and a positive inflow_usd are required" }, 400);
+    if (!isUuid(business_id) || typeof inflow_usd !== "number" || inflow_usd <= 0) {
+      return c.json({ error: "a UUID business_id and a positive inflow_usd are required" }, 400);
     }
     const allocation = await deps.scope(tenantId, businessId, ({ capital }) =>
       capital.allocate(tenantId, { business_id, inflow_usd }),
@@ -123,9 +124,9 @@ export function businessOpsRoutes(deps: AppDeps): Hono<AppEnv> {
     const cash_usd = body["cash_usd"];
     const monthly_burn_usd = body["monthly_burn_usd"];
     const min_reserve_usd = body["min_reserve_usd"];
-    if (typeof business_id !== "string" || typeof cash_usd !== "number" ||
+    if (!isUuid(business_id) || typeof cash_usd !== "number" ||
         typeof monthly_burn_usd !== "number" || typeof min_reserve_usd !== "number") {
-      return c.json({ error: "business_id, cash_usd, monthly_burn_usd, min_reserve_usd required" }, 400);
+      return c.json({ error: "a UUID business_id, cash_usd, monthly_burn_usd, min_reserve_usd required" }, 400);
     }
     const runway = await deps.scope(tenantId, businessId, ({ capital }) =>
       capital.computeRunway(tenantId, { business_id, cash_usd, monthly_burn_usd, min_reserve_usd }),

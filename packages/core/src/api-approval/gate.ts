@@ -131,6 +131,14 @@ export class ApprovalGateService {
     );
   }
 
+  /**
+   * Consume an approved request so it cannot be replayed (one-time use). Transitions it to "expired".
+   * The gate calls this immediately after an approval unlocks a gated action.
+   */
+  async consume(tenantId: string, id: string): Promise<void> {
+    await this.repo.setDecision(tenantId, id, "expired", "", "consumed", this.clock().toISOString());
+  }
+
   list(tenantId: string, filter?: ApprovalListFilter): Promise<ApprovalRequest[]> {
     return this.repo.list(tenantId, filter);
   }

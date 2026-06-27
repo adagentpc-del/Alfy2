@@ -80,20 +80,22 @@ export function orgRoutes(deps: AppDeps): Hono<AppEnv> {
     } catch {
       return c.json({ error: "invalid_json" }, 400);
     }
-    if (typeof body["packet_id"] !== "string" || typeof body["agent"] !== "string") {
+    const packetId = body["packet_id"];
+    if (typeof packetId !== "string" || typeof body["agent"] !== "string") {
       return c.json({ error: "packet_id and agent are required" }, 400);
     }
-    try {
-      const report = await deps.scope(tenantId, businessId, ({ delegation }) =>
-        delegation.submitReport(tenantId, body as unknown as RuntimeSubmitReportInput),
-      );
-      return c.json(report, 201);
-    } catch (err) {
-      return c.json(
-        { error: "no_accepted_packet", detail: err instanceof Error ? err.message : "rejected" },
-        409,
-      );
-    }
+    // Resolve packet state and submit in one transaction, so a real DB error surfaces as a generic
+    // 500 (via onError) rather than being mislabelled 409 or leaking its message to the client.
+    const result = await deps.scope(tenantId, businessId, async ({ delegation }) => {
+      const packet = await delegation.getPacket(tenantId, packetId);
+      if (packet === null) return { code: 404 as const, body: { error: "packet_not_found" } };
+      if (packet.status !== "accepted") {
+        return { code: 409 as const, body: { error: "no_accepted_packet" } };
+      }
+      const report = await delegation.submitReport(tenantId, body as unknown as RuntimeSubmitReportInput);
+      return { code: 201 as const, body: report as unknown as Record<string, unknown> };
+    });
+    return c.json(result.body, result.code);
   });
 
   // POST /org/reports/:id/review — employee reviews a report.

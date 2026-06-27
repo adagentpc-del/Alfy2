@@ -58,17 +58,27 @@ export function approvalGateMiddleware(deps: AppDeps): MiddlewareHandler<AppEnv>
     const approvalId =
       c.req.query("approval_id") ?? c.req.header("x-approval-id") ?? undefined;
 
-    // If an approval token is supplied, it must resolve to an approved request for this tenant.
+    // If an approval token is supplied, it must resolve to an APPROVED request for this tenant that
+    // was issued for THIS exact route + method + action class — and it is consumed (one-time use) so
+    // it cannot be replayed or reused to unlock a different gated action.
     if (approvalId !== undefined && approvalId.trim().length > 0) {
       const ok = await deps.scope(tenantId, businessId, async ({ gate }) => {
         const req = await gate.get(tenantId, approvalId.trim());
-        return req !== null && req.status === "approved";
+        const bound =
+          req !== null &&
+          req.status === "approved" &&
+          req.route === gated.path &&
+          req.method.toUpperCase() === gated.method.toUpperCase() &&
+          req.action_class === gated.action_class;
+        if (!bound || req === null) return false;
+        await gate.consume(tenantId, req.id); // one-time use
+        return true;
       });
       if (ok) {
         await next();
         return;
       }
-      // Supplied but not approved (pending/denied/expired/unknown) → fall through to default-deny.
+      // Supplied but not valid/approved/bound (or already consumed) → fall through to default-deny.
     }
 
     // Default-deny: park a pending approval request and tell the caller.
