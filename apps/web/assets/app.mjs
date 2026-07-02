@@ -6,6 +6,7 @@
  */
 import * as svc from "./services.mjs";
 import * as fac from "./factories.mjs";
+import * as studio from "./media-studio.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -33,6 +34,9 @@ const routes = [
   { re: /^\/factory$/, view: viewFactoryHub, nav: "factory" },
   { re: /^\/factory\/(company|software|gtm|media)$/, view: (m) => viewFactoryForm(m[1]), nav: "factory" },
   { re: /^\/factory\/packets\/([\w-]+)$/, view: (m) => viewPacket(m[1]), nav: "factory" },
+  { re: /^\/studio$/, view: viewStudio, nav: "studio" },
+  { re: /^\/studio\/episodes\/([\w-]+)$/, view: (m) => viewEpisode(m[1]), nav: "studio" },
+  { re: /^\/studio\/avatar$/, view: viewAvatarCenter, nav: "avatar" },
 ];
 
 function currentPath() {
@@ -724,10 +728,233 @@ function viewPacket(id) {
   <div class="card rows-tight">${versions.map((v) => `<div class="row"><span class="t">v${v.version} — ${esc(v.note)}</span><span class="s">${fmtTs(v.created_at)}</span></div>`).join("")}</div>`;
 }
 
+// ---------- views: media studio ----------
+const tryDo = (fn) => { try { fn(); render(); } catch (e) { window.alert(e.message); } };
+const gatePill = (id) => {
+  const s = studio.gateStatus(id);
+  return `<span class="pill ${s === "approved" ? "green" : s === "pending" ? "amber" : s === "denied" ? "red" : "gray"}">${esc(s.replace(/_/g, " "))}</span>`;
+};
+const STAGE_LABELS = {
+  concept_draft: "Concept draft", concept_submitted: "Concept submitted", in_production: "In production",
+  outline_draft: "Outline draft", recording_ready: "Recording-ready", recording_prep: "Recording prep",
+  transcribed: "Transcribed", clips_planned: "Clips planned", clips_approved: "Clips approved",
+  publish_pack_draft: "Publish pack draft", ready_to_publish: "Ready to publish",
+};
+
+function viewStudio() {
+  const series = studio.getPodcastSeries();
+  const episodes = studio.getEpisodes().slice().reverse();
+  const scripts = studio.getAvatarScripts();
+  const jobs = studio.getAvatarVideoJobs();
+  onAfter(() => {
+    document.getElementById("ep-create")?.addEventListener("click", () => tryDo(() => {
+      const ep = studio.createEpisode(document.getElementById("ep-series").value, {
+        working_title: document.getElementById("ep-title").value.trim(),
+        concept: document.getElementById("ep-concept").value.trim(),
+        audience_hint: document.getElementById("ep-audience").value.trim(),
+      });
+      go("/studio/episodes/" + ep.id);
+    }));
+  });
+  return `
+  <div class="head"><div><div class="crumb">Media Studio · professional workflow, external tools</div><h1>Media Studio</h1></div>
+    <div class="btns"><span class="chip">${episodes.length} episode${episodes.length === 1 ? "" : "s"}</span><button class="btn" data-nav="/studio/avatar">Avatar Studio →</button></div></div>
+  <div class="sub">Series → episode → research → hooks → outline → record (Riverside-style, external) → transcript → clips → publish pack → monetization → repurposing. Five gates; nothing publishes without a token (docs/MEDIA_STUDIO_SPEC.md).</div>
+  ${preview}
+  <div class="grid g2">
+    <div class="card"><div class="cardhead"><span class="t">New episode</span></div><div class="pad">
+      <label style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">Series</label>
+      <select id="ep-series" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin:4px 0 10px;background:var(--bg);font-family:var(--sans)">${series.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select>
+      ${[["ep-title", "Working title", "e.g. Why founders drown in tools"], ["ep-concept", "Concept", "the core idea in one line"], ["ep-audience", "Audience", "who must feel it was made for them"]].map(([id, l, ph]) =>
+        `<label style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">${l}</label>
+         <input id="${id}" placeholder="${ph}" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin:4px 0 10px;background:var(--bg);font-family:var(--sans);font-size:13px" />`).join("")}
+      <button class="btn gold" id="ep-create">Create episode</button>
+    </div></div>
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Series</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">${series.map((s) => `<div class="row"><div><div class="t" style="font-weight:600">${esc(s.name)}</div><div class="s">${esc(s.premise)} · ${esc(s.cadence)}</div></div><span class="pill gold">${studio.getEpisodes(s.id).length} eps</span></div>`).join("")}</div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">AI avatar queue</span><a data-nav="/studio/avatar">Open →</a></div>
+        <div class="pad" style="font-size:12.5px">${scripts.length} script${scripts.length === 1 ? "" : "s"} · ${jobs.length} job${jobs.length === 1 ? "" : "s"} · every output flagged <span class="pill navy">ai_generated</span></div></div>
+    </div>
+  </div>
+  <div class="sec">Episodes</div>
+  <div class="card rows-tight">${episodes.map((e) => {
+    const stage = studio.episodeStage(e);
+    return `<div class="row"><div><a class="t" data-nav="/studio/episodes/${e.id}" style="font-weight:600">${esc(e.working_title)}</a>
+      <div class="s">${esc(studio.getSeriesById(e.series_id)?.name ?? "")} · created ${fmtTs(e.created_at)}</div></div>
+      <span class="pill ${stage === "ready_to_publish" ? "green" : stage.includes("submitted") ? "amber" : "navy"}">${esc(STAGE_LABELS[stage] ?? stage)}</span></div>`;
+  }).join("") || '<div class="empty">No episodes yet — create one.</div>'}</div>`;
+}
+
+function moduleCard(title, inner, actions = "") {
+  return `<div class="card" style="margin-bottom:14px"><div class="cardhead"><span class="t">${title}</span><div class="btns">${actions}</div></div>
+    <div class="pad" style="font-size:12.5px">${inner}</div></div>`;
+}
+const actBtn = (id, label, gold = false) => `<button class="btn ${gold ? "gold" : ""}" id="${id}" style="padding:4px 12px;font-size:11px">${label}</button>`;
+
+function viewEpisode(id) {
+  const ep = studio.getEpisodeById(id);
+  if (!ep) return `<div class="empty">Unknown episode. <a data-nav="/studio" style="color:var(--gold)">Back to the studio</a></div>`;
+  const stage = studio.episodeStage(ep);
+  const research = studio.getEpisodeResearch(id);
+  const hooks = studio.getHookBank(id);
+  const outline = studio.getOutline(id);
+  const session = studio.getRecordingSession(id);
+  const transcript = studio.getTranscript(id);
+  const cands = studio.getClipCandidates(id);
+  const clips = studio.getClipAssets(id);
+  const titles = studio.getTitles(id);
+  const desc = studio.getDescription(id);
+  const thumb = studio.getThumbnailBrief(id);
+  const monet = studio.getMonetizationReview(id);
+  const repurp = studio.getRepurposingAssets(id);
+  const pubJobs = studio.getPublishingJobs(id);
+  const epScripts = studio.getAvatarScripts().filter((s) => s.episode_id === id);
+  onAfter(() => {
+    const on = (bid, fn) => document.getElementById(bid)?.addEventListener("click", () => tryDo(fn));
+    on("g-concept", () => studio.submitConceptForApproval(id));
+    on("g-research", () => studio.generateEpisodeResearch(id));
+    on("g-hooks", () => studio.generateHooks(id));
+    on("g-outline", () => studio.generateEpisodeOutline(id));
+    on("g-outline-submit", () => studio.submitOutlineForApproval(id));
+    on("g-record", () => studio.createRecordingChecklist(id));
+    on("g-transcript", () => studio.importTranscript(id, document.getElementById("tr-text").value, { source: "manual_paste" }));
+    on("g-cands", () => studio.detectClipCandidates(id));
+    on("g-clipplan", () => studio.generateClipPlan(id));
+    on("g-clips-submit", () => studio.submitClipsForApproval(id));
+    on("g-pack", () => { studio.generateTitles(id); studio.generateDescription(id); studio.generateThumbnailBrief(id); });
+    on("g-pack-submit", () => studio.submitPublishingPackForApproval(id));
+    on("g-monet", () => studio.runMonetizationReview(id, {
+      sponsor: document.getElementById("mo-sponsor").value.trim() || undefined,
+      sponsor_copy: document.getElementById("mo-copy").value.trim() || undefined,
+    }));
+    on("g-repurp", () => studio.generateRepurposingAssets(id));
+    on("g-publish", () => studio.createPublishingJob(id, { channel: document.getElementById("pub-channel").value }));
+  });
+  return `
+  <div class="crumb"><a data-nav="/studio">Media Studio</a> / ${esc(studio.getSeriesById(ep.series_id)?.name ?? "")}</div>
+  <div class="head"><h1>${esc(ep.working_title)}</h1><span class="pill navy">${esc(STAGE_LABELS[stage] ?? stage)}</span></div>
+  <div class="sub">${esc(ep.concept || "—")} · audience: ${esc(ep.audience_hint || "—")}</div>
+  <div class="card" style="margin:6px 0 18px"><div class="pad" style="display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;align-items:center">
+    <b style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)">Gates</b>
+    <span>Concept ${gatePill(ep.concept_approval_id)}</span>
+    <span>Talking points ${gatePill(ep.outline_approval_id)}</span>
+    <span>Clips ${gatePill(ep.clips_approval_id)}</span>
+    <span>Publish pack ${gatePill(ep.pack_approval_id)}</span>
+    <span>Claims ${monet ? (monet.flags?.length ? gatePill(monet.approval_id) : '<span class="pill green">clean</span>') : '<span class="pill gray">not run</span>'}</span>
+    <a data-nav="/approvals" style="color:var(--gold);font-weight:600;margin-left:auto">Decide in the Approval Center →</a>
+  </div></div>
+  <div class="grid g2">
+  <div>
+    ${moduleCard("1 · Concept gate", `Approve the episode concept before production.`,
+      studio.gateStatus(ep.concept_approval_id) === "not_submitted" ? actBtn("g-concept", "Submit concept", true) : gatePill(ep.concept_approval_id))}
+    ${moduleCard("2 · Research board", research.length ? `<ul class="list" style="padding:0 0 0 2px">${research.map((r) => `<li><b>${esc(r.angle.replace(/_/g, " "))}</b> — ${esc(r.note)}</li>`).join("")}</ul>` : "No research yet.", actBtn("g-research", research.length ? "Regenerate" : "Generate"))}
+    ${moduleCard("3 · Hook bank", hooks ? `<ul class="list" style="padding:0 0 0 2px">${hooks.hooks.map((h) => `<li><span class="pill gold">${esc(h.style)}</span> ${esc(h.text)}</li>`).join("")}</ul>` : "No hooks yet.", actBtn("g-hooks", hooks ? "Regenerate" : "Generate"))}
+    ${moduleCard("4 · Outline (talking points)", outline ? `<ul class="list" style="padding:0 0 0 2px">${outline.beats.map((b) => `<li><b>${esc(b.title)}</b> (${b.mins}m) — ${esc(b.detail)}</li>`).join("")}</ul>` : "Requires concept gate approved.",
+      `${actBtn("g-outline", outline ? "Regenerate" : "Generate")}${outline && studio.gateStatus(ep.outline_approval_id) === "not_submitted" ? actBtn("g-outline-submit", "Submit for recording", true) : ""}`)}
+    ${moduleCard("5 · Recording prep", session ? `<div class="s" style="margin-bottom:6px">${esc(session.recording_link)}</div><ul class="list" style="padding:0 0 0 2px">${session.checklist.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : "Requires talking points approved.", session ? `<span class="pill ${session.status === "recorded" ? "green" : "amber"}">${esc(session.status)}</span>` : actBtn("g-record", "Create checklist"))}
+    ${moduleCard("6 · Transcript", transcript ? `<span class="pill green">imported</span> ${transcript.word_count} words · ${esc(transcript.source)}` :
+      `<textarea id="tr-text" placeholder="Paste the Riverside/Descript transcript export here…" style="width:100%;min-height:110px;padding:9px 11px;border:1px solid var(--line2);border-radius:9px;font-size:12px;font-family:var(--sans);background:var(--bg)"></textarea>`,
+      transcript ? "" : actBtn("g-transcript", "Import", true))}
+  </div>
+  <div>
+    ${moduleCard("7 · Clip planner", `${cands.length ? `<b style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)">Candidates</b><ul class="list" style="padding:0 0 0 2px">${cands.map((c) => `<li>#${c.rank} (score ${c.score}) “${esc(c.quote)}”</li>`).join("")}</ul>` : "Import the transcript, then detect."}
+      ${clips.length ? `<b style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)">Plan</b><ul class="list" style="padding:0 0 0 2px">${clips.map((c) => `<li>${esc(c.label)} · <span class="pill navy">${esc(c.platform)}</span></li>`).join("")}</ul>` : ""}`,
+      `${actBtn("g-cands", cands.length ? "Re-detect" : "Detect candidates")}${cands.length ? actBtn("g-clipplan", clips.length ? "Regenerate plan" : "Clip plan") : ""}${clips.length && studio.gateStatus(ep.clips_approval_id) === "not_submitted" ? actBtn("g-clips-submit", "Submit clips", true) : ""}`)}
+    ${moduleCard("8 · Publishing packet", titles ? `<b style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)">Titles</b><ul class="list" style="padding:0 0 0 2px">${titles.options.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+      <b style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)">Thumbnail</b><div style="margin:4px 0 8px">${esc(thumb?.text_overlay ?? "")} — ${esc(thumb?.face ?? "")}</div>
+      <b style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)">Description</b><div style="white-space:pre-wrap;margin-top:4px">${esc(desc?.copy ?? "")}</div>` : "Generate title options + description + thumbnail brief.",
+      `${actBtn("g-pack", titles ? "Regenerate pack" : "Generate pack")}${titles && studio.gateStatus(ep.pack_approval_id) === "not_submitted" ? actBtn("g-pack-submit", "Submit pack", true) : ""}`)}
+    ${moduleCard("9 · Monetization review", monet ? `<span class="pill ${monet.status === "clean" ? "green" : "amber"}">${esc(monet.status.replace(/_/g, " "))}</span> ${esc(monet.note)}${monet.flags?.length ? `<ul class="list" style="padding:0 0 0 2px">${monet.flags.map((f) => `<li><b>${esc(f.kind)}</b>: “${esc(f.match)}”</li>`).join("")}</ul>` : ""}` :
+      `<input id="mo-sponsor" placeholder="Sponsor (optional)" style="width:100%;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;margin-bottom:7px;background:var(--bg);font-family:var(--sans);font-size:12px" />
+       <input id="mo-copy" placeholder="Sponsor read copy (optional)" style="width:100%;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-family:var(--sans);font-size:12px" />`,
+      monet ? actBtn("g-monet", "Re-run") : actBtn("g-monet", "Run review", true))}
+    ${moduleCard("10 · Repurposing board", repurp.length ? `<ul class="list" style="padding:0 0 0 2px">${repurp.map((r) => `<li>${esc(r.title)} <span class="pill gray">${esc(r.status)}</span></li>`).join("")}</ul>` : "Requires clips gate approved.", actBtn("g-repurp", "Generate"))}
+    ${moduleCard("11 · Publishing", `${pubJobs.length ? pubJobs.map((j) => `<div style="margin-bottom:6px"><span class="pill green">${esc(j.status)}</span> ${esc(j.channel)} · ${esc(j.note)}</div>`).join("") : "Requires clips + pack + claims gates."}
+      <select id="pub-channel" style="padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-family:var(--sans);font-size:12px;margin-top:6px"><option>youtube</option><option>spotify</option><option>apple_podcasts</option></select>`,
+      actBtn("g-publish", "Create publishing job", true))}
+    ${moduleCard("12 · AI avatar queue", epScripts.length ? epScripts.map((s) => `<div style="margin-bottom:5px">“${esc(s.title)}” <span class="pill ${s.status === "submitted" ? "amber" : "gray"}">${esc(s.status)}</span> <span class="mono s">${esc(s.hash)}</span></div>`).join("") : "No avatar scripts for this episode.", `<button class="btn" data-nav="/studio/avatar" style="padding:4px 12px;font-size:11px">Avatar Studio →</button>`)}
+  </div></div>`;
+}
+
+function viewAvatarCenter() {
+  const profiles = studio.getAvatarProfiles();
+  const voices = studio.getVoiceProfiles();
+  const scripts = studio.getAvatarScripts().slice().reverse();
+  const jobs = studio.getAvatarVideoJobs().slice().reverse();
+  const usage = studio.getAvatarUsageLogs().slice().reverse().slice(0, 10);
+  onAfter(() => {
+    const on = (sel, fn) => outlet.querySelectorAll(sel).forEach((b) => b.addEventListener("click", () => tryDo(() => fn(b))));
+    document.getElementById("scr-create")?.addEventListener("click", () => tryDo(() => studio.createAvatarScript(
+      document.getElementById("scr-profile").value,
+      { title: document.getElementById("scr-title").value.trim(), body: document.getElementById("scr-body").value.trim(), use_case: document.getElementById("scr-usecase").value })));
+    on("[data-scr-submit]", (b) => studio.submitAvatarForApproval(b.dataset.scrSubmit));
+    on("[data-scr-job]", (b) => studio.createAvatarVideoJob(b.dataset.scrJob));
+    on("[data-job-packet]", (b) => {
+      const pkt = studio.generateAvatarVendorPacket(b.dataset.jobPacket);
+      download(`avatar-job-${pkt.job_id}.json`, JSON.stringify(pkt, null, 2), "application/json");
+    });
+    on("[data-job-output]", (b) => {
+      const ref = window.prompt("Output reference from the vendor (URL or asset id):", "vendor://render/");
+      if (ref) studio.recordAvatarOutput(b.dataset.jobOutput, ref);
+    });
+    on("[data-job-review]", (b) => studio.submitAvatarOutputForReview(b.dataset.jobReview));
+    on("[data-job-publish]", (b) => studio.publishAvatarJob(b.dataset.jobPublish));
+  });
+  const p = profiles[0];
+  return `
+  <div class="head"><div><div class="crumb"><a data-nav="/studio">Media Studio</a> / digital double</div><h1>Avatar Studio</h1></div>
+    <span class="chip">${jobs.length} job${jobs.length === 1 ? "" : "s"}</span></div>
+  <div class="sub">Governed likeness only: documented consent, approved use cases, hash-bound script approvals, output review, and an always-on usage log (docs/AI_AVATAR_ENGINE_SPEC.md). Every output carries the <b>ai_generated</b> flag.</div>
+  ${preview}
+  <div class="grid g2">
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Avatar profile</span><span class="pill green">authorized</span></div><div class="kv">
+        <span class="k">Likeness</span><span>${esc(p.name)}</span>
+        <span class="k">Voice</span><span>${esc(voices[0]?.name ?? "—")}</span>
+        <span class="k">Consent</span><span>${esc(p.consent.document_ref)} · granted ${esc(p.consent.granted_at.slice(0, 10))} · ${esc(p.consent.revocable)}</span>
+        <span class="k">Scope</span><span>${esc(p.consent.scope)}</span>
+        <span class="k">Use cases</span><span>${p.approved_use_cases.map((u) => `<span class="pill navy" style="margin:1px 3px 1px 0">${esc(u)}</span>`).join("")}</span>
+        <span class="k">Hard rules</span><span>no third-party likeness/voice · no deceptive impersonation · every job logged · every output flagged AI-generated</span>
+      </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">New script</span></div><div class="pad">
+        <select id="scr-profile" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:12.5px">${profiles.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
+        <select id="scr-usecase" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:12.5px">${studio.APPROVED_USE_CASES.map((u) => `<option>${esc(u)}</option>`).join("")}</select>
+        <input id="scr-title" placeholder="Script title" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:12.5px" />
+        <textarea id="scr-body" placeholder="The exact words the double will speak — approval binds to this text's hash." style="width:100%;min-height:100px;padding:9px 11px;border:1px solid var(--line2);border-radius:9px;font-size:12.5px;font-family:var(--sans);background:var(--bg)"></textarea>
+        <div style="margin-top:9px"><button class="btn gold" id="scr-create">Create script</button></div>
+      </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Usage log · append-only</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">${usage.map((u) => `<div class="row"><div><div class="t" style="font-size:12px">${esc(u.note)}</div><div class="s">${fmtTs(u.at)}${u.job_id ? ` · ${esc(u.job_id)}` : ""}</div></div></div>`).join("") || '<div class="empty">No usage yet.</div>'}</div></div>
+    </div>
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Scripts</span></div>
+        ${scripts.map((s) => `<div class="apr"><div class="body">
+          <div class="t">${esc(s.title)}</div>
+          <div class="meta"><span class="pill navy">${esc(s.use_case)}</span> · <span class="mono">${esc(s.hash)}</span> · ${gatePill(s.approval_id)}</div>
+          <div class="s" style="margin-top:5px">${esc(s.body.slice(0, 140))}${s.body.length > 140 ? "…" : ""}</div></div>
+          <div class="btns">
+            ${studio.gateStatus(s.approval_id) === "not_submitted" ? `<button class="btn gold" data-scr-submit="${s.id}">Submit</button>` : ""}
+            ${studio.gateStatus(s.approval_id) === "approved" ? `<button class="btn primary" data-scr-job="${s.id}">Create job</button>` : ""}
+          </div></div>`).join("") || '<div class="empty">No scripts yet.</div>'}</div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Video job queue</span></div>
+        ${jobs.map((j) => `<div class="apr"><div class="body">
+          <div class="t">${esc(j.id)} <span class="pill ${j.status === "published" ? "green" : j.status === "in_review" ? "amber" : "navy"}">${esc(j.status.replace(/_/g, " "))}</span> <span class="pill gold">ai_generated</span></div>
+          <div class="meta">${esc(j.vendor)} · ${esc(j.format)}${j.output_ref ? ` · output: ${esc(j.output_ref)}` : ""}</div></div>
+          <div class="btns">
+            <button class="btn" data-job-packet="${j.id}">Vendor packet</button>
+            ${!j.output_ref ? `<button class="btn" data-job-output="${j.id}">Record output</button>` : ""}
+            ${j.output_ref && studio.gateStatus(j.output_approval_id) === "not_submitted" ? `<button class="btn gold" data-job-review="${j.id}">Submit for review</button>` : ""}
+            ${studio.gateStatus(j.output_approval_id) === "approved" && j.status !== "published" ? `<button class="btn primary" data-job-publish="${j.id}">Mark published</button>` : ""}
+          </div></div>`).join("") || '<div class="empty">No jobs — approve a script first.</div>'}</div>
+    </div>
+  </div>`;
+}
+
 // ---------- boot ----------
 document.getElementById("btn-reset")?.addEventListener("click", () => {
-  if (window.confirm("Reset all local demo decisions, logs, and factory packets to the seed state?")) {
-    svc.resetLocalState(); fac.resetFactoryState(); render();
+  if (window.confirm("Reset all local demo decisions, logs, factory packets, and studio state to the seed?")) {
+    svc.resetLocalState(); fac.resetFactoryState(); studio.resetStudioState(); render();
   }
 });
 render();

@@ -6,6 +6,16 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Media Studio + AI Avatar command layer + Divini branding:** `/studio` (series → episode workspace
+  with 11 modules and **five enforced gates**: concept, talking points, clips, publishing pack,
+  sensitive claims), deterministic clip detection from imported transcripts, monetization/claims
+  scanner, repurposing board, publishing jobs (manual until scheduler connector); `/studio/avatar`
+  (consent-backed profiles, approved use cases, **hash-bound script approvals** — edits invalidate
+  tokens, vendor export packets with guardrails + ai_generated disclosure, output review gate,
+  append-only usage log). Theme reskinned to Divini Group brand (cream/emerald/gold, Playfair/
+  Montserrat w/ fallbacks). `apps/web/assets/media-studio.mjs`, smoke `pnpm studio:smoke` (7 gate
+  scenarios). *Risks:* browser-local state; fonts require network (clean fallbacks). *Next:* Day-1
+  Render re-sync.
 - **Four creation factories + live approval wiring:** `/factory` hub + 4 creation modes (company 14 /
   software 12 / gtm 13 / media 17 deterministic editable sections) + `/factory/packets/:id` viewer
   (edit→version, submit→Approval Center with correct action class, export markdown/Obsidian/agent JSON

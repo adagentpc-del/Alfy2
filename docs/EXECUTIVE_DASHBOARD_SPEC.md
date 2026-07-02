@@ -23,23 +23,25 @@ Three-second rule per view: the headline answers "am I okay and what needs me?" 
 
 ## Design language (applied to `apps/web/index.html` in this change)
 
-Luxury enterprise command center — portfolio-holding-company feel, high-status, no clutter:
+Luxury enterprise command center on the **Divini Group brand** (2026-07-02; reference: diviniprocure.com
+brand direction — cream, deep emerald, gold, Didone serif):
 
 | Token | Value | Use |
 |---|---|---|
-| `--bg` | `#f7f6f2` ivory | page base |
-| `--surface` | `#ffffff` | cards |
-| `--ink` | `#10233f` deep navy | structure, headers, primary text |
-| `--navy-soft` | `#1c3a63` | secondary structure, buttons |
-| `--gold` | `#a8842c` | luminous accent: active nav, key numbers, focus states |
-| `--gold-soft` | `#f3ecdc` | accent washes, active backgrounds |
-| `--muted` | `#5c6672` | secondary text |
-| `--line` | `#e7e3d8` | hairlines |
+| `--bg` | `#f8f5ee` cream | page base |
+| `--surface` | `#fffdf8` | cards |
+| `--ink` | `#182420` | primary text |
+| `--navy` / `--navy-soft` | `#143829` / `#1e4d3b` deep emerald (var names kept for stability) | sidebar, structure, banners |
+| `--gold` / `--gold-bright` | `#a8842c` / `#c2a05a` | luminous accents: active nav, key numbers, primary actions |
+| `--gold-soft` | `#f3ecda` | accent washes |
+| `--muted` | `#63705f` | secondary text |
+| `--line` | `#e8e2d2` | hairlines |
 | `--red` | `#a33327` | alerts only |
 
-Purple: none (minimal-purple rule satisfied by absence). Typography: serif display for the wordmark and
-view titles (Georgia stack until a licensed face is chosen), system sans for data. Density: generous
-whitespace, 12px radii, hairline borders, no drop-shadow stacks, no decoration that isn't information.
+Purple: none except muted violet knowledge nodes in the brain graph (minimal-purple rule). Typography:
+`Playfair Display` (Didone) for wordmark/titles with Didot/Georgia fallbacks, `Montserrat` for
+labels/data with system fallbacks — loaded via Google Fonts on the deployed site, degrading cleanly
+offline. Density: generous whitespace, 14px radii, hairline borders, letterspaced uppercase micro-labels.
 
 ## Wiring rules
 

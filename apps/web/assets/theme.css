@@ -1,15 +1,17 @@
-/* Alfy2 Enterprise Command Center — luxury command-center system (docs/EXECUTIVE_DASHBOARD_SPEC.md).
-   Ivory base · deep navy structure · luminous gold accents · serif display · hairline discipline. */
+/* Alfy2 Enterprise Command Center — Divini Group brand system (docs/EXECUTIVE_DASHBOARD_SPEC.md).
+   Cream/ivory base · deep emerald structure · luminous gold accents · Didone serif display ·
+   letterspaced label caps · hairline discipline. (--navy vars keep their names for stability;
+   their values are the Divini emerald.) */
 
 :root{
-  --bg:#f7f6f2; --surface:#ffffff; --ink:#10233f; --navy:#0d1e38; --navy-soft:#1c3a63;
-  --mut:#5c6672; --line:#e7e3d8; --line2:#d6d2c4;
-  --gold:#a8842c; --gold-bright:#c9a24b; --gold-soft:#f3ecdc;
+  --bg:#f8f5ee; --surface:#fffdf8; --ink:#182420; --navy:#143829; --navy-soft:#1e4d3b;
+  --mut:#63705f; --line:#e8e2d2; --line2:#d8d0ba;
+  --gold:#a8842c; --gold-bright:#c2a05a; --gold-soft:#f3ecda;
   --green:#2f6f5e; --greenbg:#e7f1ec; --amber:#9a5a22; --amberbg:#fbeae0;
   --red:#a33327; --redbg:#fcebeb; --violet:#8b7fb8;
-  --radius:14px; --shadow:0 1px 2px rgba(16,35,63,.05), 0 8px 24px -20px rgba(16,35,63,.25);
-  --serif:Georgia,'Times New Roman',serif;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --radius:14px; --shadow:0 1px 2px rgba(20,56,41,.06), 0 8px 24px -20px rgba(20,56,41,.28);
+  --serif:'Playfair Display',Didot,'Bodoni MT',Georgia,'Times New Roman',serif;
+  --sans:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -18,7 +20,7 @@ a{color:inherit;text-decoration:none}
 .app{display:flex;min-height:100vh}
 
 /* ---- sidebar: deep navy, gold-lit ---- */
-.nav{width:248px;background:linear-gradient(180deg,var(--navy) 0%,#0a1830 100%);color:#e9e4d8;
+.nav{width:248px;background:linear-gradient(180deg,var(--navy) 0%,#0c241a 100%);color:#ece6d4;
   padding:22px 14px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh;flex-shrink:0}
 .brand{display:flex;align-items:center;gap:11px;padding:4px 10px 20px;border-bottom:1px solid rgba(233,228,216,.12);margin-bottom:14px}
 .brand .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));
@@ -61,7 +63,9 @@ h1 .thin{color:var(--mut);font-weight:400}
 .card .cardhead a{font-size:11.5px;color:var(--gold);font-weight:600}
 .pad{padding:14px 18px 16px}
 .grid{display:grid;gap:16px}
+.grid>*{min-width:0}
 .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.apr .meta{overflow-wrap:anywhere}.kv span{overflow-wrap:anywhere}
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:14px 0 8px}
 .metric{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
 .metric .l{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:600}
@@ -144,7 +148,7 @@ table.kpis tr:last-child td{border-bottom:none}
 .apr .impact{font-size:11.5px;background:var(--gold-soft);border-radius:7px;padding:5px 10px;margin-top:7px;color:#6b5518}
 
 /* ---- brain ---- */
-.brainwrap{background:radial-gradient(1200px 500px at 30% -10%, #16305a 0%, var(--navy) 55%, #081226 100%);
+.brainwrap{background:radial-gradient(1200px 500px at 30% -10%, #1d5540 0%, var(--navy) 55%, #081a12 100%);
   border-radius:var(--radius);position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .brainwrap canvas{display:block;width:100%}
 .brainlegend{position:absolute;bottom:12px;left:16px;display:flex;gap:14px;font-size:10.5px;color:rgba(233,228,216,.75)}
