@@ -157,7 +157,11 @@ async function liveFetch(path, options = {}) {
     ...options,
     headers: { Authorization: "Bearer " + creds.token, "Content-Type": "application/json", ...(options.headers ?? {}) },
   });
-  if (!res.ok) throw new Error("HTTP " + res.status);
+  if (!res.ok) {
+    let body = "";
+    try { body = (await res.text()).slice(0, 180); } catch { /* opaque */ }
+    throw new Error(`HTTP ${res.status} on ${path}${body ? ` — ${body}` : ""}`);
+  }
   return res.json();
 }
 

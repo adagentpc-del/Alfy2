@@ -313,10 +313,14 @@ async function loadLive(announce = false) {
   const slot = document.getElementById("live-banner");
   if (!svc.liveEnabled() || !slot) return;
   try {
-    const [{ snapshot: s = {} }, pending] = await Promise.all([
-      svc.getLiveMissionControl(),
-      svc.getLiveApprovals("pending"),
-    ]);
+    // Sequential on purpose: failures name their endpoint, and approvals still load even when
+    // mission-control's read-time alert sync hits a write error (known issue).
+    let pending = [];
+    try { pending = await svc.getLiveApprovals("pending"); }
+    catch (e) { throw new Error(`approvals endpoint failed → ${e.message}`); }
+    let s = {};
+    try { ({ snapshot: s = {} } = await svc.getLiveMissionControl()); }
+    catch (e) { throw new Error(`mission-control endpoint failed → ${e.message} (approvals worked: ${pending.length} pending)`); }
     const rev = document.getElementById("live-rev");
     if (rev && s.revenue_today != null) rev.textContent = money(s.revenue_today);
     const needs = document.getElementById("live-needs");
