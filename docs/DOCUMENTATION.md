@@ -95,7 +95,11 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `ALFY_FORGE_IMPLEMENTATION_PLAN.md` | Alfy Forge / Divini Sovereign Cloud: 20-section implementation plan — current-state audit, phased architecture (registry+generators now, Forgejo→k3s staged), secrets rules, migration strategy, what-not-to-build-yet | forge phases change |
 | `VISION_GAP_AUDIT.md` | The billion-dollar-command-center vision vs reality: 8-pillar scorecard (design % vs runtime %), the five truths (no live AI calls, no hands, loop unwired, life half unsurfaced, one human blocker), and the 8-step critical path | superseded by the next audit |
 | `CREDENTIALS_NEEDED.md` | The complete plug-in list: 3 credential tiers (core ON → self-running ON → connectors), what each switches on, and the never-changing secret rules — everything else is already built and gated | a credential tier changes |
-| `BLIND_SPOTS.md` | The ten gaps nobody asked for, ranked by hurt: founder SPOF, operator attack surface, adoption/museum risk, agent-output trust, first-dollar milestone, machine P&L, mortal data, mobile, IP hygiene, incident drill | a blind spot closes |
+| `BLIND_SPOTS.md` | The ten gaps nobody asked for, ranked by hurt — now with per-gap status: 1 closed in code, 5 shipped as product, 4 protocols awaiting one human act each | a blind spot closes |
+| `CONTINUITY_PROTOCOL.md` | Founder-unavailability protocol: delegation tiers T0–T3 on the existing gate machinery, break-glass runbook, estate-grade credential custody, activation checklist | tiers/caps/deputies change |
+| `OPERATOR_SECURITY.md` | Hardening the human front door: ordered hardening list (hardware keys first), token hygiene, standing code-enforced rules, act-now signals | the auth layer or threat model changes |
+| `INCIDENT_RUNBOOK.md` | The 2 a.m. page: pause → deny → rotate in five minutes, per-incident do/don't table, postmortem habit, quarterly drill calendar | an incident teaches something |
+| `IP_ENTITY_HYGIENE.md` | Who owns the machine: assignment target, license-down model per entity (foundation-aware), contributor coverage, trademark checklist — analysis-for-review, counsel-gated | after the counsel session |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |

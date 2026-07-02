@@ -121,6 +121,30 @@ function decide(id, status, extra = {}) {
 export function approveRequest(id) { return decide(id, "approved"); }
 export function rejectRequest(id, reason = "") { return decide(id, "denied", { denial_reason: reason }); }
 
+/**
+ * The third verb (trust layer): not yes, not no — "revise, and here's why". The request STAYS
+ * pending (nothing executes), the note is recorded on the request and in the action log, and the
+ * requesting agent's next draft is expected to address it. Notes accumulate — the revision history
+ * IS the training signal for the loop.
+ */
+export function requestChanges(id, note) {
+  if (!note || note.trim().length < 5) throw new Error("a revision note needs at least a sentence — it is the training signal");
+  const list = overlay("approvals", APPROVAL_REQUESTS);
+  const idx = list.findIndex((r) => r.id === id);
+  if (idx === -1) throw new Error(`approval ${id} not found`);
+  if (list[idx].status !== "pending") throw new Error(`approval ${id} already ${list[idx].status} — revisions apply to pending work`);
+  const entry = { ts: clock().toISOString(), note: note.trim(), by: "Alyssa" };
+  const next = [...list];
+  next[idx] = { ...list[idx], revision_notes: [...(list[idx].revision_notes ?? []), entry] };
+  saveOverlay("approvals", next);
+  createActionLog({
+    agent_id: next[idx].requested_by, business_id: next[idx].business_id,
+    action: `Revision requested: ${next[idx].title} (${id}) — “${entry.note.slice(0, 120)}”`,
+    status: "revision_requested", approval_id: id,
+  });
+  return next[idx];
+}
+
 export function createActionLog(input) {
   if (!input?.agent_id || !input?.action) throw new Error("action log needs agent_id and action");
   const list = overlay("logs", ACTION_LOGS);
@@ -150,7 +174,7 @@ const liveCreds = () => {
 };
 export function liveEnabled() { return liveCreds() !== null; }
 
-async function liveFetch(path, options = {}) {
+export async function liveFetch(path, options = {}) {
   const creds = liveCreds();
   if (!creds) throw new Error("not connected");
   const res = await fetch(creds.api + path, {

@@ -6,6 +6,16 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Data custody + Pg persistence + doc generator + blind-spot closers:** module state now has a
+  Postgres home (migration 0244: upsert-only `web_module_state` KV + append-only `vault_snapshots`,
+  RLS, server-side credential refusal; `/state/*` + `/vault/snapshots*` routes); **/vault** screen =
+  export-everything/import-everything (credential-free by two independent locks, preview-first,
+  tamper-refusing; cloud push/pull when connected; `pnpm custody:smoke`); registry **Generate docs**
+  is real (6 source-of-truth docs from the 24 fields → docs_ready flips, readiness +20); approval
+  drawer gains **Request changes with reason** (trust layer); Command Center gains **Machine P&L** +
+  **First dollar** cards; **PWA manifest** (installable); four protocol docs (CONTINUITY_PROTOCOL,
+  OPERATOR_SECURITY, INCIDENT_RUNBOOK, IP_ENTITY_HYGIENE); BLIND_SPOTS.md now tracks status: 1 closed
+  in code, 5 shipped as product, 4 awaiting one human act each.
 - **Intelligence + hands + learning loop + Life — built, credential-gated:** live AI layer
   (`packages/core/ai-adapter`: Anthropic transport, exact cost metering, $5/day kill-switch,
   graceful OFF without a key) + `/ai/triage|enrich|status` routes; orchestrator gains

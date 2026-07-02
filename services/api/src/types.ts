@@ -9,6 +9,7 @@ import type {
   CapitalAllocationEngine,
   DelegationRuntime,
   MeteredAi,
+  ModuleStateService,
 } from "@alfy2/core";
 
 /**
@@ -25,6 +26,7 @@ export interface RequestRepos {
   decisions: AdvisoryDecisionEngine;
   capital: CapitalAllocationEngine;
   delegation: DelegationRuntime;
+  moduleState: ModuleStateService;
 }
 
 /**

@@ -197,9 +197,13 @@ export const REPLACEMENT_MAP = {
   AWS: { with: "MinIO + LocalStack", phase: 5 },
 };
 
-/** Migration readiness score (0–100): how ready a platform is to move off its SaaS dependencies. */
+/** Migration readiness score (0–100): how ready a platform is to move off its SaaS dependencies.
+ *  Reads the LIVE registry (not the seed) so generating docs / switching providers moves the score. */
 export function migrationReadiness(platformKey) {
-  const p = EXISTING_PLATFORMS.find((x) => x.key === platformKey);
+  const rp = getRegistryPlatform(platformKey);
+  const p = rp
+    ? { key: rp.key, name: rp.platform_name, status: rp.status, dependencies: depsOf(rp), docs_ready: rp.docs_ready }
+    : EXISTING_PLATFORMS.find((x) => x.key === platformKey);
   if (!p) throw new Error(`unknown platform: ${platformKey}`);
   let score = 20; const factors = ["registered in Forge (+20)"];
   if (p.docs_ready) { score += 20; factors.push("source-of-truth docs exist (+20)"); }
@@ -210,6 +214,98 @@ export function migrationReadiness(platformKey) {
   factors.push(`${ready}/${p.dependencies.length} dependencies have a LIVE sovereign replacement (+${Math.round((ready / Math.max(1, p.dependencies.length)) * 50)})`);
   if (p.status === "active") { score += 10; factors.push("operating platform — migration worth it (+10)"); }
   return { platform: p.name, score: Math.min(100, score), factors, blocked_on: blocked.map((d) => `${d} → ${REPLACEMENT_MAP[d]?.with ?? "?"} (phase ${REPLACEMENT_MAP[d]?.phase ?? "?"})`) };
+}
+
+// --- registry doc generator (the wizard's doc generator, attached to EXISTING platforms) ----------------
+
+/**
+ * Generate the six source-of-truth docs for a registered platform from its 24 registry fields.
+ * Facts the registry doesn't hold become "> TO ANSWER:" prompts (same convention as the factories) —
+ * the generator never invents facts. Flips `docs_ready`, which removes the missing-infrastructure
+ * warning and raises the platform's migration-readiness score by +20. Deterministic; audited.
+ */
+export function generateRegistryDocs(key) {
+  const p = getRegistryPlatform(key);
+  if (!p) throw new Error(`unknown platform: ${key}`);
+  const day = clock().toISOString().slice(0, 10);
+  const deps = depsOf(p);
+  const doc = (file, content) => ({ file, content: content.trim() + "\n" });
+  const docs = [
+    doc("PRD.md", `# ${p.platform_name} — PRD
+
+**What:** ${p.platform_type} under ${p.parent_company}.
+**Status:** ${p.status} · priority ${p.priority}.
+**Live at:** ${p.deployment_url || "> TO ANSWER: where do users reach this today (or is it pre-launch)?"}
+**For:** > TO ANSWER: who feels the pain this platform solves, this week?
+**Success (next):** ${p.next_action}
+**Won't do (v1):** anything not already in the core loop — additions go through the Build Factory.
+${p.notes ? `\n**Registry notes:** ${p.notes}` : ""}`),
+    doc("TECH_SPEC.md", `# ${p.platform_name} — TECH_SPEC
+
+| Layer | Provider (today) |
+|---|---|
+| Repo | ${p.repo_url_or_local_path} |
+| Database | ${p.database_provider}${p.database_name ? ` (\`${p.database_name}\`)` : ""} |
+| Auth | ${p.auth_provider} |
+| Storage | ${p.storage_provider} |
+| Deploy | ${p.deployment_provider} |
+| Domain / DNS | ${p.domain} · ${p.dns_provider} |
+| Email | ${p.email_provider} |
+| Payments | ${p.payment_provider} |
+| Secrets | ${p.secrets_location} |
+
+House rules apply: contract-first, RLS deny-by-default, mock adapters before live, approval gates on
+external actions. Sovereign targets per docs/ALFY_FORGE_IMPLEMENTATION_PLAN.md: ${deps.length ? deps.map((d) => `${d} → ${REPLACEMENT_MAP[d]?.with ?? "sovereign equivalent"}`).join(" · ") : "no SaaS dependencies recorded"}.`),
+    doc("BUILD_PLAN.md", `# ${p.platform_name} — BUILD_PLAN
+
+Owner: ${p.operational_owner} · reviewed ${p.last_reviewed_at}
+
+${generateMigrationTasks(key).map((t, i) => `${i + 1}. ${t}`).join("\n")}
+${generateMigrationTasks(key).length + 1}. ${p.next_action}
+
+Every step ships with a smoke; nothing external executes without an approval token.`),
+    doc("SECURITY_CHECKLIST.md", `# ${p.platform_name} — SECURITY_CHECKLIST
+
+- [${/vault/i.test(p.secrets_location) ? "x" : " "}] Secrets as vault references only (current: ${p.secrets_location})
+- [${/none/i.test(p.backup_status) ? " " : "x"}] Backup policy live (current: ${p.backup_status})
+- [ ] RLS deny-by-default on every table
+- [ ] Logs scrubbed of PII/secrets
+- [ ] Deploy gate (deploy action class) on every remote push
+- Compliance risk: **${p.compliance_risk_level}** · privacy risk: **${p.privacy_risk_level}**${p.privacy_risk_level === "regulated" ? "\n- [ ] Privacy-boundary review before ANY migration (regulated data)" : ""}`),
+    doc("COST_CONTROL_PLAN.md", `# ${p.platform_name} — COST_CONTROL_PLAN
+
+SaaS dependencies to watch: ${deps.length ? deps.join(", ") : "none recorded"}.
+${deps.map((d) => `- ${d}: > TO ANSWER: current monthly spend? → replacement ${REPLACEMENT_MAP[d]?.with ?? "?"} (phase ${REPLACEMENT_MAP[d]?.phase ?? "?"})`).join("\n")}
+Rule: every SaaS added later needs a self-host comparison first (Cost Control Agent). Every migrated
+provider = one less subscription.`),
+    doc("CHANGELOG.md", `# ${p.platform_name} — CHANGELOG
+
+## ${day}
+- forge: source-of-truth docs generated from the Platform Registry (6 docs, deterministic).`),
+  ];
+  const rec = put("registry_docs", {
+    id: newId("rdoc"), platform_key: key, platform_name: p.platform_name,
+    generated_at: clock().toISOString(), docs,
+  });
+  // flip docs_ready directly (internal flag — not part of the 24-field public contract)
+  const list = registry();
+  const i = list.findIndex((x) => x.key === key);
+  list[i] = { ...list[i], docs_ready: true, last_reviewed_at: day };
+  save("registry", list);
+  svc.createActionLog({ agent_id: "forge-truth", action: `Registry: source-of-truth docs generated for ${p.platform_name} (6 docs) — docs_ready ✔, migration readiness +20`, status: "succeeded", business_id: null });
+  return rec;
+}
+/** Latest generated doc set for a platform (or all sets when key is omitted). */
+export function getRegistryDocs(key) {
+  const all = load("registry_docs");
+  return key ? all.filter((r) => r.platform_key === key).pop() : all;
+}
+/** One combined markdown bundle (for the download button). */
+export function exportRegistryDocsMarkdown(key) {
+  const rec = getRegistryDocs(key);
+  if (!rec) throw new Error(`no docs generated yet for: ${key}`);
+  return `# ${rec.platform_name} — source-of-truth docs (generated ${rec.generated_at.slice(0, 10)})\n\n` +
+    rec.docs.map((d) => `---\n\n<!-- ${d.file} -->\n\n${d.content}`).join("\n");
 }
 
 /** Manual task generation per platform (Phase 1: tasks, not automation). */
@@ -459,5 +555,5 @@ export function exportForRunner(projectId, target = "claude") {
   };
 }
 export function resetForgeState() {
-  for (const k of ["projects", "vault", "vault_audit"]) store.set(k, undefined);
+  for (const k of ["projects", "vault", "vault_audit", "registry_docs"]) store.set(k, undefined);
 }

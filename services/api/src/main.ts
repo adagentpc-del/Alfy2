@@ -12,6 +12,7 @@ import {
   AdvisoryDecisionEngine,
   CapitalAllocationEngine,
   DelegationRuntime,
+  ModuleStateService,
 } from "@alfy2/core";
 import {
   Db,
@@ -27,6 +28,7 @@ import {
   PgCapitalRunwayRepository,
   PgDelegationPacketRepository,
   PgAgentReportRepository,
+  PgModuleStateRepository,
 } from "@alfy2/db";
 import { createApp } from "./app.js";
 import { makeJwksVerifier } from "./auth/jwks.js";
@@ -76,6 +78,7 @@ async function main(): Promise<void> {
           packets: new PgDelegationPacketRepository(q),
           reports: new PgAgentReportRepository(q),
         });
+        const moduleState = new ModuleStateService(new PgModuleStateRepository(q));
         const ctx: RequestRepos = {
           inbox,
           gate,
@@ -86,6 +89,7 @@ async function main(): Promise<void> {
           decisions,
           capital,
           delegation,
+          moduleState,
         };
         return fn(ctx);
       },

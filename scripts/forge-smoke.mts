@@ -98,4 +98,21 @@ const runner = forge.exportForRunner(proj.id, "openclaw");
 assert.ok(runner.guardrails.some((g: string) => g.includes("vault references")) && runner.guardrails.some((g: string) => g.includes("deploy-class")), "runner guardrails");
 console.log("[7] bundle + runner exports with guardrails ✔");
 
-console.log("\nALFY FORGE SMOKE OK — 12-question wizard → 24 honest steps, conditional artifacts, reference-only vault with gated AI exposure, deploy-class gate, 14-agent desk, 17 sections, 12-platform registry with migration-readiness scoring and task generation, guardrailed exports.");
+// === 8. Registry doc generator: 6 docs from the 24 fields; docs_ready flips; readiness rises. ===
+const before = forge.migrationReadiness("move_mi").score;
+assert.ok(forge.missingInfrastructure(forge.getRegistryPlatform("move_mi")).some((w: string) => w.includes("source-of-truth")), "warning present before generation");
+const rdoc = forge.generateRegistryDocs("move_mi");
+assert.equal(rdoc.docs.length, 6, "6 source-of-truth docs");
+assert.deepEqual(rdoc.docs.map((d: any) => d.file), ["PRD.md", "TECH_SPEC.md", "BUILD_PLAN.md", "SECURITY_CHECKLIST.md", "COST_CONTROL_PLAN.md", "CHANGELOG.md"], "the six canonical files");
+assert.ok(rdoc.docs[0].content.includes("Move Mi") && rdoc.docs[0].content.includes("TO ANSWER"), "PRD from registry facts, unknowns prompted — never invented");
+assert.ok(rdoc.docs[1].content.includes("Postal relay (planned P6)"), "TECH_SPEC reflects the LIVE registry (switched provider)");
+assert.equal(forge.getRegistryPlatform("move_mi").docs_ready, true, "docs_ready flipped");
+assert.ok(!forge.missingInfrastructure(forge.getRegistryPlatform("move_mi")).some((w: string) => w.includes("source-of-truth")), "warning cleared");
+const after = forge.migrationReadiness("move_mi").score;
+assert.ok(after >= before + 20, `readiness rose ${before} → ${after} (+20 for docs)`);
+const md = forge.exportRegistryDocsMarkdown("move_mi");
+assert.ok(md.includes("PRD.md") && md.includes("SECURITY_CHECKLIST.md") && md.length > 1500, "combined markdown bundle exports");
+assert.throws(() => forge.generateRegistryDocs("nope"), /unknown platform/);
+console.log(`[8] registry doc generator: 6 docs · docs_ready ✔ · readiness ${before} → ${after} · bundle exports ✔`);
+
+console.log("\nALFY FORGE SMOKE OK — 12-question wizard → 24 honest steps, conditional artifacts, reference-only vault with gated AI exposure, deploy-class gate, 14-agent desk, 17 sections, 15-platform registry with migration-readiness scoring, task generation AND a live source-of-truth doc generator, guardrailed exports.");

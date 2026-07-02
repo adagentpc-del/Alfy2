@@ -1,3 +1,48 @@
+### Added — Data custody + Pg persistence + registry doc generator + blind-spot closers
+- **Postgres persistence for the module layer (migration `0244_web_module_state.sql`):** two tables —
+  `web_module_state` (upsert-only KV: one row per namespaced module document, identity `(tenant_id,
+  namespace, key)`, jsonb value, RLS select/insert/update, **no delete** — a bad sync can never destroy
+  server state) and `vault_snapshots` (append-only whole-vault exports with size/count metadata).
+  Full stack: `ModuleStateEntry`/`VaultSnapshot` contracts (shared), `ModuleStateService` +
+  `ModuleStateRepository` port + in-memory impl (core), `PgModuleStateRepository` (db), routes
+  `GET /state`, `GET /state/:namespace`, `POST /state/sync`, `POST /vault/snapshots`,
+  `GET /vault/snapshots[/latest]` (api; internal_action — not approval-gated). **Credential refusal is
+  server-side law:** keys matching token/secret/password/api-key patterns are rejected per-entry, and
+  credential-carrying snapshots are refused with 400. Gateway smoke extended (sync/upsert/refusal +
+  snapshot round-trip).
+- **The Vault — export everything / import everything (blind spot #7 CLOSED):** `apps/web/assets/vault.mjs`
+  + `/vault` screen + nav. One button exports every module document (ops/factory/studio/pay/forge/meta)
+  as a self-describing JSON snapshot — **credentials are never in the file** (browser lock + server lock,
+  independently). Import is preview-first (see counts per module, confirm, then apply; byte-identical
+  restore), refuses tampered/foreign/future-version files with a reason, and always skips smuggled
+  credential keys. Cloud twins when connected: Push (append-only snapshot + KV sync to Postgres) and
+  Pull latest (preview-first restore). Custody status metrics + custody rules on screen; quick access
+  from Life. Smoke: `pnpm custody:smoke` (5 scenarios incl. tamper suite and fresh-device restore).
+- **Registry doc generator (placeholder → real):** `generateRegistryDocs(key)` builds the six
+  source-of-truth docs (PRD, TECH_SPEC, BUILD_PLAN, SECURITY_CHECKLIST, COST_CONTROL_PLAN, CHANGELOG)
+  deterministically from a platform's 24 registry fields — unknown facts become "> TO ANSWER:" prompts,
+  never inventions. Generating flips `docs_ready`, clears the missing-infrastructure warning, and
+  raises migration readiness +20 (readiness now reads the LIVE registry, so switches/docs move the
+  score). "Generate docs" on every registry card now downloads the combined bundle. Forge smoke
+  scenario 8.
+- **Trust layer (blind spot #4):** the approval drawer gains the third verb — **Request changes** with a
+  required reason. The request stays pending (nothing executes), notes accumulate on the request and in
+  the action log as `revision_requested` — the training signal for the agent loop.
+- **The machine's own books (blind spots #5, #6):** Command Center gains **Machine P&L** (AI spend vs
+  $5/day cap, infra, registry-tracked subscriptions, revenue attributed — honest zeros) and **First
+  dollar through the machine** (4-step milestone tracker, step 1 live-aware) cards.
+- **PWA (blind spot #8, first slice):** `manifest.webmanifest` + brand icon + theme color — installable
+  to a phone home screen, opens standalone into the Command Center. Push/voice need a service-worker
+  slice (deliberately deferred — cache bugs cost us once already).
+- **Four protocol docs (blind spots #1, #2, #9, #10):** `CONTINUITY_PROTOCOL.md` (delegation tiers
+  T0–T3 on existing gate machinery, break-glass runbook, credential custody), `OPERATOR_SECURITY.md`
+  (ordered hardening: hardware keys → kill SMS 2FA → token rotation → passkeys next), `INCIDENT_RUNBOOK.md`
+  (pause → deny → rotate in five minutes; per-incident table; drill calendar), `IP_ENTITY_HYGIENE.md`
+  (ownership assignment target, license-down model, counsel checklist — analysis-for-review).
+  `BLIND_SPOTS.md` updated with per-gap status: 1 closed in code, 5 shipped as product, 4 awaiting one
+  human act each. Entry assets bumped to `?v=14`; root gains `jose` devDep so the gateway smoke runs
+  from the workspace root.
+
 ### Added — Forge Platform Registry (MVP feature #1): the sovereign migration ledger
 - **`/forge/registry`:** 15 seeded platforms (Alfy2, Divini Procure, Divini Partners, Move Mi, StrataLogic, StrataOS, Strata Coach, FounderOS, Divini Growth OS, DatingModern.ai, Oralia, Black Flag Innocence Foundation, AI Builder Pro, Divini Pay, Alfy Forge) each carrying the full 24-field contract: platform_name, parent_company, platform_type, status, priority, repo_url_or_local_path, database_provider/name, auth/storage/deployment providers, deployment_url, domain, dns_provider, email_provider, payment_provider, secrets_location, backup_status, compliance/privacy risk levels, operational_owner (links to the agent dossier), last_reviewed_at, next_action, notes.
 - **Cards** show status/priority badges, risk badges, a provider summary block, missing-infrastructure warnings (no backups, .env secrets, unconfirmed DNS, Stripe-pending-Divini-Pay, regulated-data-with-unvaulted-secrets…), migration-readiness score, and actions: **Open Platform** (live URL), **Switch provider** (per-field, audited to the action log — the toggle for gradual sovereignty), **Generate docs** (placeholder, logged), **Migrate to Divini Forge** (drafts the reversible plan: preconditions → per-provider dual-run cutover steps → rules; updates next_action; nothing executes without tokens), **Add Platform** (placeholder).

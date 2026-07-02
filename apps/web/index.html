@@ -4,10 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Alfy2 · Enterprise Command Center</title>
+<meta name="theme-color" content="#143829" />
+<link rel="manifest" href="/assets/manifest.webmanifest" />
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/assets/icon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" />
-<link rel="stylesheet" href="/assets/theme.css?v=13" />
+<link rel="stylesheet" href="/assets/theme.css?v=14" />
 <script>
   // Boot guard: a blank page is never acceptable. Any uncaught error renders itself on screen.
   window.addEventListener("error", function (e) { window.__bootFail(e.message + (e.filename ? " — " + e.filename.split("/").pop() + ":" + e.lineno : "")); });
@@ -45,6 +49,7 @@
     <button class="navitem" data-nav="/portfolio" data-navkey="portfolio"><span class="ic">▦</span> Portfolio</button>
     <button class="navitem" data-nav="/brain" data-navkey="brain"><span class="ic">✳</span> Brain Center</button>
     <button class="navitem" data-nav="/readiness" data-navkey="readiness"><span class="ic">⬢</span> Readiness</button>
+    <button class="navitem" data-nav="/vault" data-navkey="vault"><span class="ic">⬒</span> Vault</button>
     <div class="navfoot">Preview build · mock operating data<br/>v2.0 · Jul 2026
       <div><button id="btn-reset">Reset demo state</button></div>
     </div>
@@ -53,6 +58,6 @@
 </div>
 <div id="scrim" class="drawer-scrim"></div>
 <aside id="drawer" class="drawer" aria-hidden="true"></aside>
-<script type="module" src="/assets/app.mjs?v=13"></script>
+<script type="module" src="/assets/app.mjs?v=14"></script>
 </body>
 </html>

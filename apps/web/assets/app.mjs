@@ -10,6 +10,7 @@ import * as studio from "./media-studio.mjs";
 import * as ready from "./readiness.mjs";
 import * as pay from "./divini-pay.mjs";
 import * as forge from "./forge.mjs";
+import * as vault from "./vault.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -47,6 +48,7 @@ const routes = [
   { re: /^\/forge\/projects\/([\w-]+)$/, view: (m) => viewForgeProject(m[1]), nav: "forge" },
   { re: /^\/forge\/registry$/, view: viewForgeRegistry, nav: "forge" },
   { re: /^\/life$/, view: viewLife, nav: "life" },
+  { re: /^\/vault$/, view: viewVault, nav: "vault" },
 ];
 
 function currentPath() {
@@ -116,6 +118,14 @@ document.addEventListener("click", (e) => {
     const reason = window.prompt("Reason for denial (recorded in the log):", "");
     if (reason === null) return;
     svc.rejectRequest(dn.dataset.drawerDeny, reason); closeDrawer(); render();
+    return;
+  }
+  const rv = e.target.closest("[data-drawer-revise]");
+  if (rv) {
+    const note = window.prompt("What should change? (stays pending; the note is the agent's training signal)", "");
+    if (note === null) return;
+    try { svc.requestChanges(rv.dataset.drawerRevise, note); } catch (err) { window.alert(err.message); return; }
+    closeDrawer(); render();
   }
 });
 function openApprovalDrawer(id) {
@@ -134,8 +144,10 @@ function openApprovalDrawer(id) {
       <div class="dk">Requested by</div><div class="dv">${agent ? `<a data-nav="/agents/${agent.id}" data-drawer-close style="color:var(--gold);font-weight:600">${esc(agent.title)}</a>` : esc(r.requested_by)} · ${fmtTs(r.requested_at)}</div>
       ${r.business_id ? `<div class="dk">Business</div><div class="dv"><a data-nav="/portfolio/${esc(r.business_id)}" data-drawer-close style="color:var(--gold);font-weight:600">${esc(svc.getCompanyById(r.business_id)?.name ?? r.business_id)}</a></div>` : ""}
       ${decided ? `<div class="dk">Decision</div><div class="dv">${esc(r.status)} by ${esc(r.decided_by)} · ${fmtTs(r.decided_at)}${r.denial_reason ? ` — “${esc(r.denial_reason)}”` : ""}</div>` : ""}
+      ${(r.revision_notes ?? []).length ? `<div class="dk">Revisions requested</div><div class="dv">${r.revision_notes.map((n) => `“${esc(n.note)}” <span style="color:var(--mut);font-size:11px">· ${fmtTs(n.ts)}</span>`).join("<br/>")}</div>` : ""}
       ${!decided ? `<div class="btns" style="margin-top:20px">
         <button class="btn danger" data-drawer-deny="${esc(r.id)}">Deny</button>
+        <button class="btn" data-drawer-revise="${esc(r.id)}">Request changes</button>
         <button class="btn gold" data-drawer-approve="${esc(r.id)}">Approve</button>
       </div>` : ""}
       <div class="dk" style="margin-top:22px">Gate mechanics</div>
@@ -263,6 +275,28 @@ function viewCommandCenter() {
       <div class="btns"><button class="btn primary" data-nav="/forge/registry">Open Platform Registry</button><button class="btn" data-nav="/forge/new">Create Platform</button></div>`;
     })()}
   </div></div>
+
+  <div class="sec">The machine's own books</div>
+  <div class="grid g2">
+    <div class="card"><div class="cardhead"><span class="t">Machine P&L · does the OS earn its keep?</span><a data-nav="/vault">Vault →</a></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+        <div class="row"><span class="t">AI spend today</span><span class="s mono">$0.00 · cap $5/day (meter arms with the API key)</span></div>
+        <div class="row"><span class="t">Infrastructure (recurring)</span><span class="s mono">$0 on the self-hosted path</span></div>
+        <div class="row"><span class="t">SaaS subscriptions</span><span class="s">tracked per platform in the <a data-nav="/forge/registry" style="color:var(--gold);font-weight:600">Registry</a> — each migration retires one</span></div>
+        <div class="row"><span class="t">Revenue attributed to the machine</span><span class="s mono">$0 — honest until the first tracked dollar</span></div>
+        <div class="row" style="border-top:1px solid var(--line)"><span class="t"><b>Verdict</b></span><span class="s">pre-revenue tool. The books flip when milestone 4 below lands.</span></div>
+      </div></div>
+    <div class="card"><div class="cardhead"><span class="t">First dollar through the machine</span><a data-nav="/pay">Divini Pay →</a></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+        ${[
+          { n: 1, t: "Live API connected", done: svc.liveEnabled(), note: svc.liveEnabled() ? "connected" : "Connect button above" },
+          { n: 2, t: "Database on the pooler (live data)", done: false, note: "DATABASE_URL fix — docs/CREDENTIALS_NEEDED.md" },
+          { n: 3, t: "Payment link on the Divini Pay abstraction", done: false, note: "rails mocked + gated; Stripe bridge on Tier-3 key" },
+          { n: 4, t: "One real invoice → paid → in the ledger", done: false, note: "the milestone that changes everything" },
+        ].map((m) => `<div class="row"><span class="t"><span class="dot ${m.done ? "green" : "amber"}"></span>${m.n} · ${esc(m.t)}</span><span class="s">${esc(m.note)}</span></div>`).join("")}
+        <div class="row" style="border-top:1px solid var(--line)"><span class="t"><b>Why it matters</b></span><span class="s">until one dollar flows end-to-end, this is a beautiful map — after it, a business system.</span></div>
+      </div></div>
+  </div>
 
   <div class="sec">Weekly operating summary</div>
   <div class="card"><div class="pad">
@@ -1499,8 +1533,11 @@ function viewForgeRegistry() {
       window.alert(`Migration plan ${plan.id} drafted for ${plan.platform_name}:\n\nPreconditions:\n- ${plan.preconditions.join("\n- ")}\n\nSteps:\n- ${plan.steps.join("\n- ")}\n\nRules: ${plan.rules[0]}. Nothing executes without your tokens.`);
     })));
     outlet.querySelectorAll("[data-reg-docs]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
-      svc.createActionLog({ agent_id: "forge-truth", action: `Registry: source-of-truth doc generation queued for ${b.dataset.regDocs} (wizard generator attaches in the next slice)`, status: "parked_for_approval", business_id: null });
-      window.alert("Queued: the wizard's doc generator will attach to existing platforms in the next build slice (placeholder action, logged).");
+      const key = b.dataset.regDocs;
+      const rec = forge.generateRegistryDocs(key);
+      download(`${key}-source-of-truth.md`, forge.exportRegistryDocsMarkdown(key));
+      window.alert(`${rec.platform_name}: 6 source-of-truth docs generated from the registry (${rec.docs.map((d) => d.file).join(", ")}).\n\nDownloaded as one bundle. docs_ready ✔ — the warning clears and migration readiness rises +20.`);
+      render();
     })));
     outlet.querySelectorAll("[data-reg-switch]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
       const key = b.dataset.regSwitch;
@@ -1601,6 +1638,7 @@ function viewLife() {
     <div class="card"><div class="cardhead"><span class="t">Brain dump · nothing gets lost</span></div><div class="pad">
       <textarea id="dump-text" placeholder="Ideas, worries, follow-ups, half-thoughts — dump it all. Captured locally always; triaged into the live Executive Inbox when connected." style="width:100%;min-height:130px;padding:11px 13px;border:1px solid var(--line2);border-radius:10px;font-size:13px;font-family:var(--sans);background:var(--bg)"></textarea>
       <div class="btns" style="margin-top:10px"><button class="btn gold" id="dump-go">Capture</button>
+        <button class="btn" data-nav="/vault">Vault · export everything</button>
         <span class="s" style="color:var(--mut);font-size:11px;align-self:center">→ knowledge brain → triage → only what needs you comes back</span></div>
       <div class="rows-tight" style="margin-top:12px;border-top:1px solid var(--line)">
         ${dumps.slice(0, 6).map((d) => `<div class="row"><div><div class="t" style="font-size:12.5px">${esc(d.text.slice(0, 90))}${d.text.length > 90 ? "…" : ""}</div><div class="s">${fmtTs(d.ts)}</div></div><span class="pill ${d.status === "synced_live" ? "green" : d.status === "syncing" ? "amber" : "gray"}">${esc(d.status.replace(/_/g, " "))}</span></div>`).join("") || '<div class="empty">Nothing captured yet — the brain is waiting.</div>'}
@@ -1626,6 +1664,115 @@ function viewLife() {
       </div></div>
     </div>
   </div>`;
+}
+
+// ---------- view: Vault (data custody — export everything / import everything) ----------
+function viewVault() {
+  const st = vault.getCustodyStatus();
+  const kb = (b) => (b / 1024).toFixed(1) + " KB";
+  onAfter(() => {
+    document.getElementById("v-export")?.addEventListener("click", () => tryDo(() => {
+      const f = vault.exportAsFile();
+      download(f.filename, f.json, "application/json");
+      render();
+    }));
+    document.getElementById("v-import")?.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const p = vault.previewImport(String(reader.result));
+        if (!p.ok) { window.alert(`Import refused: ${p.reason}`); return; }
+        const detail = Object.entries(p.by_module).map(([m, n]) => `${m}: ${n}`).join(" · ");
+        const warn = p.skipped_secrets.length ? `\n\n⚠ ${p.skipped_secrets.length} credential-looking entr${p.skipped_secrets.length === 1 ? "y" : "ies"} will be SKIPPED (never imported).` : "";
+        if (!window.confirm(`Snapshot of ${p.exported_at}\n${p.documents} documents — ${detail}${warn}\n\nRestore into this browser? Current module state for these keys is overwritten.`)) return;
+        const done = vault.importEverything(p.snapshot);
+        window.alert(`Restored ${done.applied} documents. The workspace now matches the snapshot.`);
+        render();
+      };
+      reader.readAsText(file);
+    });
+    document.getElementById("v-push")?.addEventListener("click", async () => {
+      try {
+        const r = await vault.pushToCloud("manual push from /vault");
+        window.alert(`Pushed: snapshot ${r.snapshot_meta.id.slice(0, 8)}… (${r.snapshot_meta.entry_count} docs, ${kb(r.snapshot_meta.byte_size)}) + ${r.kv.synced} KV documents synced to Postgres.`);
+        render();
+      } catch (e) { window.alert(e.message); }
+    });
+    document.getElementById("v-pull")?.addEventListener("click", async () => {
+      try {
+        const p = await vault.pullFromCloud();
+        if (!p.ok) { window.alert(p.reason); return; }
+        const detail = Object.entries(p.by_module).map(([m, n]) => `${m}: ${n}`).join(" · ");
+        if (!window.confirm(`Cloud snapshot of ${p.exported_at}\n${p.documents} documents — ${detail}\n\nRestore into this browser?`)) return;
+        const done = vault.importEverything(p.snapshot);
+        window.alert(`Restored ${done.applied} documents from the cloud.`);
+        render();
+      } catch (e) { window.alert(e.message); }
+    });
+    // async cloud status fill
+    if (st.live_connected) {
+      vault.getCloudStatus().then((c) => {
+        const el = document.getElementById("v-cloud");
+        if (!el || !c.connected) return;
+        el.innerHTML = `
+          ${c.namespaces.length ? c.namespaces.map((n) => `<div class="row"><span class="t">${esc(n.namespace)}</span><span class="s mono">${n.entry_count} docs · ${fmtTs(n.updated_at)}</span></div>`).join("") : '<div class="empty">No KV documents on the server yet — push once.</div>'}
+          <div class="row" style="border-top:1px solid var(--line)"><span class="t">Snapshots on server</span><span class="s mono">${c.snapshots.length}${c.snapshots[0] ? ` · newest ${fmtTs(c.snapshots[0].created_at)}` : ""}</span></div>`;
+      }).catch((e) => {
+        const el = document.getElementById("v-cloud");
+        if (el) el.innerHTML = `<div class="empty">Cloud status unavailable — ${esc(e.message)}</div>`;
+      });
+    }
+  });
+  const age = st.last_export ? Math.round((Date.now() - new Date(st.last_export).getTime()) / 86400000) : null;
+  return `
+  <div class="head"><div><div class="crumb">Enterprise · data custody</div><h1>Vault</h1></div>
+    <span class="chip">your data leaves with you, any time</span></div>
+  <div class="sub">Everything this command center produces — approvals, packets, episodes, ledger, registry, brain dumps — exported to one file you own, restored anywhere, synced to your Postgres when connected. Credentials are never in the file, by design (two independent locks).</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: st.documents ? `${st.documents} documents in custody` : "workspace empty" },
+    { k: "Priority", v: age === null ? "make the first export" : age > 7 ? `last export ${age}d ago — export again` : "custody current" },
+    { k: "Owner", v: "Chief Knowledge Officer Agent" },
+    { k: "Blocked", v: "no" },
+    { k: "Approvals", v: "none needed — your own data" },
+    { k: "Revenue", v: "work product = the asset being protected" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: age === null ? "Click Export now — 10 seconds buys disaster immunity." : "Export weekly; push to cloud after big sessions.", cls: "decision" },
+  ])}
+  <div class="metrics">
+    <div class="metric goldline"><div class="l">Documents</div><div class="v mono">${st.documents}</div><div class="d">across ${Object.keys(st.by_module).length} modules</div></div>
+    <div class="metric"><div class="l">Local size</div><div class="v mono">${kb(st.bytes)}</div><div class="d neutral">in this browser</div></div>
+    <div class="metric"><div class="l">Last export</div><div class="v mono" style="font-size:${st.last_export ? "17px" : "26px"}">${st.last_export ? fmtTs(st.last_export) : "never"}</div><div class="d ${age === null || age > 7 ? "warn" : "up"}">${age === null ? "unprotected" : age > 7 ? "stale" : "protected"}</div></div>
+    <div class="metric"><div class="l">Cloud twin</div><div class="v mono" style="font-size:17px">${st.live_connected ? "connected" : "offline"}</div><div class="d neutral">${st.live_connected ? "Postgres reachable" : "file export always works"}</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="cardhead"><span class="t">This device</span></div><div class="pad">
+      <div class="rows-tight" style="margin-bottom:12px">
+        ${Object.entries(st.by_module).map(([m, n]) => `<div class="row"><span class="t">${esc(m)}</span><span class="s mono">${n} document${n === 1 ? "" : "s"}</span></div>`).join("") || '<div class="empty">Nothing captured yet.</div>'}
+      </div>
+      <div class="btns">
+        <button class="btn gold" id="v-export">Export everything (.json)</button>
+        <label class="btn" style="cursor:pointer">Import everything<input type="file" id="v-import" accept=".json,application/json" style="display:none" /></label>
+      </div>
+      <div class="s" style="color:var(--mut);font-size:11px;margin-top:10px">Import is preview-first: you see what the file carries and confirm before anything is written. Credential-looking entries are always skipped.</div>
+    </div></div>
+    <div class="card"><div class="cardhead"><span class="t">Cloud twin · Postgres</span></div><div class="pad">
+      ${st.live_connected
+        ? `<div class="rows-tight" id="v-cloud" style="margin-bottom:12px"><div class="empty">Loading server custody status…</div></div>
+           <div class="btns"><button class="btn gold" id="v-push">Push to cloud</button><button class="btn" id="v-pull">Pull latest</button></div>
+           <div class="s" style="color:var(--mut);font-size:11px;margin-top:10px">Push writes an append-only snapshot + upserts each document into <code>web_module_state</code> (RLS, your tenant only). Pull restores the newest snapshot — preview-first, like file import.</div>`
+        : `<div class="empty" style="margin-bottom:12px">Not connected. The cloud twin activates the moment you Connect the live API on the Command Center — until then, file export is your custody (and it always works).</div>
+           <div class="btns"><button class="btn" data-nav="/command-center">Go connect →</button></div>`}
+    </div></div>
+  </div>
+  <div class="sec">Custody rules</div>
+  <div class="card"><div class="pad" style="font-size:13px;line-height:2">
+    1 · Credentials never enter an export, a snapshot, or the KV store — rejected by the browser AND the server independently.<br/>
+    2 · Import and pull are preview-first; nothing overwrites silently.<br/>
+    3 · Cloud snapshots are append-only — a bad push can never destroy an older good one.<br/>
+    4 · The export file is plain JSON: readable in any editor, importable into any future system. No lock-in, including to Alfy2 itself.
+  </div></div>`;
 }
 
 // ---------- boot ----------
