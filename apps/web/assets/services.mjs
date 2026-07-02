@@ -177,6 +177,17 @@ export async function decideLiveApproval(id, status, reason) {
 export async function getLiveMissionControl() {
   return liveFetch("/mission-control");
 }
+/** Unauthenticated health probe with a generous timeout (free-tier cold starts take 30–60s). */
+export async function probeLiveHealth(apiBase, timeoutMs = 75_000) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(apiBase.replace(/\/+$/, "") + "/healthz", { signal: ctl.signal });
+    return { ok: res.ok, status: res.status };
+  } catch (e) {
+    return { ok: false, status: 0, error: e.name === "AbortError" ? `no response in ${timeoutMs / 1000}s` : e.message };
+  } finally { clearTimeout(timer); }
+}
 
 // --- composition: weekly report + executive summary ------------------------------------------------
 

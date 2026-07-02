@@ -188,6 +188,13 @@ function viewCommandCenter() {
     <div class="btns"><button class="btn" id="btn-connect">Connect live API</button><span class="chip">Founder mode · normal</span></div></div>
   <div class="sub">${date} · one screen for everything that needs you</div>
   <span id="live-banner">${preview}</span>
+  <div id="connect-panel" class="card" style="display:none;max-width:640px;margin:0 0 16px"><div class="pad">
+    <div style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700;margin-bottom:8px">Connect the live API</div>
+    <input id="cx-url" placeholder="https://alfie-api.onrender.com" style="width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:13px" />
+    <input id="cx-token" type="password" placeholder="ALFY_API_TOKEN (stored in this browser only)" style="width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:9px;margin-bottom:10px;background:var(--bg);font-family:var(--sans);font-size:13px" />
+    <div class="btns"><button class="btn gold" id="cx-go">Connect</button>
+      <span class="s" style="color:var(--mut);font-size:11px;align-self:center">Free tier sleeps — first connect can take up to a minute while the API wakes.</span></div>
+  </div></div>
   ${execStrip([
     { k: "Status", v: s.pending_approvals.length ? "needs you" : "steady", cls: s.pending_approvals.length ? "" : "" },
     { k: "Priority", v: s.business_status.find((b) => b.status === "amber")?.name ?? "hold course" },
@@ -273,21 +280,36 @@ function viewCommandCenter() {
   </div>`;
 }
 
-// ---------- live hook (preserved from v1: talks to the real API when connected) ----------
+// ---------- live hook: staged connect with visible progress (cold starts take 30–60s) ----------
 function wireLive() {
   const btn = document.getElementById("btn-connect");
-  if (btn) btn.addEventListener("click", () => {
-    const api = window.prompt("API URL (e.g. https://alfie-api.onrender.com):", localStorage.getItem("alfie_api") || "");
-    if (api === null) return;
-    const token = window.prompt("Your API token:", localStorage.getItem("alfie_token") || "");
-    if (token === null) return;
-    localStorage.setItem("alfie_api", api.trim().replace(/\/+$/, ""));
-    localStorage.setItem("alfie_token", token.trim());
-    loadLive();
+  const panel = document.getElementById("connect-panel");
+  if (btn && panel) btn.addEventListener("click", () => {
+    panel.style.display = panel.style.display === "none" ? "block" : "none";
+    document.getElementById("cx-url").value = localStorage.getItem("alfie_api") || "";
+    document.getElementById("cx-token").value = localStorage.getItem("alfie_token") || "";
+  });
+  document.getElementById("cx-go")?.addEventListener("click", async () => {
+    const status = (html) => { document.getElementById("live-banner").innerHTML = html; };
+    const api = document.getElementById("cx-url").value.trim().replace(/\/+$/, "");
+    const token = document.getElementById("cx-token").value.trim();
+    if (!/^https:\/\//.test(api)) { status(`<div class="preview-banner">The API URL must start with https:// — got “${esc(api || "(empty)")}”.</div>`); return; }
+    if (token.length < 10) { status(`<div class="preview-banner">Token looks too short — paste the full ALFY_API_TOKEN from Render.</div>`); return; }
+    localStorage.setItem("alfie_api", api);
+    localStorage.setItem("alfie_token", token);
+    panel.style.display = "none";
+    status(`<div class="preview-banner">Step 1/2 — waking the API at ${esc(api)}… free tier can take up to a minute. Don't navigate away.</div>`);
+    const health = await svc.probeLiveHealth(api);
+    if (!health.ok) {
+      status(`<div class="preview-banner">The API did not answer /healthz (${esc(health.error ?? "HTTP " + health.status)}). Check the Render service is “Live”, then try again — cold starts can need two attempts.</div>`);
+      return;
+    }
+    status(`<div class="preview-banner">Step 2/2 — API is awake ✓ Authenticating…</div>`);
+    await loadLive(true);
   });
   loadLive();
 }
-async function loadLive() {
+async function loadLive(announce = false) {
   const slot = document.getElementById("live-banner");
   if (!svc.liveEnabled() || !slot) return;
   try {
@@ -299,9 +321,14 @@ async function loadLive() {
     if (rev && s.revenue_today != null) rev.textContent = money(s.revenue_today);
     const needs = document.getElementById("live-needs");
     if (needs) needs.textContent = pending.length;
-    slot.innerHTML = `<div class="live-banner">Live · connected to ${esc(localStorage.getItem("alfie_api"))} — revenue + needs-you tiles and the Approval Center queue are live; other cards are preview.</div>`;
+    slot.innerHTML = `<div class="live-banner">Live · connected to ${esc(localStorage.getItem("alfie_api"))} — revenue + needs-you tiles and the Approval Center live queue are real${s.revenue_today ? "" : " (DB is empty until a data source connects — $0 is correct, not an error)"}.</div>`;
   } catch (e) {
-    slot.innerHTML = `<div class="preview-banner">Could not reach the API (${esc(e.message)}). Showing preview.</div>`;
+    const msg = String(e.message || e);
+    if (msg.includes("401")) {
+      slot.innerHTML = `<div class="preview-banner">API is up but rejected the token (HTTP 401) — re-copy ALFY_API_TOKEN from Render → Environment and Connect again.</div>`;
+    } else if (announce || svc.liveEnabled()) {
+      slot.innerHTML = `<div class="preview-banner">API reachable but the data call failed (${esc(msg)}). Open the browser console (F12) and send me the red line.</div>`;
+    }
   }
 }
 
