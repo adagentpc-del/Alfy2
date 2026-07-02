@@ -241,6 +241,21 @@ function viewCommandCenter() {
       </div></div>
   </div>
 
+  <div class="sec">Sovereign infrastructure · Alfy Forge</div>
+  <div class="card"><div class="pad" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+    ${(() => {
+      const reg = forge.getRegistry();
+      const warns = reg.map((p) => ({ p, w: forge.missingInfrastructure(p) })).filter((x) => x.w.length);
+      const plans = forge.getMigrationPlans();
+      const worst = warns.sort((a, b) => b.w.length - a.w.length)[0];
+      return `<div style="flex:1;min-width:220px">
+        <div style="font-family:var(--serif);font-size:15px">${reg.length} platforms on the ledger · ${plans.length} migration plan${plans.length === 1 ? "" : "s"} drafted</div>
+        <div class="s" style="color:var(--mut);margin-top:3px">${warns.reduce((s, x) => s + x.w.length, 0)} infrastructure warnings — worst: <b>${esc(worst?.p.platform_name ?? "—")}</b> (${worst?.w.length ?? 0})</div>
+      </div>
+      <div class="btns"><button class="btn primary" data-nav="/forge/registry">Open Platform Registry</button><button class="btn" data-nav="/forge/new">Create Platform</button></div>`;
+    })()}
+  </div></div>
+
   <div class="sec">Weekly operating summary</div>
   <div class="card"><div class="pad">
     ${s.weekly_summary ? `<div style="font-family:var(--serif);font-size:15.5px">“${esc(s.weekly_summary.headline)}”</div>
