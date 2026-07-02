@@ -136,7 +136,7 @@ export function runReadinessCheck() {
       check("17 dashboard sections with honest phase labels", forge.SECTIONS.length === 17 && forge.SECTIONS.every((s) => s.live || s.phase >= 2)),
       check("14-agent infrastructure desk, 8 dossier fields, chained to the CTO", forge.getForgeAgents().length === 14 && forge.getForgeAgents().every((a) => FORGE_FIELDS.every((f) => a[f]?.length))),
       check("Secrets vault is reference-only with gated AI exposure", typeof forge.storeSecretRef === "function" && typeof forge.grantSecretToAgent === "function"),
-      check("Platform registry: 12 existing platforms with migration-readiness scoring", forge.EXISTING_PLATFORMS.length === 12 && forge.migrationReadiness("move_mi").score > 0),
+      check("Platform Registry: 15 platforms × 24 fields, migration-readiness scoring, plan generator", forge.getRegistry().length === 15 && forge.REGISTRY_FIELDS.length === 24 && forge.getRegistry().every((p) => forge.REGISTRY_FIELDS.every((f) => p[f] !== undefined)) && forge.migrationReadiness("move_mi").score > 0 && typeof forge.createMigrationPlan === "function"),
       check("Remote deploys gated as deploy-class approvals", typeof forge.submitDeployForApproval === "function"),
     ],
   });

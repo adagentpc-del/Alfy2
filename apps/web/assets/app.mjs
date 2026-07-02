@@ -45,6 +45,7 @@ const routes = [
   { re: /^\/forge$/, view: viewForge, nav: "forge" },
   { re: /^\/forge\/new$/, view: viewForgeWizard, nav: "forge" },
   { re: /^\/forge\/projects\/([\w-]+)$/, view: (m) => viewForgeProject(m[1]), nav: "forge" },
+  { re: /^\/forge\/registry$/, view: viewForgeRegistry, nav: "forge" },
 ];
 
 function currentPath() {
@@ -1345,10 +1346,14 @@ function viewForge() {
       <div class="s">${esc(p.answers.surface.replace(/_/g, " "))} · ${esc(p.answers.environment)} · ${esc(p.domain.name)} · ${fmtTs(p.created_at)}</div></div>
       <span class="pill ${forge.deployStatus(p) === "approved" ? "green" : "navy"}">${p.steps.filter((s) => s.status === "done").length}/24 · deploy ${esc(forge.deployStatus(p).replace(/_/g, " "))}</span></div>`).join("") || '<div class="empty">Nothing forged yet — Create Platform runs the whole pipeline.</div>'}</div>
 
-  <div class="sec">Platform registry · migration readiness (existing platforms)</div>
-  <div class="card rows-tight">${readiness.map(({ p, r }) => `<div class="row"><div><div class="t" style="font-weight:600">${esc(p.name)}</div>
-      <div class="s">deps: ${p.dependencies.join(", ")}${p.notes ? ` · ${esc(p.notes)}` : ""}</div></div>
-      <div style="display:flex;align-items:center;gap:10px;min-width:180px"><div class="bar"><i style="width:${r.score}%"></i></div><span class="mono s" style="min-width:52px;text-align:right">${r.score}/100</span></div></div>`).join("")}</div>
+  <div class="sec">Platform registry · migration readiness</div>
+  <div class="card rows-tight">
+    <div class="row"><span class="t" style="font-weight:600">${forge.getRegistry().length} platforms on the ledger — providers, risks, and next actions per platform</span>
+      <button class="btn gold" data-nav="/forge/registry" style="padding:4px 14px;font-size:11.5px">Open Platform Registry</button></div>
+    ${readiness.slice(0, 5).map(({ p, r }) => `<div class="row"><div><div class="t" style="font-weight:600">${esc(p.name)}</div>
+      <div class="s">deps: ${p.dependencies.join(", ") || "none"}</div></div>
+      <div style="display:flex;align-items:center;gap:10px;min-width:180px"><div class="bar"><i style="width:${r.score}%"></i></div><span class="mono s" style="min-width:52px;text-align:right">${r.score}/100</span></div></div>`).join("")}
+  </div>
 
   <div class="sec">The seventeen sections · honest phase labels</div>
   <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
@@ -1433,6 +1438,84 @@ function viewForgeProject(id) {
   ${p.steps.map((s) => `<div class="card" style="margin-bottom:10px"><div class="cardhead"><span class="t">${esc(s.title)}</span>
       <span class="pill ${s.status === "done" ? "green" : s.status === "packet_ready" ? "navy" : s.status === "awaiting_approval" ? "amber" : "gray"}">${esc(s.status.replace(/_/g, " "))}</span></div>
     <div class="pad" style="font-size:12px;white-space:pre-wrap;font-family:${["drizzle_schema", "env_template"].includes(s.key) ? "ui-monospace,Menlo,monospace" : "var(--sans)"}">${esc(s.content)}${s.packet?.commands ? `\n\n${s.packet.commands.join("\n")}` : ""}</div></div>`).join("")}`;
+}
+
+// ---------- view: Forge Platform Registry (MVP feature #1) ----------
+const riskPill = (level) => `<span class="pill ${level === "high" || level === "regulated" ? "red" : level === "medium" || level === "sensitive" ? "amber" : "green"}">${esc(level)}</span>`;
+function viewForgeRegistry() {
+  const platforms = forge.getRegistry();
+  const plans = forge.getMigrationPlans();
+  const warnTotal = platforms.reduce((s, p) => s + forge.missingInfrastructure(p).length, 0);
+  onAfter(() => {
+    outlet.querySelectorAll("[data-reg-migrate]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
+      const plan = forge.createMigrationPlan(b.dataset.regMigrate);
+      window.alert(`Migration plan ${plan.id} drafted for ${plan.platform_name}:\n\nPreconditions:\n- ${plan.preconditions.join("\n- ")}\n\nSteps:\n- ${plan.steps.join("\n- ")}\n\nRules: ${plan.rules[0]}. Nothing executes without your tokens.`);
+    })));
+    outlet.querySelectorAll("[data-reg-docs]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
+      svc.createActionLog({ agent_id: "forge-truth", action: `Registry: source-of-truth doc generation queued for ${b.dataset.regDocs} (wizard generator attaches in the next slice)`, status: "parked_for_approval", business_id: null });
+      window.alert("Queued: the wizard's doc generator will attach to existing platforms in the next build slice (placeholder action, logged).");
+    })));
+    outlet.querySelectorAll("[data-reg-switch]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
+      const key = b.dataset.regSwitch;
+      const field = window.prompt("Which field? (repo_url_or_local_path, database_provider, auth_provider, storage_provider, deployment_provider, email_provider, payment_provider, dns_provider, secrets_location, status, priority, next_action)", "deployment_provider");
+      if (!field) return;
+      const p = forge.getRegistryPlatform(key);
+      const value = window.prompt(`New value for ${field} (current: "${p[field]}")\nTip: sovereign targets — forgejo:${key} · Coolify (P3) · self-hosted Postgres (P4) · MinIO (P5) · Postal relay (P6) · Divini Pay`, String(p[field]));
+      if (value === null) return;
+      forge.updatePlatformField(key, field, value);
+      render();
+    })));
+    document.getElementById("reg-add")?.addEventListener("click", () =>
+      window.alert("Add Platform opens the New Platform Wizard for net-new builds; registering an EXISTING external platform gets its own intake form in the next slice (placeholder)."));
+  });
+  return `
+  <div class="crumb"><a data-nav="/forge">Alfy Forge</a> / Platform Registry</div>
+  <div class="head"><h1>Platform Registry</h1>
+    <div class="btns"><button class="btn" id="reg-add">Add Platform</button><button class="btn gold" data-nav="/forge/new">Create Platform</button></div></div>
+  <div class="sub">Every platform, every provider, one private ledger. Current builds live as-is — switch any provider per platform, and “Migrate to Divini Forge” drafts the reversible cutover plan. Nothing migrates without your tokens.</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `${platforms.length} platforms · ${plans.length} migration plans drafted` },
+    { k: "Priority", v: platforms.filter((p) => p.priority === "P1").map((p) => p.platform_name).slice(0, 3).join(", ") },
+    { k: "Owner", v: "Chief Infrastructure Architect" },
+    { k: "Blocked", v: `${warnTotal} infrastructure warnings across the ledger` },
+    { k: "Approvals", v: "migrations execute only with tokens" },
+    { k: "Revenue", v: "every migrated provider = one less subscription" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: warnTotal ? "Clear the top warnings (backups + secrets to vault refs) before any migration." : "Draft the first migration plan.", cls: "decision" },
+  ])}
+  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))">
+    ${platforms.map((p) => {
+      const warns = forge.missingInfrastructure(p);
+      const r = forge.migrationReadiness(p.key);
+      const plan = plans.filter((m) => m.platform_key === p.key).pop();
+      return `<div class="acard" style="cursor:default">
+        <div class="top"><span class="pill navy">${esc(p.platform_type)}</span>
+          <span><span class="pill ${p.status === "active" ? "green" : p.status === "build" ? "navy" : "gray"}">${esc(p.status)}</span> <span class="pill gold">${esc(p.priority)}</span></span></div>
+        <h3>${esc(p.platform_name)}</h3>
+        <div class="s" style="color:var(--mut);margin:2px 0 8px">${esc(p.parent_company)} · owner <a data-nav="/agents/${esc(p.operational_owner)}" style="color:var(--gold);font-weight:600">${esc(svc.getAgentById(p.operational_owner)?.title ?? forge.getForgeAgents().find((a) => a.id === p.operational_owner)?.title ?? pay.getPayAgents().find((a) => a.id === p.operational_owner)?.title ?? p.operational_owner)}</a> · reviewed ${esc(p.last_reviewed_at)}</div>
+        <div style="font-size:11px;line-height:1.8;border-top:1px solid var(--line);padding-top:7px">
+          <b style="letter-spacing:.08em;text-transform:uppercase;font-size:9px;color:var(--mut)">Providers</b><br/>
+          repo <b>${esc(p.repo_url_or_local_path.split(" ")[0])}</b> · db <b>${esc(p.database_provider)}</b> · auth <b>${esc(p.auth_provider)}</b><br/>
+          deploy <b>${esc(p.deployment_provider)}</b> · storage <b>${esc(p.storage_provider)}</b> · dns <b>${esc(p.dns_provider)}</b><br/>
+          email <b>${esc(p.email_provider)}</b> · payments <b>${esc(p.payment_provider)}</b><br/>
+          secrets <b>${esc(p.secrets_location)}</b> · backups <b>${esc(p.backup_status)}</b>
+        </div>
+        <div style="margin:8px 0 6px;font-size:11px">compliance ${riskPill(p.compliance_risk_level)} privacy ${riskPill(p.privacy_risk_level)}
+          <span style="float:right" class="mono s">migration ${r.score}/100</span></div>
+        ${warns.length ? `<div style="font-size:11px;background:var(--amberbg);border-radius:8px;padding:6px 10px;margin-bottom:7px;color:var(--amber)"><b>⚠ ${warns.length}:</b> ${warns.map(esc).join(" · ")}</div>` : ""}
+        <div style="font-size:11.5px;margin-bottom:8px"><b style="color:var(--gold);font-size:9px;letter-spacing:.1em;text-transform:uppercase">Next action</b><br/>${esc(p.next_action)}</div>
+        ${p.notes ? `<div class="s" style="font-size:10.5px;color:var(--mut);margin-bottom:8px">${esc(p.notes)}</div>` : ""}
+        <div class="btns" style="flex-wrap:wrap;border-top:1px solid var(--line);padding-top:9px">
+          ${p.deployment_url ? `<a class="btn" href="${esc(p.deployment_url)}" target="_blank" rel="noopener" style="padding:4px 10px;font-size:10.5px">Open Platform</a>` : `<button class="btn" disabled style="padding:4px 10px;font-size:10.5px;opacity:.5">Open Platform</button>`}
+          <button class="btn" data-reg-switch="${p.key}" style="padding:4px 10px;font-size:10.5px">Switch provider</button>
+          <button class="btn" data-reg-docs="${p.key}" style="padding:4px 10px;font-size:10.5px">Generate docs</button>
+          <button class="btn ${plan ? "" : "gold"}" data-reg-migrate="${p.key}" style="padding:4px 10px;font-size:10.5px">${plan ? "Re-plan migration" : "Migrate to Divini Forge"}</button>
+        </div>
+        ${plan ? `<div class="s" style="font-size:10px;color:var(--mut);margin-top:6px">plan ${esc(plan.id)} · ${esc(plan.status)} · ${plan.steps.length} cutover steps · created ${fmtTs(plan.created_at)}</div>` : ""}
+      </div>`;
+    }).join("")}
+  </div>`;
 }
 
 // ---------- boot ----------

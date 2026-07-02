@@ -65,27 +65,127 @@ export const SECTIONS = [
   { key: "payments_readiness", label: "Payment Infrastructure", phase: 1, live: true, outcome: "Track Payments", note: "Divini Pay Lite abstraction + tracking (docs/DIVINI_PAY_SPEC.md); wallet stays locked" },
 ];
 
-// --- platform registry: EXISTING platforms + their SaaS dependency map (Phase 1 tracker) ------------------
-// Current-stack assumptions per the strategic brief; migration happens gradually, on Alyssa's schedule.
-const px = (key, name, deps, o = {}) => ({
-  key, name, status: o.status ?? "active", build_track: o.track ?? "operating",
-  dependencies: deps, // SaaS this platform currently leans on
-  docs_ready: o.docs ?? false, notes: o.notes ?? "",
+// --- Platform Registry (MVP feature #1): every platform, every provider, one ledger -----------------------
+// 24 fields per platform. Existing builds live AS-IS; providers are switchable per field ("toggle/switch"),
+// and "Migrate to Divini Forge" generates a reversible cutover plan — nothing is removed or auto-migrated.
+const P = (key, o) => ({
+  key,
+  platform_name: o.name,
+  parent_company: o.parent ?? "Divini Group",
+  platform_type: o.type ?? "web app",
+  status: o.status ?? "active",
+  priority: o.priority ?? "P2",
+  repo_url_or_local_path: o.repo ?? `github:private/${key} (switchable → forgejo:${key})`,
+  database_provider: o.db ?? "Supabase (Postgres)",
+  database_name: o.dbname ?? key,
+  auth_provider: o.auth ?? "Supabase Auth",
+  storage_provider: o.stor ?? "Supabase Storage",
+  deployment_provider: o.deploy ?? "Vercel",
+  deployment_url: o.url ?? "",
+  domain: o.domain ?? `${key.replace(/_/g, "")}.divinigroup.com`,
+  dns_provider: o.dns ?? "registrar default (TO CONFIRM)",
+  email_provider: o.email ?? "none",
+  payment_provider: o.pay ?? "none",
+  secrets_location: o.secrets ?? ".env files (move to vault references)",
+  backup_status: o.backup ?? "none — policy needed",
+  compliance_risk_level: o.crisk ?? "low",
+  privacy_risk_level: o.prisk ?? "standard",
+  operational_owner: o.owner ?? "chief-technology",
+  last_reviewed_at: o.reviewed ?? "2026-07-02",
+  next_action: o.next ?? "Generate source-of-truth docs; move secrets to vault references.",
+  notes: o.notes ?? "",
+  docs_ready: o.docs ?? false,
 });
-export const EXISTING_PLATFORMS = [
-  px("alfy2", "Alfy2", ["GitHub", "Supabase", "Vercel", "Render"], { docs: true, notes: "This OS. Fullest doc coverage in the group." }),
-  px("divini_procure", "Divini Procure / ProcureOS", ["GitHub", "Supabase", "Vercel", "Stripe", "Resend"], { track: "build" }),
-  px("divini_partners", "Divini Partners", ["GitHub", "Supabase", "Vercel", "Stripe"], { track: "build" }),
-  px("move_mi", "Move Mi", ["GitHub", "Supabase", "Vercel", "Stripe", "Resend"], {}),
-  px("stratalogic", "StrataLogic / StrataOS / Strata Coach", ["GitHub", "Supabase", "Vercel"], { track: "build" }),
-  px("founderos", "FounderOS", ["GitHub", "Supabase", "Vercel", "Stripe"], { track: "build" }),
-  px("divini_growth", "Divini Growth OS", ["GitHub", "Supabase", "Vercel"], { track: "build" }),
-  px("datingmodern", "DatingModern.ai", ["GitHub", "Vercel"], { status: "validation", track: "pre-verdict" }),
-  px("oralia", "Oralia", ["GitHub", "Vercel", "Stripe"], { status: "pre-launch" }),
-  px("black_flag", "Black Flag Innocence Foundation", ["GitHub", "Supabase", "Resend"], { notes: "Strictest privacy boundary in the portfolio." }),
-  px("ai_builder_pro", "AI Builder Pro / local builder", ["GitHub"], { status: "validation", track: "pre-verdict" }),
-  px("divini_pay", "Divini Pay (payment layer)", ["Stripe (bridge only)"], { track: "build", docs: true, notes: "Abstraction + tracking first; wallet locked (compliance)." }),
+export const REGISTRY_SEED = [
+  P("alfy2", { name: "Alfy2", type: "operating system", priority: "P1", deploy: "Vercel (web) + Render (API)", url: "https://alfy2.vercel.app", db: "Supabase (Postgres, 245 tables RLS)", backup: "migrations in git; DB backup policy needed", docs: true, owner: "chief-technology", next: "Render re-sync → live mode.", notes: "This OS. Fullest doc coverage in the group." }),
+  P("divini_procure", { name: "Divini Procure", type: "marketplace", priority: "P1", pay: "Stripe (→ Divini Pay)", email: "Resend", crisk: "medium", next: "Marketplace flows onto Divini Pay abstraction.", owner: "agent-divini-procure" }),
+  P("divini_partners", { name: "Divini Partners", type: "partner portal", pay: "Stripe (→ Divini Pay)", owner: "agent-divini-partner" }),
+  P("move_mi", { name: "Move Mi", type: "booking platform", priority: "P1", pay: "Stripe (→ Divini Pay)", email: "Resend", url: "https://movemi.example (TO CONFIRM)", owner: "agent-move-mi", next: "Email connector; quotes onto Divini Pay links." }),
+  P("stratalogic", { name: "StrataLogic", type: "advisory site", owner: "agent-stratalogic" }),
+  P("strataos", { name: "StrataOS", type: "client platform", status: "build", owner: "agent-stratalogic", next: "Finish core loop; register build packets in Forge." }),
+  P("strata_coach", { name: "Strata Coach", type: "coaching app", status: "build", owner: "agent-stratalogic" }),
+  P("founderos", { name: "FounderOS", type: "SaaS", priority: "P1", status: "pre-launch", pay: "Stripe (→ Divini Pay)", owner: "agent-founderos", next: "Beta gated on Alfy2 live mode." }),
+  P("divini_growth", { name: "Divini Growth OS", type: "growth platform", status: "build", owner: "chief-marketing" }),
+  P("datingmodern", { name: "DatingModern.ai", type: "consumer app", status: "validation", priority: "P3", db: "none yet", auth: "none yet", stor: "none yet", owner: "agent-datingmodern", next: "Pre-verdict: no infra spend until the stage-4 go." }),
+  P("oralia", { name: "Oralia", type: "e-commerce", status: "pre-launch", pay: "Stripe (→ Divini Pay)", crisk: "medium", prisk: "sensitive", owner: "agent-oralia", next: "Claims clearance before landing publish.", notes: "Health-adjacent claims path." }),
+  P("black_flag", { name: "Black Flag Innocence Foundation", type: "nonprofit portal", email: "Resend", pay: "donations (→ Divini Pay)", crisk: "high", prisk: "regulated", owner: "agent-black-flag", next: "Case-data privacy boundary before any migration.", notes: "Strictest privacy boundary in the portfolio." }),
+  P("ai_builder_pro", { name: "AI Builder Pro", type: "education platform", status: "validation", priority: "P3", db: "none yet", auth: "none yet", repo: "local:~/builds/ai-builder-pro", owner: "agent-ai-builder-pro" }),
+  P("divini_pay", { name: "Divini Pay", type: "payment infrastructure", status: "build", priority: "P1", db: "local module (browser) → Postgres", auth: "n/a (inherits Alfy2)", deploy: "inside Alfy2", pay: "Stripe bridge → direct acquirer adapters", crisk: "high", prisk: "sensitive", owner: "pay-fintech-architect", docs: true, next: "Processor adapter #1 (ACH) after compliance pass.", notes: "Wallet locked pending compliance review." }),
+  P("alfy_forge", { name: "Alfy Forge", type: "internal developer platform", status: "build", priority: "P1", db: "local module (browser) → Postgres", deploy: "inside Alfy2 (self-hosting target: Coolify)", repo: "this repo (apps/web/assets/forge.mjs)", secrets: "vault references (enforced)", backup: "git", docs: true, owner: "forge-architect", next: "Phase 2: private box (Docker+Tailscale+Forgejo).", notes: "Divini Sovereign Cloud." }),
 ];
+
+const registry = () => load("registry", REGISTRY_SEED);
+export const getRegistry = () => registry();
+export const getRegistryPlatform = (key) => registry().find((p) => p.key === key);
+// The 24 contract fields (docs_ready is an internal flag, not part of the registry contract).
+export const REGISTRY_FIELDS = Object.keys(P("x", { name: "x" })).filter((k) => k !== "key" && k !== "docs_ready");
+
+/** Switch/toggle a provider or field for one platform — audited; nothing is removed, only recorded. */
+export function updatePlatformField(key, field, value) {
+  if (!REGISTRY_FIELDS.includes(field)) throw new Error(`unknown registry field: ${field}`);
+  const list = registry();
+  const i = list.findIndex((p) => p.key === key);
+  if (i === -1) throw new Error(`unknown platform: ${key}`);
+  const prev = list[i][field];
+  list[i] = { ...list[i], [field]: value, last_reviewed_at: clock().toISOString().slice(0, 10) };
+  save("registry", list);
+  svc.createActionLog({ agent_id: "forge-architect", action: `Registry: ${list[i].platform_name}.${field} switched "${prev}" → "${value}"`, status: "succeeded", business_id: null });
+  return list[i];
+}
+
+/** Missing-infrastructure warnings per platform (the "what would bite us" list). */
+export function missingInfrastructure(p) {
+  const warn = [];
+  if (/none/i.test(p.backup_status)) warn.push("no backup policy");
+  if (/\.env/i.test(p.secrets_location)) warn.push("secrets in .env files — move to vault references");
+  if (!p.docs_ready) warn.push("no source-of-truth docs");
+  if (/TO CONFIRM/i.test(p.dns_provider)) warn.push("DNS provider unconfirmed");
+  if (!p.deployment_url && !["build", "validation"].includes(p.status)) warn.push("no recorded deployment URL");
+  if (/Stripe(?! bridge)/.test(p.payment_provider)) warn.push("payments on Stripe — Divini Pay abstraction planned");
+  if (p.privacy_risk_level === "regulated" && !/vault/i.test(p.secrets_location)) warn.push("regulated data with unvaulted secrets");
+  return warn;
+}
+
+/** "Migrate to Divini Forge": generates the reversible, dual-run cutover plan. Never auto-executes. */
+export function createMigrationPlan(key) {
+  const p = getRegistryPlatform(key);
+  if (!p) throw new Error(`unknown platform: ${key}`);
+  const providerSteps = [];
+  const map = [
+    ["repo_url_or_local_path", /github/i, "Repo → Forgejo (Phase 2): mirror-push both remotes for 2 weeks, then flip origin. Rollback: origin flip back."],
+    ["database_provider", /supabase/i, "Database → self-hosted Postgres/Supabase (Phase 4): logical replication dual-write window, parity check, cutover. Rollback: repoint connection string."],
+    ["deployment_provider", /vercel|render/i, "Deploy → Coolify/Docker (Phase 3): deploy both, weighted DNS or staging first. Rollback: DNS back."],
+    ["storage_provider", /supabase|s3/i, "Storage → MinIO (Phase 5): sync buckets, verify signed URLs, flip endpoint. Rollback: endpoint back."],
+    ["email_provider", /resend/i, "Email → Postal/Plunk relay (Phase 6): warm the IP/domain, split-send, watch deliverability. Rollback: relay switch."],
+    ["payment_provider", /stripe/i, "Payments → Divini Pay rails (compliance pass first): new invoices on ACH-first links, Stripe drains naturally. Never break in-flight subscriptions."],
+  ];
+  for (const [field, re, step] of map) if (re.test(p[field])) providerSteps.push(step);
+  const plan = put("migration_plans", {
+    id: newId("mig"), platform_key: key, platform_name: p.platform_name,
+    created_at: clock().toISOString(), status: "draft",
+    readiness: migrationReadiness(key),
+    preconditions: ["source-of-truth docs generated", "secrets moved to vault references", "backup policy live and drilled", ...(p.privacy_risk_level === "regulated" ? ["privacy-boundary review (regulated data)"] : [])],
+    steps: providerSteps.length ? providerSteps : ["No SaaS dependencies detected — platform is already sovereign or pre-infra."],
+    rules: ["dual-run window on every cutover (reversible)", "parity verification before flip", "destructive steps need approval tokens", "one platform at a time"],
+  });
+  updatePlatformField(key, "next_action", `Execute migration plan ${plan.id} (draft) — preconditions first.`);
+  return plan;
+}
+export const getMigrationPlans = (key) => load("migration_plans").filter((m) => !key || m.platform_key === key);
+
+// Back-compat dependency view (drives readiness scoring below).
+const depsOf = (p) => [
+  /github/i.test(p.repo_url_or_local_path) ? "GitHub" : null,
+  /supabase/i.test(p.database_provider) ? "Supabase" : null,
+  /vercel/i.test(p.deployment_provider) ? "Vercel" : null,
+  /render/i.test(p.deployment_provider) ? "Render" : null,
+  /stripe/i.test(p.payment_provider) ? (/bridge/i.test(p.payment_provider) ? "Stripe (bridge only)" : "Stripe") : null,
+  /resend/i.test(p.email_provider) ? "Resend" : null,
+].filter(Boolean);
+export const EXISTING_PLATFORMS = REGISTRY_SEED.map((p) => ({
+  key: p.key, name: p.platform_name, status: p.status, build_track: p.status,
+  dependencies: depsOf(p), docs_ready: p.docs_ready, notes: p.notes,
+}));
 
 /** SaaS → sovereign replacement map (the migration thesis, per dependency). */
 export const REPLACEMENT_MAP = {

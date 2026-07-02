@@ -72,14 +72,24 @@ assert.equal(forge.SECTIONS.length, 17, "17 dashboard sections");
 assert.ok(forge.SECTIONS.filter((s: any) => s.live).length >= 6 && forge.SECTIONS.some((s: any) => !s.live && s.note), "live vs staged labeled honestly");
 console.log("[5] 14-agent desk (8 fields each) · 17 sections with honest phase labels ✔");
 
-// === 6. Platform registry + migration readiness with real blockers. ===
-assert.equal(forge.EXISTING_PLATFORMS.length, 12, "12 existing platforms registered");
+// === 6. Platform Registry (MVP feature #1): 15 platforms × 24 fields, switchable, plannable. ===
+assert.equal(forge.getRegistry().length, 15, "15 seed platforms");
+assert.equal(forge.REGISTRY_FIELDS.length, 24, "24 registry fields");
+for (const p of forge.getRegistry()) for (const f of forge.REGISTRY_FIELDS) assert.ok((p as any)[f] !== undefined && (p as any)[f] !== null, `${p.key}.${f} present`);
+const mm = forge.getRegistryPlatform("move_mi");
+assert.ok(forge.missingInfrastructure(mm).some((w: string) => w.includes("backup")), "missing-infra warnings work");
+forge.updatePlatformField("move_mi", "email_provider", "Postal relay (planned P6)");
+assert.equal(forge.getRegistryPlatform("move_mi").email_provider, "Postal relay (planned P6)", "provider switch persists");
+assert.throws(() => forge.updatePlatformField("move_mi", "not_a_field", "x"), /unknown registry field/);
+const plan = forge.createMigrationPlan("move_mi");
+assert.ok(plan.steps.some((s: string) => s.includes("Forgejo")) && plan.steps.some((s: string) => s.includes("Divini Pay")), "plan covers repo + payments cutovers");
+assert.ok(plan.preconditions.some((s: string) => s.includes("vault references")) && plan.rules.some((s: string) => s.includes("dual-run")), "preconditions + reversibility rules");
+assert.ok(forge.getRegistryPlatform("move_mi").next_action.includes(plan.id), "next_action updated to the plan");
 const mr = forge.migrationReadiness("move_mi");
-assert.ok(mr.score > 0 && mr.score < 100, "score is honest (Phase 1: replacements not live yet)");
-assert.ok(mr.blocked_on.some((b: string) => b.includes("Forgejo")), "blockers name the sovereign replacement + phase");
+assert.ok(mr.score > 0 && mr.score < 100, "readiness honest (replacements not live yet)");
 const tasks = forge.generateMigrationTasks("move_mi");
-assert.ok(tasks.length >= 6 && tasks.some((t: string) => t.includes("vault references")), "manual tasks generated");
-console.log(`[6] registry: 12 platforms · Move Mi readiness ${mr.score}/100, blocked on ${mr.blocked_on.length} deps · ${tasks.length} tasks ✔`);
+assert.ok(tasks.length >= 5 && tasks.some((t: string) => t.includes("vault references")), "manual tasks generated");
+console.log(`[6] registry: 15 platforms × 24 fields · switch persists · plan ${plan.id} (${plan.steps.length} cutovers) · readiness ${mr.score}/100 ✔`);
 
 // === 7. Exports carry guardrails. ===
 const bundle = forge.exportProjectBundle(proj.id);

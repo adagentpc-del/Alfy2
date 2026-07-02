@@ -6,6 +6,13 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Platform Registry (Forge MVP feature #1):** `/forge/registry` — 15 seeded platforms × the 24
+  contract fields (providers, secrets location, backups, risks, owner, next action…); status +
+  compliance/privacy risk badges; missing-infrastructure warnings (65 across the ledger at seed —
+  honest); per-platform **provider switch** (audited); **"Migrate to Divini Forge"** drafts a
+  reversible dual-run cutover plan (preconditions + per-provider steps + rules, sets next_action);
+  Open Platform / Generate docs / Add Platform actions. Existing builds live as-is; nothing migrates
+  without tokens. `pnpm forge:smoke` scenario 6 covers the registry.
 - **Alfy Forge / Divini Sovereign Cloud (Phase 1):** `/forge` + `apps/web/assets/forge.mjs` — private
   build-cloud layer: 12-question New Platform Wizard → **24-step pipeline** (6 source-of-truth docs,
   scaffold, Drizzle schema w/ WebAuthn + RLS notes, migrations, env template, storage/auth/email
