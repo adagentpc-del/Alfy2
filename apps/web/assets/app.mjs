@@ -80,11 +80,64 @@ function afterRender() { const hooks = afterHooks; afterHooks = []; hooks.forEac
 // ---------- shared fragments ----------
 const preview = `<div class="preview-banner">Preview · mock operating data — decisions you make here are stored in this browser only.</div>`;
 
+/** Executive summary strip — the nine facts every screen answers in three seconds. Empty cells drop. */
+function execStrip(cells) {
+  const filled = cells.filter((c) => c && c.v != null && String(c.v).trim() !== "");
+  return `<div class="execstrip">${filled.map((c) =>
+    `<div class="cell${c.cls ? " " + c.cls : ""}"><div class="k">${esc(c.k)}</div><div class="v">${c.raw ?? esc(c.v)}</div></div>`).join("")}</div>`;
+}
+const lastUpdated = () => { const l = svc.getActionLogs(1)[0]; return l ? fmtTs(l.ts) : "—"; };
+
+// ---------- drawer (approval detail) ----------
+const drawerEl = document.getElementById("drawer");
+const scrimEl = document.getElementById("scrim");
+function openDrawer(html) { drawerEl.innerHTML = html; drawerEl.classList.add("open"); scrimEl.classList.add("open"); drawerEl.setAttribute("aria-hidden", "false"); }
+function closeDrawer() { drawerEl.classList.remove("open"); scrimEl.classList.remove("open"); drawerEl.setAttribute("aria-hidden", "true"); }
+scrimEl.addEventListener("click", closeDrawer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+document.addEventListener("click", (e) => {
+  const open = e.target.closest("[data-apr-drawer]");
+  if (open) { openApprovalDrawer(open.dataset.aprDrawer); return; }
+  if (e.target.closest("[data-drawer-close]")) { closeDrawer(); return; }
+  const ap = e.target.closest("[data-drawer-approve]");
+  if (ap) { svc.approveRequest(ap.dataset.drawerApprove); closeDrawer(); render(); return; }
+  const dn = e.target.closest("[data-drawer-deny]");
+  if (dn) {
+    const reason = window.prompt("Reason for denial (recorded in the log):", "");
+    if (reason === null) return;
+    svc.rejectRequest(dn.dataset.drawerDeny, reason); closeDrawer(); render();
+  }
+});
+function openApprovalDrawer(id) {
+  const r = svc.getApprovalRequests().find((x) => x.id === id);
+  if (!r) return;
+  const agent = svc.getAgentById(r.requested_by);
+  const decided = r.status !== "pending";
+  openDrawer(`
+    <div class="dhead"><span class="t">Approval · ${esc(r.action_class)}</span><button data-drawer-close>Close ✕</button></div>
+    <div class="dbody">
+      <div style="font-family:var(--serif);font-size:17px;line-height:1.4">${esc(r.title)}</div>
+      <div style="margin-top:6px">${classPill(r.action_class)} <span class="pill ${decided ? (r.status === "approved" ? "green" : "red") : "amber"}">${esc(r.status)}</span></div>
+      <div class="dk">The ask</div><div class="dv">${esc(r.ask)}</div>
+      <div class="dk">Impact</div><div class="dv">${esc(r.impact || "—")}</div>
+      <div class="dk">Evidence</div><div class="dv" style="overflow-wrap:anywhere">${esc(r.evidence || "—")}</div>
+      <div class="dk">Requested by</div><div class="dv">${agent ? `<a data-nav="/agents/${agent.id}" data-drawer-close style="color:var(--gold);font-weight:600">${esc(agent.title)}</a>` : esc(r.requested_by)} · ${fmtTs(r.requested_at)}</div>
+      ${r.business_id ? `<div class="dk">Business</div><div class="dv"><a data-nav="/portfolio/${esc(r.business_id)}" data-drawer-close style="color:var(--gold);font-weight:600">${esc(svc.getCompanyById(r.business_id)?.name ?? r.business_id)}</a></div>` : ""}
+      ${decided ? `<div class="dk">Decision</div><div class="dv">${esc(r.status)} by ${esc(r.decided_by)} · ${fmtTs(r.decided_at)}${r.denial_reason ? ` — “${esc(r.denial_reason)}”` : ""}</div>` : ""}
+      ${!decided ? `<div class="btns" style="margin-top:20px">
+        <button class="btn danger" data-drawer-deny="${esc(r.id)}">Deny</button>
+        <button class="btn gold" data-drawer-approve="${esc(r.id)}">Approve</button>
+      </div>` : ""}
+      <div class="dk" style="margin-top:22px">Gate mechanics</div>
+      <div class="dv" style="font-size:11.5px;color:var(--mut)">Approving mints a one-time token bound to this exact action class. Execution steps carry their own tokens — approving a plan never auto-executes anything external.</div>
+    </div>`);
+}
+
 function approvalRow(r, withActions) {
   const decided = r.status !== "pending";
   return `<div class="apr">
     <div class="body">
-      <div class="t">${esc(r.title)}</div>
+      <div class="t" data-apr-drawer="${esc(r.id)}" style="cursor:pointer">${esc(r.title)}</div>
       <div class="ask">${esc(r.ask)}</div>
       <div class="meta">${classPill(r.action_class)} · requested by <a data-nav="/agents/${esc(r.requested_by)}" style="color:var(--gold);font-weight:600">${esc(svc.getAgentById(r.requested_by)?.title ?? r.requested_by)}</a>
         ${r.business_id ? `· <a data-nav="/portfolio/${esc(r.business_id)}" style="font-weight:600">${esc(svc.getCompanyById(r.business_id)?.name ?? r.business_id)}</a>` : ""}
@@ -126,7 +179,16 @@ function viewCommandCenter() {
     <div class="btns"><button class="btn" id="btn-connect">Connect live API</button><span class="chip">Founder mode · normal</span></div></div>
   <div class="sub">${date} · one screen for everything that needs you</div>
   <span id="live-banner">${preview}</span>
-
+  ${execStrip([
+    { k: "Status", v: s.pending_approvals.length ? "needs you" : "steady", cls: s.pending_approvals.length ? "" : "" },
+    { k: "Priority", v: s.business_status.find((b) => b.status === "amber")?.name ?? "hold course" },
+    { k: "Owner", v: "Chief of Staff" },
+    { k: "Blocked", v: `${s.blocked_workflows.length} workflows` },
+    { k: "Approvals", v: `${s.pending_approvals.length} pending` },
+    { k: "Revenue", v: `${money(s.revenue_mtd)} / ${money(s.revenue_target)}` },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: s.next_best_action, cls: "decision" },
+  ])}
   <div class="nba"><div><div class="k">Next best action</div><div class="a">${esc(s.next_best_action)}</div></div>
     <div class="go"><button class="btn gold" data-nav="/approvals">Open Approval Center</button></div></div>
 
@@ -272,6 +334,19 @@ function viewAgents() {
     <span class="chip">${svc.getAgents().length} on the org chart</span></div>
   <div class="sub">The cabinet runs the enterprise; portfolio agents run each company. Authority per <a data-nav="/agents" style="color:var(--gold)">docs/AGENT_AUTHORITY_MATRIX.md</a> — nothing external moves without approval.</div>
   ${preview}
+  ${(() => {
+    const blocked = svc.getAgents({ status: "blocked" });
+    return execStrip([
+      { k: "Status", v: `${svc.getAgents().length - blocked.length}/${svc.getAgents().length} on post` },
+      { k: "Priority", v: blocked.length ? "unblock first" : "hold course" },
+      { k: "Owner", v: "Executive Governor" },
+      { k: "Blocked", v: blocked.map((a) => a.title).join(", ") || "none" },
+      { k: "Approvals", v: `${svc.getApprovalRequests("pending").length} pending` },
+      { k: "Revenue", v: "CRO carries the number" },
+      { k: "Updated", v: lastUpdated() },
+      { k: "Recommended decision", v: blocked[0]?.next_action ?? "Grade the monthly scorecards.", cls: "decision" },
+    ]);
+  })()}
   <div class="sec">Executive cabinet · ${svc.getAgents({ layer: "cabinet" }).length}</div>
   <div class="cards">${svc.getAgents({ layer: "cabinet" }).map(agentCard).join("")}</div>
   <div class="sec">Portfolio agents · ${svc.getAgents({ layer: "portfolio" }).length}</div>
@@ -290,6 +365,16 @@ function viewAgentDetail(id) {
   <div class="crumb"><a data-nav="/agents">Agent Cabinet</a> / ${esc(dep(a.department))}</div>
   <div class="head"><h1>${esc(a.title)}</h1><div class="btns">${statusPill(a.status)}<span class="pill gold">${esc(a.authority_level)}</span></div></div>
   <div class="sub">${esc(a.mission)}</div>
+  ${execStrip([
+    { k: "Status", v: a.status },
+    { k: "Priority", v: a.layer === "cabinet" ? "cabinet seat" : "portfolio ops" },
+    { k: "Owner", v: a.title },
+    { k: "Blocked", v: a.status === "blocked" ? a.risks[0] : "no" },
+    { k: "Approvals", v: `${approvals.filter((r) => r.status === "pending").length} raised · ${esc(a.authority_level)}` },
+    { k: "Revenue", v: biz ? `${biz.name} ${biz.revenue_mtd ? money(biz.revenue_mtd) : ""}` : a.kpis[0] ? `${a.kpis[0].name}: ${a.kpis[0].current}` : "—" },
+    { k: "Cadence", v: a.reporting_cadence },
+    { k: "Recommended decision", v: a.next_action, cls: "decision" },
+  ])}
   <div class="nba"><div><div class="k">Next action</div><div class="a">${esc(a.next_action)}</div></div></div>
 
   <div class="dossier" style="margin-top:16px">
@@ -333,6 +418,20 @@ function viewPortfolio() {
     <span class="chip">${cs.length} companies</span></div>
   <div class="sub">Every company runs the same OS: departments, playbooks, asset checklist, fastest path to cash.</div>
   ${preview}
+  ${(() => {
+    const s = svc.getExecutiveDashboardSummary();
+    const p1 = cs.find((c) => c.revenue_priority.startsWith("P1"));
+    return execStrip([
+      { k: "Status", v: `${cs.filter((c) => c.status === "green").length} green · ${cs.filter((c) => c.status === "amber").length} watch` },
+      { k: "Priority", v: p1?.name ?? "—" },
+      { k: "Owner", v: "Portfolio Strategist" },
+      { k: "Blocked", v: `${s.blocked_workflows.length} workflows` },
+      { k: "Approvals", v: `${s.pending_approvals.length} pending` },
+      { k: "Revenue", v: `${money(s.revenue_mtd)} MTD` },
+      { k: "Updated", v: lastUpdated() },
+      { k: "Recommended decision", v: p1?.fastest_path ?? "Run the monthly re-rank.", cls: "decision" },
+    ]);
+  })()}
   <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
     ${cs.map((c) => {
       const os = svc.getCompanyOS(c.id);
@@ -362,6 +461,16 @@ function viewCompanyOS(id) {
   <div class="crumb"><a data-nav="/portfolio">Portfolio</a> / ${esc(c.kind)}</div>
   <div class="head"><h1>${esc(c.name)}</h1><div class="btns">${compDot(c.status)}<span class="pill gold">${esc(c.revenue_priority)}</span><span class="pill gray">${esc(c.stage)}</span></div></div>
   <div class="sub">${esc(c.summary)}</div>
+  ${execStrip([
+    { k: "Status", v: `${c.status} · ${c.stage}` },
+    { k: "Priority", v: c.revenue_priority },
+    { k: "Owner", v: agent?.title ?? "Portfolio Strategist" },
+    { k: "Blocked", v: os.blocked_workflows[0] ?? "no" },
+    { k: "Approvals", v: `${approvals.filter((r) => r.status === "pending").length} pending` },
+    { k: "Revenue", v: c.revenue_target ? `${money(c.revenue_mtd)} / ${money(c.revenue_target)}` : "pre-revenue" },
+    { k: "Updated", v: logs[0] ? fmtTs(logs[0].ts) : "—" },
+    { k: "Recommended decision", v: approvals.find((r) => r.status === "pending")?.title ?? c.fastest_path, cls: "decision" },
+  ])}
   <div class="nba"><div><div class="k">Fastest path to cash</div><div class="a">${esc(c.fastest_path)}</div></div>
     ${approvals.some((r) => r.status === "pending") ? `<div class="go"><button class="btn gold" data-nav="/approvals">Decide ${approvals.filter((r) => r.status === "pending").length} pending</button></div>` : ""}</div>
 
@@ -416,10 +525,27 @@ function viewApprovals() {
   return `
   <div class="head"><div><div class="crumb">Approval Center · gate is deny-by-default</div><h1>Approvals</h1></div>
     <span class="chip">${pending.length} waiting</span></div>
-  <div class="sub">Nothing external — sends, publishes, contracts, pricing — moves without your token (docs/APPROVAL_CENTER_SPEC.md).</div>
+  <div class="sub">Nothing external — sends, publishes, contracts, pricing — moves without your token (docs/APPROVAL_CENTER_SPEC.md). Click any title for the full drawer.</div>
   ${preview}
+  ${(() => {
+    const money1 = pending.find((r) => ["send_contract", "change_pricing", "move_money", "charge"].includes(r.action_class));
+    const oldest = [...pending].sort((a, b) => (a.requested_at < b.requested_at ? -1 : 1))[0];
+    return execStrip([
+      { k: "Status", v: pending.length ? `${pending.length} waiting` : "queue clear" },
+      { k: "Priority", v: money1 ? "money & contracts first" : "sends & publishes" },
+      { k: "Owner", v: "Alyssa — only token minter" },
+      { k: "Blocked", v: `${svc.getExecutiveDashboardSummary().blocked_workflows.length} workflows wait downstream` },
+      { k: "Oldest", v: oldest ? fmtTs(oldest.requested_at) : "—" },
+      { k: "Revenue", v: pending.some((r) => r.business_id === "move_mi") ? "Move Mi cash in queue" : "—" },
+      { k: "Updated", v: lastUpdated() },
+      { k: "Recommended decision", v: (money1 ?? oldest)?.title ?? "Nothing needs you.", cls: "decision" },
+    ]);
+  })()}
   <div class="sec">Live gate queue · from the connected API</div>
-  <div class="card" id="live-apr"><div class="empty">Checking the live queue…</div></div>
+  <div class="card" id="live-apr"><div class="pad">
+    <div class="skel" style="height:13px;width:85%;margin-bottom:9px">.</div>
+    <div class="skel" style="height:13px;width:60%">.</div>
+  </div></div>
   <div class="sec">Waiting on you · money & contracts first (preview)</div>
   <div class="card">${pending
     .sort((a, b) => (["send_contract", "change_pricing"].includes(b.action_class) ? 1 : 0) - (["send_contract", "change_pricing"].includes(a.action_class) ? 1 : 0))
@@ -440,6 +566,19 @@ function viewWeeklyReport() {
     <button class="btn gold" id="gen-report">Generate this week's report</button></div>
   <div class="sub">Composed live from portfolio state, the approval queue, and agent status — docs/AGENT_OPERATING_CADENCE.md.</div>
   ${preview}
+  ${(() => {
+    const s = svc.getExecutiveDashboardSummary();
+    return execStrip([
+      { k: "Status", v: latest ? `${latest.week} on file` : "no report yet" },
+      { k: "Priority", v: "cadence: weekly, never skipped twice" },
+      { k: "Owner", v: "Chief of Staff · Data & Analytics" },
+      { k: "Blocked", v: `${s.blocked_workflows.length} carried into next week` },
+      { k: "Approvals", v: `${s.pending_approvals.length} open going into the week` },
+      { k: "Revenue", v: `${money(s.revenue_mtd)} MTD` },
+      { k: "Updated", v: latest ? fmtTs(latest.generated_at) : "—" },
+      { k: "Recommended decision", v: "Generate this week's report, then decide its top three next actions.", cls: "decision" },
+    ]);
+  })()}
   ${latest ? `<div class="report card"><div class="pad">
     <div class="s" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700">${esc(latest.week)} · generated ${fmtTs(latest.generated_at)}</div>
     <div class="hl">${esc(latest.headline)}</div>
@@ -632,6 +771,19 @@ function viewFactoryHub() {
     <span class="chip">${packets.length} packet${packets.length === 1 ? "" : "s"}</span></div>
   <div class="sub">Everything Alfy2 creates starts here: a structured, editable packet — deterministic templates now, AI generation later. Go-aheads route to the Approval Center; execution steps keep their own gates.</div>
   ${preview}
+  ${(() => {
+    const drafts = packets.filter((p) => p.status === "draft");
+    return execStrip([
+      { k: "Status", v: `${packets.length} packets · ${drafts.length} draft` },
+      { k: "Priority", v: "GTM before build spend" },
+      { k: "Owner", v: "Venture Architect · CTO · CMO · CMO(media)" },
+      { k: "Blocked", v: "no" },
+      { k: "Approvals", v: `${packets.filter((p) => p.status === "submitted").length} go-aheads pending` },
+      { k: "Revenue", v: "packets feed the revenue engine" },
+      { k: "Updated", v: packets[0] ? fmtTs(packets[0].updated_at ?? packets[0].created_at) : "—" },
+      { k: "Recommended decision", v: drafts[0] ? `Finish and submit "${drafts[0].name}".` : "Create the next packet from the July focus memo.", cls: "decision" },
+    ]);
+  })()}
   <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
     ${Object.entries(FACTORY_META).map(([kind, m]) => `<a class="acard" data-nav="/factory/${kind}">
       <div class="top"><span style="font-size:22px;color:var(--gold)">${m.icon}</span><span class="pill navy">${esc(fac.FACTORY_KINDS[kind].factory)}</span></div>
@@ -761,6 +913,20 @@ function viewStudio() {
     <div class="btns"><span class="chip">${episodes.length} episode${episodes.length === 1 ? "" : "s"}</span><button class="btn" data-nav="/studio/avatar">Avatar Studio →</button></div></div>
   <div class="sub">Series → episode → research → hooks → outline → record (Riverside-style, external) → transcript → clips → publish pack → monetization → repurposing. Five gates; nothing publishes without a token (docs/MEDIA_STUDIO_SPEC.md).</div>
   ${preview}
+  ${(() => {
+    const waiting = episodes.filter((e) => ["concept_submitted"].includes(studio.episodeStage(e)));
+    const ready = episodes.filter((e) => studio.episodeStage(e) === "ready_to_publish");
+    return execStrip([
+      { k: "Status", v: `${episodes.length} episodes · ${ready.length} ready` },
+      { k: "Priority", v: "weekly cadence protected" },
+      { k: "Owner", v: "Chief Media Officer · Decoded Agent" },
+      { k: "Blocked", v: waiting.length ? `${waiting.length} at a gate` : "no" },
+      { k: "Approvals", v: `${svc.getApprovalRequests("pending").filter((r) => r.title.startsWith("Studio gate")).length} studio gates pending` },
+      { k: "Revenue", v: "authority engine — feeds every pipeline" },
+      { k: "Updated", v: lastUpdated() },
+      { k: "Recommended decision", v: ready[0] ? `Publish "${ready[0].working_title}".` : "Run the weekly batch-approval session.", cls: "decision" },
+    ]);
+  })()}
   <div class="grid g2">
     <div class="card"><div class="cardhead"><span class="t">New episode</span></div><div class="pad">
       <label style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">Series</label>
@@ -835,6 +1001,20 @@ function viewEpisode(id) {
   <div class="crumb"><a data-nav="/studio">Media Studio</a> / ${esc(studio.getSeriesById(ep.series_id)?.name ?? "")}</div>
   <div class="head"><h1>${esc(ep.working_title)}</h1><span class="pill navy">${esc(STAGE_LABELS[stage] ?? stage)}</span></div>
   <div class="sub">${esc(ep.concept || "—")} · audience: ${esc(ep.audience_hint || "—")}</div>
+  ${(() => {
+    const gates = [ep.concept_approval_id, ep.outline_approval_id, ep.clips_approval_id, ep.pack_approval_id];
+    const pendingGates = gates.filter((g) => studio.gateStatus(g) === "pending").length;
+    return execStrip([
+      { k: "Status", v: STAGE_LABELS[stage] ?? stage },
+      { k: "Priority", v: "weekly cadence" },
+      { k: "Owner", v: "Decoded Podcast Agent" },
+      { k: "Blocked", v: pendingGates ? `${pendingGates} gate${pendingGates > 1 ? "s" : ""} awaiting you` : "no" },
+      { k: "Approvals", v: `${gates.filter((g) => studio.gateStatus(g) === "approved").length}/4 gates approved` },
+      { k: "Revenue", v: monet?.sponsor ? `sponsor: ${monet.sponsor}` : "authority + sponsor slot" },
+      { k: "Updated", v: fmtTs(ep.created_at) },
+      { k: "Recommended decision", v: pendingGates ? "Decide the pending studio gates in the Approval Center." : stage === "ready_to_publish" ? "Publish — all gates green." : "Advance the next module below.", cls: "decision" },
+    ]);
+  })()}
   <div class="card" style="margin:6px 0 18px"><div class="pad" style="display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;align-items:center">
     <b style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)">Gates</b>
     <span>Concept ${gatePill(ep.concept_approval_id)}</span>
@@ -907,6 +1087,20 @@ function viewAvatarCenter() {
     <span class="chip">${jobs.length} job${jobs.length === 1 ? "" : "s"}</span></div>
   <div class="sub">Governed likeness only: documented consent, approved use cases, hash-bound script approvals, output review, and an always-on usage log (docs/AI_AVATAR_ENGINE_SPEC.md). Every output carries the <b>ai_generated</b> flag.</div>
   ${preview}
+  ${(() => {
+    const inReview = jobs.filter((j) => j.status === "in_review");
+    const drafts = scripts.filter((s) => studio.gateStatus(s.approval_id) === "not_submitted");
+    return execStrip([
+      { k: "Status", v: `${jobs.length} jobs · ${jobs.filter((j) => j.status === "published").length} published` },
+      { k: "Priority", v: "consent + disclosure absolute" },
+      { k: "Owner", v: "Chief Media Officer" },
+      { k: "Blocked", v: inReview.length ? `${inReview.length} awaiting output review` : "no" },
+      { k: "Approvals", v: `${scripts.filter((s) => studio.gateStatus(s.approval_id) === "pending").length} scripts pending` },
+      { k: "Revenue", v: "scales Alyssa's presence, not her hours" },
+      { k: "Updated", v: usage[0] ? fmtTs(usage[0].at) : "—" },
+      { k: "Recommended decision", v: inReview[0] ? `Review output of ${inReview[0].id}.` : drafts[0] ? `Submit script "${drafts[0].title}".` : "Draft the next intro script.", cls: "decision" },
+    ]);
+  })()}
   <div class="grid g2">
     <div>
       <div class="card"><div class="cardhead"><span class="t">Avatar profile</span><span class="pill green">authorized</span></div><div class="kv">

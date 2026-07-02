@@ -165,8 +165,57 @@ table.kpis tr:last-child td{border-bottom:none}
 .report ul{margin:6px 0 6px 18px;font-size:13px}
 .report p{font-size:13px;margin:6px 0}
 
-.empty{padding:26px 18px;text-align:center;color:var(--mut);font-size:13px}
+.empty{padding:30px 18px;text-align:center;color:var(--mut);font-size:13px;font-family:var(--serif);font-style:italic}
+.empty::before{content:"✧";display:block;font-size:17px;color:var(--gold-bright);font-style:normal;margin-bottom:5px}
 .mono{font-variant-numeric:tabular-nums}
+
+/* ---- motion (docs/DESIGN_SYSTEM.md §Motion): calm, brief, one direction — never bouncy ---- */
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes shimmer{from{background-position:-200px 0}to{background-position:200px 0}}
+#outlet .card,#outlet .metric,#outlet .acard,#outlet .nba,#outlet .execstrip,#outlet .brainwrap{
+  animation:rise .45s cubic-bezier(.22,.7,.3,1) both}
+#outlet .metrics>*:nth-child(2),#outlet .cards>*:nth-child(2){animation-delay:.04s}
+#outlet .metrics>*:nth-child(3),#outlet .cards>*:nth-child(3){animation-delay:.08s}
+#outlet .metrics>*:nth-child(4),#outlet .cards>*:nth-child(4){animation-delay:.12s}
+#outlet .metrics>*:nth-child(5),#outlet .cards>*:nth-child(5){animation-delay:.16s}
+#outlet .metrics>*:nth-child(n+6),#outlet .cards>*:nth-child(n+6){animation-delay:.2s}
+.btn{transition:transform .15s,background .15s,border-color .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.navitem{position:relative;transition:background .15s,color .15s}
+.navitem::before{content:"";position:absolute;left:0;top:20%;bottom:20%;width:2.5px;border-radius:2px;
+  background:var(--gold-bright);transform:scaleY(0);transition:transform .22s cubic-bezier(.22,.7,.3,1)}
+.navitem.active::before{transform:scaleY(1)}
+.skel{border-radius:8px;background:linear-gradient(90deg,#efece2 25%,#f7f4ea 50%,#efece2 75%);
+  background-size:400px 100%;animation:shimmer 1.2s linear infinite;color:transparent!important;min-height:14px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ---- executive summary strip: nine facts, three-second read ---- */
+.execstrip{display:flex;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);margin:8px 0 18px;overflow:hidden}
+.execstrip .cell{flex:1 1 120px;min-width:118px;padding:10px 14px;border-right:1px solid var(--line);border-top:1px solid var(--line)}
+.execstrip .cell:nth-child(-n+9){border-top:none}
+.execstrip .cell .k{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.execstrip .cell .v{font-size:12px;font-weight:600;margin-top:2px;line-height:1.35}
+.execstrip .cell.decision{flex:2 1 240px;background:var(--gold-soft)}
+.execstrip .cell.decision .k{color:var(--gold)}
+.execstrip .cell.decision .v{font-family:var(--serif);font-weight:500;font-size:12.5px}
+
+/* ---- approval drawer ---- */
+.drawer-scrim{position:fixed;inset:0;background:rgba(12,32,24,.38);opacity:0;pointer-events:none;transition:opacity .3s;z-index:40}
+.drawer-scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,92vw);background:var(--surface);z-index:41;
+  box-shadow:-18px 0 48px -24px rgba(12,32,24,.45);transform:translateX(103%);transition:transform .32s cubic-bezier(.22,.7,.3,1);
+  overflow-y:auto;border-left:1px solid var(--line)}
+.drawer.open{transform:none}
+.drawer .dhead{position:sticky;top:0;background:var(--navy);color:#f2eddc;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.drawer .dhead .t{font-family:var(--serif);font-size:16px}
+.drawer .dhead button{background:none;border:1px solid rgba(242,237,220,.3);color:#f2eddc;border-radius:7px;padding:3px 10px;cursor:pointer;font-size:12px}
+.drawer .dbody{padding:18px 20px}
+.drawer .dk{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700;margin:14px 0 3px}
+.drawer .dv{font-size:13px}
 
 @media(max-width:900px){
   .app{flex-direction:column}

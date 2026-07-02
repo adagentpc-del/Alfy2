@@ -6,6 +6,16 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Orchestrator v0 + luxury UI polish + design system:** `services/orchestrator` is no longer a stub —
+  scheduler with idempotent-per-period cadence jobs (daily-brief hits `GET /mission-control/brief` once
+  per day, bounded retries → exhaustion alert; kill switch `ORCH_PAUSED`; boot-safe without env);
+  `pnpm orch:smoke`. UI: motion system (staggered card rise, animated nav bar, reduced-motion safe),
+  nine-fact **executive strip on every screen** (status/priority/owner/next/blocked/approvals/revenue/
+  updated/**recommended decision**), approval **drawer** (full context + decide from any screen),
+  skeleton loading, refined empty states. Six design docs added + indexed (DESIGN_SYSTEM,
+  UI_COMPONENT_GUIDE, EXECUTIVE_DASHBOARD_COMPONENTS, STATUS_CHIP_SYSTEM, PORTFOLIO_COMPANY_VIEW,
+  ENTERPRISE_NAVIGATION_STRUCTURE). *Next:* Render re-sync (needs Alyssa), then deploy the orchestrator
+  pointing at the live API.
 - **Media Studio + AI Avatar command layer + Divini branding:** `/studio` (series → episode workspace
   with 11 modules and **five enforced gates**: concept, talking points, clips, publishing pack,
   sensitive claims), deterministic clip detection from imported transcripts, monetization/claims

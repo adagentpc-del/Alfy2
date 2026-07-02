@@ -81,7 +81,13 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `APPROVAL_CENTER_SPEC.md` | The human surface over the live approval gate: queue UI, decision elements, standing grants, founder-protection KPI | approval center changes |
 | `KNOWLEDGE_BRAIN_SYNC_SPEC.md` | Net-new sync spec: Obsidian/Drive/conversation ingest → knowledge pipeline → digest write-back; conflict + freshness rules | knowledge sync changes |
 | `AUTOMATION_ORCHESTRATION_SPEC.md` | The orchestrator runtime spec: scheduler + queue worker + watcher over the existing core orchestration; gate-in-the-loop, mock-first, kill switch | orchestration changes |
-| `EXECUTIVE_DASHBOARD_SPEC.md` | Reconciles Mission Control (canonical) / Control Tower / Flight Deck; target views + the ivory/navy/gold design tokens | dashboard changes |
+| `EXECUTIVE_DASHBOARD_SPEC.md` | Reconciles Mission Control (canonical) / Control Tower / Flight Deck; target views + the Divini design tokens | dashboard changes |
+| `DESIGN_SYSTEM.md` | The visual + motion source of truth: Divini brand tokens, typography, spacing, motion rules (reduced-motion included), hard rules | design language changes |
+| `UI_COMPONENT_GUIDE.md` | Every reusable UI component (cards, strips, chips, drawer, skeletons, brain graph) with class names + behavior contracts + composition rules | components change |
+| `EXECUTIVE_DASHBOARD_COMPONENTS.md` | The nine-fact executive strip (mandatory per screen), component→data bindings, and the three decision surfaces | dashboard components change |
+| `STATUS_CHIP_SYSTEM.md` | One status vocabulary: chip classes, canonical domain mappings (agents/companies/approvals/gates/avatar), color-semantics rules | states change |
+| `PORTFOLIO_COMPANY_VIEW.md` | The visual contract for companies: gallery card anatomy + Company OS Viewer layout + rules (fastest-path above fold, pre-revenue not $0) | portfolio view changes |
+| `ENTERPRISE_NAVIGATION_STRUCTURE.md` | The IA: two groups / eight items, route map, wayfinding rules, nav growth policy | navigation changes |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |
