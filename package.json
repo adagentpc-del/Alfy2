@@ -140,13 +140,24 @@
     "foundercap:smoke": "tsx scripts/founder-capacity-smoke.mts",
     "revops:smoke": "tsx scripts/revops-smoke.mts",
     "decision:smoke2": "tsx scripts/decision-engine-smoke.mts",
-    "aiorgruntime:smoke": "tsx scripts/ai-org-runtime-smoke.mts"
+    "aiorgruntime:smoke": "tsx scripts/ai-org-runtime-smoke.mts",
+    "gtm:smoke": "tsx scripts/gtm-factory-smoke.mts",
+    "ui:smoke": "tsx scripts/enterprise-ui-smoke.mts",
+    "factorymodes:smoke": "tsx scripts/factory-smoke.mts",
+    "studio:smoke": "tsx scripts/media-studio-smoke.mts",
+    "orch:smoke": "tsx scripts/orchestrator-smoke.mts",
+    "ai:smoke": "tsx scripts/ai-adapter-smoke.mts",
+    "readiness:smoke": "tsx scripts/readiness-smoke.mts",
+    "pay:smoke": "tsx scripts/divini-pay-smoke.mts",
+    "forge:smoke": "tsx scripts/forge-smoke.mts",
+    "custody:smoke": "tsx scripts/vault-custody-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
     "@alfy2/db": "workspace:*",
     "@alfy2/shared": "workspace:*",
     "@types/node": "^20.14.0",
+    "jose": "^5.9.0",
     "tsx": "^4.19.1",
     "typescript": "^5.5.4"
   }

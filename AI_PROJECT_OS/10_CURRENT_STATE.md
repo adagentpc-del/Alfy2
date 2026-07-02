@@ -1,7 +1,12 @@
 # 10 · Current State
 
-**Last updated:** 2026-06-27 · **Branch:** `main` · **Build status:** green (full `tsc -b`, ~650 pytest,
-all engine smokes + the 10-scenario gateway smoke pass).
+**Last updated:** 2026-07-02 · **Branch:** `claude/alfy2-enterprise-audit-bkr855` · **Build status:**
+green (full `tsc -b`; smokes pass incl. new `gtm:smoke`).
+
+**2026-07-02 — Enterprise OS layer landed:** deep audit (`docs/BUILD_AUDIT_CURRENT_STATE.md`), 21
+enterprise docs (spine: `docs/ALFY2_ENTERPRISE_OPERATING_SYSTEM.md`; plan:
+`docs/FIVE_DAY_COMPLETION_PLAN.md`), new `gtm-factory` module, dashboard rethemed ivory/navy/gold.
+Product name settled: **Alfy2**.
 
 ## Snapshot
 - **Domain layer:** built. 177 contracts · ~179 engines · 243 migrations → **245 live tables, 0 without RLS**.

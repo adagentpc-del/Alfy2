@@ -1699,3 +1699,12 @@ export * from "./contracts/decision-record.js";
 
 // Capital Allocation (§34) — Profit-First buckets + runway.
 export * from "./contracts/capital-allocation.js";
+
+// GTM Factory (docs/GTM_FACTORY_SPEC.md) — offer → approval-gated launch plan.
+export * from "./contracts/gtm-factory.js";
+
+// AI adapter (live model layer) — provider-agnostic completion, always metered.
+export * from "./contracts/ai-adapter.js";
+
+// Web module state + vault snapshots (server-side custody for the command-center module layer)
+export * from "./contracts/module-state.js";

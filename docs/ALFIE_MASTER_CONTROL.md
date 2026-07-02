@@ -262,6 +262,13 @@ Source of truth: `FounderCapacityEngine` (specified, R5) surfaced through Missio
 
 Detail in `docs/CHANGELOG.md` and the live-state memory. Highlights:
 
+- **2026-07-02 — Enterprise OS layer registered.** 21 enterprise docs added and indexed in
+  `docs/DOCUMENTATION.md` §2, anchored by `docs/ALFY2_ENTERPRISE_OPERATING_SYSTEM.md` (naming settled:
+  the product is **Alfy2**; "Alfie2" in this file is historical). Point-in-time audit:
+  `docs/BUILD_AUDIT_CURRENT_STATE.md`. **Stale-count notice:** the metrics below (237 tables / 173
+  engines / 622 tests, "runtime not built") predate the runtime waves — current truth is
+  `AI_PROJECT_OS/10_CURRENT_STATE.md` (245 tables, ~179 engines, ~28 live endpoints).
+
 - **Architecture:** v1.0 frozen; Part II enterprise layers added and reconciled; counts corrected to
   237 tables / 173 engines / 622 tests.
 - **Specs:** AESL established from the 36-task build queue; spec template ratified in Standards.

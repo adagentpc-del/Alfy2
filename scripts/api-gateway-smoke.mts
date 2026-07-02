@@ -33,6 +33,8 @@ import {
   DelegationRuntime,
   InMemoryDelegationPacketRepository,
   InMemoryAgentReportRepository,
+  ModuleStateService,
+  InMemoryModuleStateRepository,
 } from "@alfy2/core";
 import { createApp } from "../services/api/src/app.js";
 import type { AppDeps, RequestRepos } from "../services/api/src/app.js";
@@ -96,10 +98,12 @@ const delegation = new DelegationRuntime({
   reports: new InMemoryAgentReportRepository(),
 });
 
+const moduleState = new ModuleStateService(new InMemoryModuleStateRepository());
+
 const scope: AppDeps["scope"] = (_tenantId, _businessId, fn) => {
   const ctx: RequestRepos = {
     inbox, gate, missionControl, missionControlAlerts, founderCapacity, revops,
-    decisions: advisoryDecisions, capital, delegation,
+    decisions: advisoryDecisions, capital, delegation, moduleState,
   };
   return fn(ctx);
 };
@@ -373,7 +377,73 @@ let approvalId = "";
   assert.equal(review.status, 200, "review report → 200");
 }
 
+// --- 11. Module state sync + vault snapshots (custody layer) -------------------------------------
+
+{
+  // sync a batch: two good docs + one credential-looking key that MUST be refused
+  const sync = await app.request("/state/sync", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({
+      entries: [
+        { namespace: "ops", key: "approvals", value: [{ id: "apr-001", status: "pending" }] },
+        { namespace: "forge", key: "registry_overrides", value: { github: { status: "live" } } },
+        { namespace: "ops", key: "alfie_token", value: "sk-should-never-land" },
+      ],
+    }),
+  });
+  assert.equal(sync.status, 200, "state sync → 200");
+  const s = (await sync.json()) as { synced: number; rejected: Array<{ key: string; reason: string }> };
+  assert.equal(s.synced, 2, "two clean docs synced");
+  assert.equal(s.rejected.length, 1, "one entry rejected");
+  assert.equal(s.rejected[0]?.reason, "looks_like_credential", "credential-looking key refused");
+
+  // rollup + namespace read
+  const roll = await app.request("/state", { method: "GET", headers: authHeader(token) });
+  assert.equal(roll.status, 200, "state rollup → 200");
+  const { namespaces } = (await roll.json()) as { namespaces: Array<{ namespace: string; entry_count: number }> };
+  assert.deepEqual(namespaces.map((n) => n.namespace), ["forge", "ops"], "both namespaces present");
+
+  const read = await app.request("/state/ops", { method: "GET", headers: authHeader(token) });
+  const { entries } = (await read.json()) as { entries: Array<{ key: string; value: unknown }> };
+  assert.equal(entries.length, 1, "ops namespace has exactly the clean doc");
+  assert.equal(entries[0]?.key, "approvals", "the synced doc reads back");
+
+  // re-sync same key with new value → upsert, not duplicate
+  await app.request("/state/sync", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ entries: [{ namespace: "ops", key: "approvals", value: [] }] }),
+  });
+  const read2 = await app.request("/state/ops", { method: "GET", headers: authHeader(token) });
+  const { entries: after } = (await read2.json()) as { entries: Array<{ value: unknown }> };
+  assert.equal(after.length, 1, "upsert did not duplicate the row");
+  assert.deepEqual(after[0]?.value, [], "upsert replaced the value");
+
+  // vault snapshot round-trip
+  const snapBody = { format: "alfy2-vault", version: 1, data: { alfy2_ops_approvals: [], alfy2_ops_dumps: [{ id: "d1" }] } };
+  const park = await app.request("/vault/snapshots", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ payload: snapBody, label: "smoke snapshot" }),
+  });
+  assert.equal(park.status, 201, "vault snapshot → 201");
+  const meta = (await park.json()) as { id: string; entry_count: number; byte_size: number };
+  assert.equal(meta.entry_count, 2, "snapshot counts its documents");
+  assert.ok(meta.byte_size > 0, "snapshot records its size");
+
+  const latest = await app.request("/vault/snapshots/latest", { method: "GET", headers: authHeader(token) });
+  const { snapshot } = (await latest.json()) as { snapshot: { id: string; payload: { format: string } } };
+  assert.equal(snapshot.id, meta.id, "latest snapshot is the parked one");
+  assert.equal(snapshot.payload.format, "alfy2-vault", "payload survives the round-trip");
+
+  // a snapshot smuggling credential-looking keys is refused
+  const bad = await app.request("/vault/snapshots", {
+    method: "POST", headers: authHeader(token),
+    body: JSON.stringify({ payload: { format: "alfy2-vault", version: 1, data: { alfie_token: "sk-nope" } } }),
+  });
+  assert.equal(bad.status, 400, "credential-carrying snapshot → 400");
+}
+
 console.log(
   "API GATEWAY SMOKE OK — auth, inbox, approval gate park/clear, mission-control, founder capacity, " +
-    "revops brief + fastest-path, decision gate, capital allocation, AI-org delegation+report-back, health 200.",
+    "revops brief + fastest-path, decision gate, capital allocation, AI-org delegation+report-back, " +
+    "module-state sync/upsert + credential refusal, vault snapshot round-trip, health 200.",
 );

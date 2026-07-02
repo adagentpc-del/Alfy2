@@ -1,0 +1,14 @@
+{
+  "name": "Alfy2 · Enterprise Command Center",
+  "short_name": "Alfy2",
+  "description": "Divini Group's executive operating system — one command center for every company and the founder's life.",
+  "start_url": "/command-center",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f5ee",
+  "theme_color": "#143829",
+  "icons": [
+    { "src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
