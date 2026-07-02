@@ -48,10 +48,18 @@ whitespace, 12px radii, hairline borders, no drop-shadow stacks, no decoration t
    current Approvals buttons violate this and get wired or demoted to text).
 3. The dashboard is read + decide only: it approves, acks, escalates, and triages; it never edits domain
    data directly.
-4. One file (`apps/web/index.html`) stays acceptable until the view count exceeds ~8 or state gets shared;
-   then graduate to a real frontend build (decision via ADR, not drift).
+4. The app is a build-free static SPA (ADR-0127): `index.html` shell + `assets/{theme.css,data.mjs,
+   services.mjs,app.mjs}`, real paths via Vercel rewrite. A framework build requires a superseding ADR.
+
+## Implemented views (2026-07-02, preview data)
+
+`/command-center` (all 8 cards + next-best-action + brain preview + live Connect hook), `/agents`,
+`/agents/:id` (full dossier), `/portfolio`, `/portfolio/:id` (Company OS Viewer), `/approvals`
+(approve/deny work against local preview state), `/reports/weekly` (generator), `/brain`
+(Obsidian-style knowledge graph). Service layer: `apps/web/assets/services.mjs`
+(smoke: `pnpm ui:smoke`).
 
 ## Sequencing
 
-Theme retoken (this change) → wire Approvals + Inbox (Day 2, `docs/FIVE_DAY_COMPLETION_PLAN.md`) →
-Revenue + Org tabs (Day 3–4) → Portfolio + Media views once their routes exist.
+Wire services.mjs reads to the live API per view (Day 2+, `docs/FIVE_DAY_COMPLETION_PLAN.md`):
+Approvals + Inbox first, then Revenue + Org, then Portfolio/Media as their routes land.

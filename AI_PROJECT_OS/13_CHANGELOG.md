@@ -6,6 +6,13 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Enterprise Command Center v2 (functional layer):** build-free static SPA (ADR-0127) with 8 screens —
+  command center (8 cards + next-best-action), agent cabinet (16 execs + 10 portfolio agents, full
+  dossiers), portfolio (11 companies) + Company OS Viewer, Approval Center (approve/deny work against
+  local preview state), weekly operating report generator, Obsidian-style Brain Center graph. Mock data
+  + service layer (`apps/web/assets/{data,services}.mjs`, smoke `pnpm ui:smoke`); Vercel rewrite for
+  real paths. *Risks:* preview-only mutations (localStorage), live hook limited to mission-control tile.
+  *Next:* wire services.mjs to the live API view-by-view (Day 2 of the five-day plan).
 - **Enterprise OS layer (audit + 21 docs + GTM factory + dashboard retheme):** deep build audit
   (`docs/BUILD_AUDIT_CURRENT_STATE.md`), enterprise spine + agent cabinet/registry/authority/reporting/
   cadence/KPI docs + 12 system specs + `docs/FIVE_DAY_COMPLETION_PLAN.md`, all indexed in

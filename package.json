@@ -141,7 +141,8 @@
     "revops:smoke": "tsx scripts/revops-smoke.mts",
     "decision:smoke2": "tsx scripts/decision-engine-smoke.mts",
     "aiorgruntime:smoke": "tsx scripts/ai-org-runtime-smoke.mts",
-    "gtm:smoke": "tsx scripts/gtm-factory-smoke.mts"
+    "gtm:smoke": "tsx scripts/gtm-factory-smoke.mts",
+    "ui:smoke": "tsx scripts/enterprise-ui-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
