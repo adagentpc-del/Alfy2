@@ -6,6 +6,15 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Alfy Forge / Divini Sovereign Cloud (Phase 1):** `/forge` + `apps/web/assets/forge.mjs` — private
+  build-cloud layer: 12-question New Platform Wizard → **24-step pipeline** (6 source-of-truth docs,
+  scaffold, Drizzle schema w/ WebAuthn + RLS notes, migrations, env template, storage/auth/email
+  configs, deploy service, backup policy — infra steps as execution packets, remote deploys
+  deploy-class gated); **reference-only secrets vault** (raw material rejected; AI exposure off by
+  default, reasoned grants audited); **platform registry** (12 existing platforms + SaaS dependency
+  maps + honest migration-readiness scoring + task generation); 17 dashboard sections with truthful
+  phase labels (Forgejo P2 → k3s P9); **14-agent infrastructure desk** under the CTO. Plan:
+  `docs/ALFY_FORGE_IMPLEMENTATION_PLAN.md` (20 sections). Readiness now 46 checks. `pnpm forge:smoke`.
 - **Divini Pay (privacy-first payment OS, Phase 1 Lite mock):** `/pay` + `apps/web/assets/divini-pay.mjs`
   — ACH-first fee engine (honest calculator: $2,500 → $5 ACH vs $72.80 card), consent-gated onboarding,
   tokenized instruments only (raw numbers rejected), W-9-before-payout enforced, append-only double-entry

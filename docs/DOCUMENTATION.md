@@ -92,6 +92,7 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `DIVINI_PAY_SPEC.md` | The payment OS: PRD, architecture, schema, RBAC, double-entry token-only ledger + split model, payment flows, three-phase roadmaps (wallet hard-locked) | Divini Pay changes |
 | `DIVINI_PAY_COMPLIANCE_CHECKLIST.md` | Binding compliance/security/privacy checklist: AML/KYC/tax/Nacha/MTL postures, 15 security + 10 privacy requirements with dispositions, retention schedule, the wallet lock | obligations change |
 | `DIVINI_PAY_AGENTS.md` | The 12-agent payments desk under the CFO Agent: missions, signature decision rules, watch metrics, shared guardrails | desk changes |
+| `ALFY_FORGE_IMPLEMENTATION_PLAN.md` | Alfy Forge / Divini Sovereign Cloud: 20-section implementation plan — current-state audit, phased architecture (registry+generators now, Forgejo→k3s staged), secrets rules, migration strategy, what-not-to-build-yet | forge phases change |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |

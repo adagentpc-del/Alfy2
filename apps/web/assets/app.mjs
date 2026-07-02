@@ -9,6 +9,7 @@ import * as fac from "./factories.mjs";
 import * as studio from "./media-studio.mjs";
 import * as ready from "./readiness.mjs";
 import * as pay from "./divini-pay.mjs";
+import * as forge from "./forge.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -41,6 +42,9 @@ const routes = [
   { re: /^\/studio\/avatar$/, view: viewAvatarCenter, nav: "avatar" },
   { re: /^\/readiness$/, view: viewReadiness, nav: "readiness" },
   { re: /^\/pay$/, view: viewDiviniPay, nav: "pay" },
+  { re: /^\/forge$/, view: viewForge, nav: "forge" },
+  { re: /^\/forge\/new$/, view: viewForgeWizard, nav: "forge" },
+  { re: /^\/forge\/projects\/([\w-]+)$/, view: (m) => viewForgeProject(m[1]), nav: "forge" },
 ];
 
 function currentPath() {
@@ -1314,6 +1318,121 @@ function viewDiviniPay() {
         </div></div>
     </div>
   </div>`;
+}
+
+// ---------- views: Alfy Forge (Divini Sovereign Cloud) ----------
+function viewForge() {
+  const projects = forge.getProjects().slice().reverse();
+  const live = forge.SECTIONS.filter((s) => s.live);
+  const readiness = forge.EXISTING_PLATFORMS.map((p) => ({ p, r: forge.migrationReadiness(p.key) }));
+  return `
+  <div class="head"><div><div class="crumb">Alfy Forge · Divini Sovereign Cloud · Phase 1 of 9</div><h1>Alfy Forge</h1></div>
+    <button class="btn gold" data-nav="/forge/new">Create Platform</button></div>
+  <div class="sub">The private build cloud: one flow creates repo packets, docs, schema, secrets references, deploy configs, and backup policies — no bouncing between GitHub, Supabase, Vercel, and scattered dashboards. Sovereign replacements arrive phase by phase, never faked as live.</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `Phase 1 live · ${live.length}/17 sections active` },
+    { k: "Priority", v: "simple + stable before sovereign" },
+    { k: "Owner", v: "Chief Infrastructure Architect · 14-agent desk" },
+    { k: "Blocked", v: "phases 2–9 staged (Forgejo → k3s)" },
+    { k: "Approvals", v: `${svc.getApprovalRequests("pending").filter((r) => r.action_class === "deploy").length} deploys awaiting tokens` },
+    { k: "Revenue", v: "SaaS fees → $0 on the sovereign path" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: projects.length ? `Review "${projects[0].name}" and decide its deploy.` : "Create the first platform through the wizard — everything else generates from it.", cls: "decision" },
+  ])}
+  <div class="sec">Platforms built in Forge · ${projects.length}</div>
+  <div class="card rows-tight">${projects.map((p) => `<div class="row"><div><a class="t" data-nav="/forge/projects/${p.id}" style="font-weight:600">${esc(p.name)}</a>
+      <div class="s">${esc(p.answers.surface.replace(/_/g, " "))} · ${esc(p.answers.environment)} · ${esc(p.domain.name)} · ${fmtTs(p.created_at)}</div></div>
+      <span class="pill ${forge.deployStatus(p) === "approved" ? "green" : "navy"}">${p.steps.filter((s) => s.status === "done").length}/24 · deploy ${esc(forge.deployStatus(p).replace(/_/g, " "))}</span></div>`).join("") || '<div class="empty">Nothing forged yet — Create Platform runs the whole pipeline.</div>'}</div>
+
+  <div class="sec">Platform registry · migration readiness (existing platforms)</div>
+  <div class="card rows-tight">${readiness.map(({ p, r }) => `<div class="row"><div><div class="t" style="font-weight:600">${esc(p.name)}</div>
+      <div class="s">deps: ${p.dependencies.join(", ")}${p.notes ? ` · ${esc(p.notes)}` : ""}</div></div>
+      <div style="display:flex;align-items:center;gap:10px;min-width:180px"><div class="bar"><i style="width:${r.score}%"></i></div><span class="mono s" style="min-width:52px;text-align:right">${r.score}/100</span></div></div>`).join("")}</div>
+
+  <div class="sec">The seventeen sections · honest phase labels</div>
+  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+    ${forge.SECTIONS.map((s) => `<div class="acard" style="cursor:default"><div class="top"><span class="pill ${s.live ? "green" : "gray"}">${s.live ? "live" : `phase ${s.phase}`}</span></div>
+      <h3 style="font-size:14px">${esc(s.label)}</h3>
+      <div class="m" style="-webkit-line-clamp:2">${esc(s.note ?? s.outcome)}</div>
+      <div class="na"><b>Outcome</b>${esc(s.outcome)}</div></div>`).join("")}
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="cardhead"><span class="t">Infrastructure desk · 14 agents → CTO</span></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+      ${forge.getForgeAgents().map((a) => `<div class="row"><div><div class="t" style="font-size:12.5px;font-weight:600">${esc(a.title)}</div><div class="s">${esc(a.mission)}</div></div></div>`).join("")}
+      </div></div>
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Sovereign stack · 9 phases</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${forge.STACK.map((s) => `<div class="row"><div><div class="t" style="font-size:12.5px">${esc(s.tool)}</div><div class="s">replaces ${esc(s.replaces)}</div></div><span class="pill ${s.status === "live" ? "green" : s.status === "policy" ? "gold" : "gray"}">${s.status === "policy" ? "policy" : `P${s.phase} ${s.status}`}</span></div>`).join("")}
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Secrets vault audit</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${forge.getVaultAudit().slice(-5).reverse().map((a) => `<div class="row"><div><div class="t" style="font-size:11.5px">${esc(a.detail)}</div><div class="s">${fmtTs(a.at)}</div></div><span class="pill ${a.action === "REJECTED" ? "red" : a.action === "GRANTED" ? "gold" : "green"}">${esc(a.action)}</span></div>`).join("") || '<div class="empty">No vault activity yet.</div>'}
+        </div></div>
+    </div>
+  </div>`;
+}
+
+function viewForgeWizard() {
+  onAfter(() => {
+    document.getElementById("forge-create").addEventListener("click", () => tryDo(() => {
+      const a = {};
+      for (const q of forge.WIZARD_QUESTIONS) {
+        const el = document.getElementById("fw-" + q.k);
+        a[q.k] = q.type === "bool" ? el.value === "yes" : el.value.trim();
+        if (q.type === "bool") a[q.k] = el.value === "yes";
+      }
+      const p = forge.createPlatform(a);
+      go("/forge/projects/" + p.id);
+    }));
+  });
+  const field = (q) => {
+    if (q.type === "bool") return `<select id="fw-${q.k}" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--bg);font-family:var(--sans);font-size:13px"><option value="no">No</option><option value="yes">Yes</option></select>`;
+    if (q.type === "select") return `<select id="fw-${q.k}" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--bg);font-family:var(--sans);font-size:13px">${q.options.map((o) => `<option>${o}</option>`).join("")}</select>`;
+    return `<input id="fw-${q.k}" placeholder="${esc(q.ph ?? "")}" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--bg);font-family:var(--sans);font-size:13px" />`;
+  };
+  return `
+  <div class="crumb"><a data-nav="/forge">Alfy Forge</a> / New Platform Wizard</div>
+  <div class="head"><h1>Create Platform</h1><span class="chip">12 questions → 24 automatic steps</span></div>
+  <div class="sub">Answer once. Forge generates the project record, folder structure, six source-of-truth docs, scaffold, schema, migrations, env template, secret references, storage/auth/email configs, deploy service, backup policy, and the execution packets — with remote deploys gated.</div>
+  <div class="card" style="max-width:680px"><div class="pad">
+    ${forge.WIZARD_QUESTIONS.map((q) => `<div style="margin-bottom:12px">
+      <label style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;display:block;margin-bottom:4px">${esc(q.q)}</label>${field(q)}</div>`).join("")}
+    <div class="btns" style="margin-top:14px"><button class="btn gold" id="forge-create">Create Platform</button><button class="btn" data-nav="/forge">Cancel</button></div>
+  </div></div>`;
+}
+
+function viewForgeProject(id) {
+  const p = forge.getProjectById(id);
+  if (!p) return `<div class="empty">Unknown project. <a data-nav="/forge" style="color:var(--gold)">Back to Forge</a></div>`;
+  const ds = forge.deployStatus(p);
+  const done = p.steps.filter((s) => s.status === "done").length;
+  onAfter(() => {
+    document.getElementById("fp-deploy")?.addEventListener("click", () => tryDo(() => forge.submitDeployForApproval(id)));
+    document.getElementById("fp-bundle").addEventListener("click", () => download(`${p.slug}-forge-bundle.md`, forge.exportProjectBundle(id)));
+    document.getElementById("fp-runner").addEventListener("click", () => {
+      const target = window.prompt("Runner? (claude / fable / openclaw / hermes)", "claude");
+      if (target) download(`${p.slug}.${target}.forge.json`, JSON.stringify(forge.exportForRunner(id, target), null, 2), "application/json");
+    });
+  });
+  return `
+  <div class="crumb"><a data-nav="/forge">Alfy Forge</a> / ${esc(p.answers.surface.replace(/_/g, " "))}</div>
+  <div class="head"><h1>${esc(p.name)}</h1><div class="btns"><span class="pill navy">${done}/24 done</span><span class="pill ${ds === "approved" ? "green" : ds === "pending" ? "amber" : "gray"}">deploy ${esc(ds.replace(/_/g, " "))}</span></div></div>
+  <div class="sub">${esc(p.answers.type)} · ${esc(p.domain.name)} · privacy ${esc(p.answers.privacy_level)} · created ${fmtTs(p.created_at)}</div>
+  <div class="nba"><div><div class="k">${ds === "approved" ? "Cleared" : "Go-ahead"}</div>
+    <div class="a">${ds === "approved" ? "Deploy approved — execute the Coolify packet when ready." : ds === "pending" ? "Deploy waiting in the Approval Center." : p.answers.environment === "local_only" ? "Local-only platform — run the local preview packet." : "Submit the preview deploy for approval (deploy-class token)."}</div></div>
+    <div class="go btns">
+      ${ds === "not_submitted" && p.answers.environment !== "local_only" ? `<button class="btn gold" id="fp-deploy">Submit deploy</button>` : ""}
+      <button class="btn" id="fp-bundle" style="background:transparent;color:#f4efe4;border-color:rgba(233,228,216,.35)">Bundle (.md)</button>
+      <button class="btn" id="fp-runner" style="background:transparent;color:#f4efe4;border-color:rgba(233,228,216,.35)">Runner packet</button>
+    </div></div>
+  <div class="sec">Pipeline · 24 steps</div>
+  ${p.steps.map((s) => `<div class="card" style="margin-bottom:10px"><div class="cardhead"><span class="t">${esc(s.title)}</span>
+      <span class="pill ${s.status === "done" ? "green" : s.status === "packet_ready" ? "navy" : s.status === "awaiting_approval" ? "amber" : "gray"}">${esc(s.status.replace(/_/g, " "))}</span></div>
+    <div class="pad" style="font-size:12px;white-space:pre-wrap;font-family:${["drizzle_schema", "env_template"].includes(s.key) ? "ui-monospace,Menlo,monospace" : "var(--sans)"}">${esc(s.content)}${s.packet?.commands ? `\n\n${s.packet.commands.join("\n")}` : ""}</div></div>`).join("")}`;
 }
 
 // ---------- boot ----------

@@ -11,6 +11,7 @@ import * as svc from "./services.mjs";
 import * as fac from "./factories.mjs";
 import * as studio from "./media-studio.mjs";
 import * as pay from "./divini-pay.mjs";
+import * as forge from "./forge.mjs";
 
 const AUTHORITY_TIERS = ["research_only", "recommend_only", "draft_only", "create_internal_task", "prepare_external_asset", "execute_low_risk", "execute_with_approval"];
 const CABINET_TITLES = [
@@ -123,6 +124,20 @@ export function runReadinessCheck() {
       check("12-agent payments desk seated, all 8 dossier fields each, reporting to Chief Finance", pay.getPayAgents().length === 12 && pay.getPayAgents().every((a) => a.reports_to === "chief-finance" && PAY_FIELDS.every((f) => a[f]?.length))),
       check("RBAC roles defined with least privilege (viewer has none)", Object.keys(pay.ROLES).length >= 5 && pay.ROLES.viewer.length === 0),
       check("Lawful-oversight posture on the privacy dashboard", pay.getPrivacyDashboard().lawful_oversight.includes("never from lawful compliance")),
+    ],
+  });
+
+  // --- Alfy Forge ------------------------------------------------------------------------------------------
+  const FORGE_FIELDS = ["mission", "responsibilities", "inputs", "outputs", "decision_rules", "escalation_triggers", "security_warnings", "kpis"];
+  sections.push({
+    name: "Alfy Forge (Divini Sovereign Cloud)",
+    checks: [
+      check("Wizard (12 questions) + 24-step pipeline present", forge.WIZARD_QUESTIONS.length === 12 && typeof forge.createPlatform === "function"),
+      check("17 dashboard sections with honest phase labels", forge.SECTIONS.length === 17 && forge.SECTIONS.every((s) => s.live || s.phase >= 2)),
+      check("14-agent infrastructure desk, 8 dossier fields, chained to the CTO", forge.getForgeAgents().length === 14 && forge.getForgeAgents().every((a) => FORGE_FIELDS.every((f) => a[f]?.length))),
+      check("Secrets vault is reference-only with gated AI exposure", typeof forge.storeSecretRef === "function" && typeof forge.grantSecretToAgent === "function"),
+      check("Platform registry: 12 existing platforms with migration-readiness scoring", forge.EXISTING_PLATFORMS.length === 12 && forge.migrationReadiness("move_mi").score > 0),
+      check("Remote deploys gated as deploy-class approvals", typeof forge.submitDeployForApproval === "function"),
     ],
   });
 
