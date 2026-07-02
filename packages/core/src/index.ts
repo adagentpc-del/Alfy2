@@ -956,3 +956,5 @@ export {
   type RunRecursiveDiagnosisInput,
   type RunBillionDollarCheckInput,
 } from "./oversight/engine.js";
+
+export { GtmFactory } from "./gtm-factory/engine.js";
