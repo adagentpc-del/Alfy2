@@ -1561,6 +1561,7 @@ function viewForgeRegistry() {
 }
 
 // ---------- boot ----------
+window.__alfyBooted = true;
 document.getElementById("btn-reset")?.addEventListener("click", () => {
   if (window.confirm("Reset all local demo decisions, logs, factory packets, and studio state to the seed?")) {
     svc.resetLocalState(); fac.resetFactoryState(); studio.resetStudioState(); render();

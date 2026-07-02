@@ -7,7 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" />
-<link rel="stylesheet" href="/assets/theme.css" />
+<link rel="stylesheet" href="/assets/theme.css?v=13" />
+<script>
+  // Boot guard: a blank page is never acceptable. Any uncaught error renders itself on screen.
+  window.addEventListener("error", function (e) { window.__bootFail(e.message + (e.filename ? " — " + e.filename.split("/").pop() + ":" + e.lineno : "")); });
+  window.addEventListener("unhandledrejection", function (e) { window.__bootFail("unhandled: " + (e.reason && e.reason.message || e.reason)); });
+  window.__bootFail = function (msg) {
+    var o = document.getElementById("outlet");
+    if (o && o.innerHTML.trim().length < 50) {
+      o.innerHTML = '<div style="max-width:560px;margin:60px auto;padding:24px 28px;background:#fffdf8;border:1px solid #e8e2d2;border-radius:14px;font-family:Georgia,serif">' +
+        '<div style="font-size:19px;margin-bottom:8px">Something failed to start.</div>' +
+        '<div style="font-family:monospace;font-size:12px;background:#f8f5ee;padding:10px 12px;border-radius:8px;overflow-wrap:anywhere">' + String(msg).replace(/</g, "&lt;") + '</div>' +
+        '<div style="font-size:13px;margin-top:12px">Try a hard refresh (Ctrl/Cmd+Shift+R). If this box persists, send the text above to Claude — it names the exact bug.</div>' +
+        '<button onclick="localStorage.clear();location.reload()" style="margin-top:12px;padding:7px 14px;border:1px solid #d8d0ba;border-radius:8px;background:#fff;cursor:pointer;font-size:12px">Reset local state &amp; reload</button></div>';
+    }
+  };
+  // If the module never boots (cached stale mix, network), say so after 6s instead of staying blank.
+  setTimeout(function () { if (!window.__alfyBooted) window.__bootFail("the app module did not boot (likely a stale cached file or a blocked script)"); }, 6000);
+</script>
 </head>
 <body>
 <div class="app">
@@ -35,6 +52,6 @@
 </div>
 <div id="scrim" class="drawer-scrim"></div>
 <aside id="drawer" class="drawer" aria-hidden="true"></aside>
-<script type="module" src="/assets/app.mjs"></script>
+<script type="module" src="/assets/app.mjs?v=13"></script>
 </body>
 </html>
