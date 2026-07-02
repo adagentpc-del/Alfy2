@@ -8,6 +8,7 @@ import * as svc from "./services.mjs";
 import * as fac from "./factories.mjs";
 import * as studio from "./media-studio.mjs";
 import * as ready from "./readiness.mjs";
+import * as pay from "./divini-pay.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -39,6 +40,7 @@ const routes = [
   { re: /^\/studio\/episodes\/([\w-]+)$/, view: (m) => viewEpisode(m[1]), nav: "studio" },
   { re: /^\/studio\/avatar$/, view: viewAvatarCenter, nav: "avatar" },
   { re: /^\/readiness$/, view: viewReadiness, nav: "readiness" },
+  { re: /^\/pay$/, view: viewDiviniPay, nav: "pay" },
 ];
 
 function currentPath() {
@@ -1214,6 +1216,104 @@ function viewReadiness() {
         · Steward: <a data-nav="/agents/${esc(r.steward)}" style="color:var(--gold);font-weight:600">${esc(svc.getAgentById(r.steward)?.title ?? r.steward)}</a>
         · Record: ${esc(r.doc)} · Source: ${esc(r.source)}</div>
     </div></div>`).join("")}`;
+}
+
+// ---------- view: Divini Pay ----------
+function payDemoScenario() {
+  const vendor = pay.onboardParty("finance_admin", { kind: "vendor", name: "Apex Logistics", platform: "divini_procure", consent_payment_linking: true });
+  const buyer = pay.onboardParty("finance_admin", { kind: "buyer", name: "Meridian Dev Co", platform: "divini_procure", consent_payment_linking: true });
+  const partner = pay.onboardParty("finance_admin", { kind: "partner", name: "Referral Partner One", platform: "divini_partners", consent_payment_linking: true });
+  pay.addTokenizedInstrument("finance_admin", vendor.id, { rail: "ach", processor_token: "ptok_demo_ach" });
+  pay.recordW9("finance_admin", vendor.id, "vault:tax/w9/apex-2026");
+  pay.createPaymentLink("finance_admin", { amount_cents: 240_000, memo: "Henderson full-house move", payee_party_id: vendor.id, platform: "move_mi" });
+  const inv = pay.createInvoice("finance_admin", { amount_cents: 250_000, payer_party_id: buyer.id, payee_party_id: vendor.id, memo: "Procurement project #1", platform: "divini_procure", referral_partner_id: partner.id });
+  pay.recordPayment("finance_admin", inv.id, { rail: "ach", authorization_ref: "auth:vault/demo" });
+  const po = pay.getPayouts().find((p) => p.kind === "vendor_payout");
+  pay.requestPayoutRelease("finance_admin", po.id);
+}
+function viewDiviniPay() {
+  const ledger = pay.getLedger();
+  const invoices = pay.getInvoices();
+  const payouts = pay.getPayouts();
+  const parties = pay.getParties();
+  const disputes = pay.getDisputes();
+  const priv = pay.getPrivacyDashboard();
+  const desk = pay.getPayAgents();
+  const audits = pay.getAuditTrail().slice(-6).reverse();
+  const pendingPo = payouts.filter((p) => ["pending_approval", "awaiting_money_movement_approval", "milestone_released", "awaiting_milestones"].includes(p.status));
+  const calcAmount = 250_000;
+  onAfter(() => {
+    document.getElementById("pay-demo")?.addEventListener("click", () => tryDo(payDemoScenario));
+    document.getElementById("pay-reset")?.addEventListener("click", () => tryDo(() => pay.resetPayState()));
+    document.getElementById("pay-recon")?.addEventListener("click", () => tryDo(() => download("divini-pay-reconciliation.csv", pay.exportReconciliation("owner"), "text/csv")));
+    document.getElementById("fee-amt")?.addEventListener("input", (e) => {
+      const cents = Math.round(Number(e.target.value || 0) * 100);
+      const box = document.getElementById("fee-out");
+      if (!cents) { box.innerHTML = ""; return; }
+      box.innerHTML = pay.compareFees(cents).map((f, i) => `<div class="row"><div class="t">${i === 0 ? "★ " : ""}${esc(f.label)}<div class="s">${esc(f.settles)}</div></div><div style="text-align:right"><b class="mono">$${(f.fee_cents / 100).toFixed(2)} fee</b><div class="s mono">net $${(f.net_cents / 100).toFixed(2)}</div></div></div>`).join("");
+    });
+    outlet.querySelectorAll("[data-po-exec]").forEach((b) => b.addEventListener("click", () => tryDo(() => pay.executeApprovedPayout("finance_admin", b.dataset.poExec))));
+  });
+  return `
+  <div class="head"><div><div class="crumb">Divini Pay · privacy-first payment OS · Phase 1 Lite (mock rails)</div><h1>Divini Pay</h1></div>
+    <div class="btns"><button class="btn" id="pay-demo">Load demo scenario</button><button class="btn" id="pay-recon">Export reconciliation</button><button class="btn" id="pay-reset">Reset</button></div></div>
+  <div class="sub">Non-custodial payment layer: ACH-first routing, tokenized instruments only, PII-separated ledger, every money movement approval-gated. <b>Privacy from commercial exploitation — never from lawful oversight</b> (docs/DIVINI_PAY_COMPLIANCE_CHECKLIST.md).</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `Phase 1 Lite · ${ledger.length} ledger entries` },
+    { k: "Priority", v: "ACH-first, cheapest compliant rail" },
+    { k: "Owner", v: "Chief Finance · 12-agent payments desk" },
+    { k: "Blocked", v: pay.WALLET_DESIGN.activated ? "—" : "wallet locked pending compliance review" },
+    { k: "Approvals", v: `${payouts.filter((p) => p.status === "awaiting_money_movement_approval").length} money movements awaiting tokens` },
+    { k: "Revenue", v: "modeled ~62% fee savings vs card baseline" },
+    { k: "Updated", v: audits[0] ? fmtTs(audits[0].at) : "—" },
+    { k: "Recommended decision", v: payouts.some((p) => p.status === "awaiting_money_movement_approval") ? "Decide the pending move_money approvals — funds move only on your token." : "Load the demo scenario, then walk one payout through the gate.", cls: "decision" },
+  ])}
+  <div class="metrics">
+    <div class="metric goldline"><div class="l">Volume (ledger)</div><div class="v mono">$${(ledger.filter((e) => e.kind === "payment" && e.dir === "debit").reduce((s, e) => s + e.amount_cents, 0) / 100).toLocaleString()}</div><div class="d">gross processed (mock)</div></div>
+    <div class="metric"><div class="l">Open invoices</div><div class="v mono">${invoices.filter((i) => i.status === "open").length}</div><div class="d">${invoices.length} total</div></div>
+    <div class="metric"><div class="l">Payouts pending</div><div class="v mono">${pendingPo.length}</div><div class="d warn">gated as move_money</div></div>
+    <div class="metric"><div class="l">Disputes</div><div class="v mono">${disputes.filter((d) => d.status === "open").length}</div><div class="d">holds enforced</div></div>
+    <div class="metric"><div class="l">Parties</div><div class="v mono">${parties.length}</div><div class="d">${parties.filter((p) => p.w9?.tin_on_file).length} W-9 on file</div></div>
+  </div>
+  <div class="grid g2">
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Fee calculator · the reason this exists</span></div><div class="pad">
+        <label style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700">Amount (USD)</label>
+        <input id="fee-amt" type="number" value="${calcAmount / 100}" style="width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:9px;margin:5px 0 4px;background:var(--bg);font-family:var(--sans);font-size:14px" />
+        <div id="fee-out" class="rows-tight">${pay.compareFees(calcAmount).map((f, i) => `<div class="row"><div class="t">${i === 0 ? "★ " : ""}${esc(f.label)}<div class="s">${esc(f.settles)}</div></div><div style="text-align:right"><b class="mono">$${(f.fee_cents / 100).toFixed(2)} fee</b><div class="s mono">net $${(f.net_cents / 100).toFixed(2)}</div></div></div>`).join("")}</div>
+      </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Payouts · every release needs your token</span><a data-nav="/approvals">Approval Center →</a></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${payouts.map((p) => `<div class="row"><div><div class="t" style="font-size:12.5px">${esc(p.kind.replace(/_/g, " "))} · <b class="mono">$${(p.amount_cents / 100).toFixed(2)}</b> → <span class="mono">${esc(p.payee_token)}</span></div><div class="s">${esc(p.invoice_id)}</div></div>
+          <div class="btns"><span class="pill ${p.status === "paid" ? "green" : p.status === "dispute_hold" ? "red" : "amber"}">${esc(p.status.replace(/_/g, " "))}</span>
+          ${p.status === "awaiting_money_movement_approval" && svc.getApprovalRequests().find((r) => r.id === p.approval_id)?.status === "approved" ? `<button class="btn gold" data-po-exec="${p.id}" style="padding:3px 10px;font-size:11px">Execute</button>` : ""}</div></div>`).join("") || '<div class="empty">No payouts yet — load the demo scenario.</div>'}
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Privacy dashboard · promises, verified</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${priv.commitments.map((c) => `<div class="row"><span class="t" style="font-size:12px">${esc(c.rule)}</span><span class="pill ${c.status.includes("VIOLATION") ? "red" : "green"}" style="max-width:52%;white-space:normal;text-align:right">${esc(c.status)}</span></div>`).join("")}
+        </div><div class="pad" style="font-size:11px;color:var(--mut);border-top:1px solid var(--line)">${esc(priv.lawful_oversight)}</div></div>
+    </div>
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">Transaction ledger · append-only, token-only</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${ledger.slice(-8).reverse().map((e) => `<div class="row"><div class="t mono" style="font-size:11.5px">${esc(e.account)} <span class="pill ${e.dir === "debit" ? "red" : "green"}">${e.dir}</span></div><span class="mono" style="font-size:12px">$${(e.amount_cents / 100).toFixed(2)}</span></div>`).join("") || '<div class="empty">Ledger empty.</div>'}
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Divini Wallet · Phase 3</span><span class="pill red">locked</span></div><div class="pad" style="font-size:12px">
+        Designed, not activated. Unlock requires:
+        <ul style="margin:6px 0 0 16px">${pay.WALLET_DESIGN.activation_requires.slice(0, 4).map((r) => `<li style="margin:3px 0">${esc(r)}</li>`).join("")}</ul>
+        <div class="s" style="margin-top:7px;color:var(--mut)">MTL tracker: ${pay.WALLET_DESIGN.licensing_tracker.states_cleared}/${pay.WALLET_DESIGN.licensing_tracker.states_total} states · model decision ${esc(pay.WALLET_DESIGN.licensing_tracker.model_decision)}</div>
+      </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Payments desk · 12 agents → Chief Finance</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${desk.map((a) => `<div class="row"><div><div class="t" style="font-size:12.5px;font-weight:600">${esc(a.title)}</div><div class="s">${esc(a.mission)}</div></div><span class="pill navy" style="white-space:normal;text-align:right;max-width:34%">${esc(a.kpis[0].name)}: ${esc(a.kpis[0].current)}</span></div>`).join("")}
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Audit trail (latest)</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+        ${audits.map((a) => `<div class="row"><div><div class="t" style="font-size:11.5px">${esc(a.action)} — ${esc(a.detail)}</div><div class="s">${fmtTs(a.at)} · ${esc(a.actor_role)}</div></div>${a.denied ? '<span class="pill red">denied</span>' : a.override ? '<span class="pill gold">override</span>' : ""}</div>`).join("") || '<div class="empty">No actions yet.</div>'}
+        </div></div>
+    </div>
+  </div>`;
 }
 
 // ---------- boot ----------

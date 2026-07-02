@@ -10,6 +10,7 @@ import * as data from "./data.mjs";
 import * as svc from "./services.mjs";
 import * as fac from "./factories.mjs";
 import * as studio from "./media-studio.mjs";
+import * as pay from "./divini-pay.mjs";
 
 const AUTHORITY_TIERS = ["research_only", "recommend_only", "draft_only", "create_internal_task", "prepare_external_asset", "execute_low_risk", "execute_with_approval"];
 const CABINET_TITLES = [
@@ -107,6 +108,21 @@ export function runReadinessCheck() {
       check("Script approvals bind to a content hash (edits invalidate)", typeof studio.scriptHash === "function" && studio.scriptHash("a") !== studio.scriptHash("b")),
       check("Output review gate + usage log present", typeof studio.submitAvatarOutputForReview === "function" && typeof studio.getAvatarUsageLogs === "function"),
       check("Voice profile consent references the same rights record", studio.getVoiceProfiles().every((v) => v.consent_ref)),
+    ],
+  });
+
+  // --- Divini Pay ----------------------------------------------------------------------------------------
+  const PAY_FNS = ["createPaymentLink", "createInvoice", "compareFees", "onboardParty", "recordW9", "recordPayment", "requestPayoutRelease", "executeApprovedPayout", "releaseMilestone", "requestRefund", "openDispute", "resolveDispute", "adminOverride", "exportReconciliation", "getPrivacyDashboard", "checkPermission"];
+  const PAY_FIELDS = ["mission", "responsibilities", "inputs", "outputs", "decision_rules", "escalation_triggers", "compliance_warnings", "kpis"];
+  sections.push({
+    name: "Divini Pay",
+    checks: [
+      check("Payment OS surface complete (16 control functions)", PAY_FNS.every((f) => typeof pay[f] === "function")),
+      check("Three rails priced (ACH / card / instant) with honest comparison", Object.keys(pay.RAILS).length === 3 && pay.compareFees(250000)[0].rail === "ach"),
+      check("Wallet designed but HARD-LOCKED pending compliance review", pay.WALLET_DESIGN.activated === false && (() => { try { pay.walletOperation(); return false; } catch { return true; } })()),
+      check("12-agent payments desk seated, all 8 dossier fields each, reporting to Chief Finance", pay.getPayAgents().length === 12 && pay.getPayAgents().every((a) => a.reports_to === "chief-finance" && PAY_FIELDS.every((f) => a[f]?.length))),
+      check("RBAC roles defined with least privilege (viewer has none)", Object.keys(pay.ROLES).length >= 5 && pay.ROLES.viewer.length === 0),
+      check("Lawful-oversight posture on the privacy dashboard", pay.getPrivacyDashboard().lawful_oversight.includes("never from lawful compliance")),
     ],
   });
 

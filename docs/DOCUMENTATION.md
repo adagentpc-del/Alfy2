@@ -89,6 +89,9 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `PORTFOLIO_COMPANY_VIEW.md` | The visual contract for companies: gallery card anatomy + Company OS Viewer layout + rules (fastest-path above fold, pre-revenue not $0) | portfolio view changes |
 | `ENTERPRISE_NAVIGATION_STRUCTURE.md` | The IA: two groups / eight items, route map, wayfinding rules, nav growth policy | navigation changes |
 | `RND_ASSET_ASI_ARCH.md` | R&D intake record for GAIR-NLP/ASI-Arch: verified facts, NEEDS-REVIEW verdict, sandbox-only guardrails, pattern mapping to Alfy2's research loops | asset re-vetted |
+| `DIVINI_PAY_SPEC.md` | The payment OS: PRD, architecture, schema, RBAC, double-entry token-only ledger + split model, payment flows, three-phase roadmaps (wallet hard-locked) | Divini Pay changes |
+| `DIVINI_PAY_COMPLIANCE_CHECKLIST.md` | Binding compliance/security/privacy checklist: AML/KYC/tax/Nacha/MTL postures, 15 security + 10 privacy requirements with dispositions, retention schedule, the wallet lock | obligations change |
+| `DIVINI_PAY_AGENTS.md` | The 12-agent payments desk under the CFO Agent: missions, signature decision rules, watch metrics, shared guardrails | desk changes |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |

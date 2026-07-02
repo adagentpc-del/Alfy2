@@ -6,6 +6,15 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Divini Pay (privacy-first payment OS, Phase 1 Lite mock):** `/pay` + `apps/web/assets/divini-pay.mjs`
+  — ACH-first fee engine (honest calculator: $2,500 → $5 ACH vs $72.80 card), consent-gated onboarding,
+  tokenized instruments only (raw numbers rejected), W-9-before-payout enforced, append-only double-entry
+  **PII-free** ledger, exact splits (platform fee + referral commission), **every payout/refund gated as
+  move_money**, milestones, dispute holds, RBAC w/ audited denials, owner-only reasoned overrides, recon
+  export, privacy dashboard that verifies its own promises, **Phase-3 wallet designed but hard-locked in
+  code pending compliance review**, 12-agent payments desk under the CFO Agent. Docs: DIVINI_PAY_SPEC +
+  COMPLIANCE_CHECKLIST (binding; lawful-oversight posture explicit) + AGENTS. Readiness now 40 checks.
+  `pnpm pay:smoke` (8 scenarios).
 - **Readiness verification + R&D bench (ASI-Arch):** `/readiness` runs 34 live checks proving the
   command center is loaded, connected, and governed — hierarchy (Alyssa → Alfy2 "Chief Operating
   Intelligence System" → 16 cabinet → 10 sponsored portfolio agents), complete dossiers, guardrails +
