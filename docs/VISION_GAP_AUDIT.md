@@ -10,6 +10,13 @@ built and verified (46 machine-run checks); what does not exist yet is **live in
 calls anywhere in runtime), **live data** (blocked on one human step), and **hands** (agents are seated
 and governed but nothing executes work between approvals). The gap is not design — it is wiring.
 
+> **Same-day update (evening):** critical-path steps 2, 3, 5, and 6 are now BUILT and credential-gated —
+> the metered AI layer (`/ai/*` routes + budget kill-switch), the packet-runner (hands: AI drafts →
+> human-review reports), the weekly-optimize learning loop (approval-first recommendations → inbox),
+> and the `/life` surface with the brain-dump capture (local always, live inbox when connected). The
+> remaining gaps are exactly `docs/CREDENTIALS_NEEDED.md` (paste-in tiers) plus server-side persistence
+> for the new module layer (schemas already specified).
+
 ## Pillar scorecard (design = specified+coded shape · runtime = actually operating)
 
 | Pillar of the vision | Design | Runtime | What exists | The honest gap |

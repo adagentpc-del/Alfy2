@@ -12,6 +12,7 @@ import { missionControlRoutes } from "./routes/mission-control.js";
 import { founderRoutes } from "./routes/founder.js";
 import { businessOpsRoutes } from "./routes/business-ops.js";
 import { orgRoutes } from "./routes/org.js";
+import { aiRoutes } from "./routes/ai.js";
 
 export type { AppDeps, AppEnv, AppVariables, RequestRepos } from "./types.js";
 export { GATED_ROUTES } from "./middleware/approval-gate.js";
@@ -71,6 +72,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   app.route("/", founderRoutes(deps));
   app.route("/", businessOpsRoutes(deps));
   app.route("/", orgRoutes(deps));
+  app.route("/", aiRoutes(deps));
 
   return app;
 }

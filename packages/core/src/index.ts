@@ -958,3 +958,5 @@ export {
 } from "./oversight/engine.js";
 
 export { GtmFactory } from "./gtm-factory/engine.js";
+
+export { AnthropicTransport, MeteredAi, createAiFromEnv, type AiTransport, type MeteredAiOptions } from "./ai-adapter/adapter.js";

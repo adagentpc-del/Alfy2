@@ -8,6 +8,7 @@ import type {
   AdvisoryDecisionEngine,
   CapitalAllocationEngine,
   DelegationRuntime,
+  MeteredAi,
 } from "@alfy2/core";
 
 /**
@@ -32,6 +33,8 @@ export interface RequestRepos {
  * in-memory repos and a local keypair verifier.
  */
 export interface AppDeps {
+  /** Live AI layer — undefined until AI_PROVIDER_API_KEY is set (routes answer 503 ai_not_configured). */
+  ai?: MeteredAi;
   config: {
     /** Single-operator default tenant (every request runs inside it). */
     defaultTenantId: string;

@@ -193,6 +193,30 @@ export async function probeLiveHealth(apiBase, timeoutMs = 75_000) {
   } finally { clearTimeout(timer); }
 }
 
+// --- brain dump (the capture surface: local always; syncs to the live Executive Inbox when connected) ---
+export function brainDump(text) {
+  if (!text || text.trim().length < 2) throw new Error("nothing to capture");
+  const entry = {
+    id: newId("dump"), ts: clock().toISOString(), text: text.trim(),
+    status: liveEnabled() ? "syncing" : "local_only",
+  };
+  saveOverlay("dumps", [...overlay("dumps", []), entry]);
+  createActionLog({ agent_id: "chief-knowledge", action: `Brain dump captured (${entry.text.split(/\s+/).length} words)`, status: "succeeded" });
+  if (liveEnabled()) {
+    // fire-and-update: the live Executive Inbox triages it server-side
+    liveFetch("/inbox/ingest", { method: "POST", body: JSON.stringify({ source: "brain_dump", content: entry.text }) })
+      .then(() => setDumpStatus(entry.id, "synced_live"))
+      .catch(() => setDumpStatus(entry.id, "local_only"));
+  }
+  return entry;
+}
+function setDumpStatus(id, status) {
+  const list = overlay("dumps", []);
+  const i = list.findIndex((d) => d.id === id);
+  if (i !== -1) { list[i] = { ...list[i], status }; saveOverlay("dumps", list); }
+}
+export const getBrainDumps = () => [...overlay("dumps", [])].reverse();
+
 // --- composition: weekly report + executive summary ------------------------------------------------
 
 const isoWeek = (d) => {

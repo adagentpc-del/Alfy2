@@ -6,6 +6,16 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Intelligence + hands + learning loop + Life — built, credential-gated:** live AI layer
+  (`packages/core/ai-adapter`: Anthropic transport, exact cost metering, $5/day kill-switch,
+  graceful OFF without a key) + `/ai/triage|enrich|status` routes; orchestrator gains
+  **packet-runner** (hourly: accepted /org packet → AI-drafted deliverable → report with
+  approval_needed=true, always) and **weekly-optimize** (brief → 3 approval-first recommendations →
+  Executive Inbox); `/life` screen (Freedom Index, capacity, life dashboard, **brain dump** — local
+  always, live /inbox/ingest when connected); `docs/CREDENTIALS_NEEDED.md` = the complete paste-in
+  list. Smokes: `ai:smoke` (5) + orch extended (7). *Everything runs today as honest no-ops/503s until
+  AI_PROVIDER_API_KEY + the pooler DATABASE_URL are pasted.* Remaining build item: Pg persistence for
+  the new module layer (schemas spec'd).
 - **Platform Registry (Forge MVP feature #1):** `/forge/registry` — 15 seeded platforms × the 24
   contract fields (providers, secrets location, backups, risks, owner, next action…); status +
   compliance/privacy risk badges; missing-infrastructure warnings (65 across the ledger at seed —

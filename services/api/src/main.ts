@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { loadConfig } from "@alfy2/config";
+import { createAiFromEnv } from "@alfy2/core";
 import {
   DecisionEngine,
   ExecutiveInbox,
@@ -114,7 +115,14 @@ async function main(): Promise<void> {
     verifyToken = makeJwksVerifier(config.SUPABASE_URL);
   }
 
+  const ai = createAiFromEnv(config.AI_PROVIDER_API_KEY, {
+    daily_budget_cents: Number(process.env.ALFY_AI_DAILY_BUDGET_CENTS ?? 500),
+    onUsage: (u) => console.log(JSON.stringify({ at: u.at, svc: "api", msg: "ai_usage", ...u })),
+  });
+  console.log(JSON.stringify({ svc: "api", msg: ai ? "ai layer configured" : "ai layer OFF (no AI_PROVIDER_API_KEY)" }));
+
   const deps: AppDeps = {
+    ai,
     config: { defaultTenantId: config.ALFY_DEFAULT_TENANT_ID },
     verifyToken,
     scope,

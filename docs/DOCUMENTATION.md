@@ -94,6 +94,7 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `DIVINI_PAY_AGENTS.md` | The 12-agent payments desk under the CFO Agent: missions, signature decision rules, watch metrics, shared guardrails | desk changes |
 | `ALFY_FORGE_IMPLEMENTATION_PLAN.md` | Alfy Forge / Divini Sovereign Cloud: 20-section implementation plan — current-state audit, phased architecture (registry+generators now, Forgejo→k3s staged), secrets rules, migration strategy, what-not-to-build-yet | forge phases change |
 | `VISION_GAP_AUDIT.md` | The billion-dollar-command-center vision vs reality: 8-pillar scorecard (design % vs runtime %), the five truths (no live AI calls, no hands, loop unwired, life half unsurfaced, one human blocker), and the 8-step critical path | superseded by the next audit |
+| `CREDENTIALS_NEEDED.md` | The complete plug-in list: 3 credential tiers (core ON → self-running ON → connectors), what each switches on, and the never-changing secret rules — everything else is already built and gated | a credential tier changes |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |

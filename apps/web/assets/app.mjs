@@ -46,6 +46,7 @@ const routes = [
   { re: /^\/forge\/new$/, view: viewForgeWizard, nav: "forge" },
   { re: /^\/forge\/projects\/([\w-]+)$/, view: (m) => viewForgeProject(m[1]), nav: "forge" },
   { re: /^\/forge\/registry$/, view: viewForgeRegistry, nav: "forge" },
+  { re: /^\/life$/, view: viewLife, nav: "life" },
 ];
 
 function currentPath() {
@@ -1561,6 +1562,69 @@ function viewForgeRegistry() {
         ${plan ? `<div class="s" style="font-size:10px;color:var(--mut);margin-top:6px">plan ${esc(plan.id)} · ${esc(plan.status)} · ${plan.steps.length} cutover steps · created ${fmtTs(plan.created_at)}</div>` : ""}
       </div>`;
     }).join("")}
+  </div>`;
+}
+
+// ---------- view: Life (the personal half of the OS — NORTHSTAR instruments) ----------
+function viewLife() {
+  const dumps = svc.getBrainDumps();
+  onAfter(() => {
+    document.getElementById("dump-go")?.addEventListener("click", () => tryDo(() => {
+      const ta = document.getElementById("dump-text");
+      svc.brainDump(ta.value);
+      ta.value = "";
+    }));
+  });
+  return `
+  <div class="head"><div><div class="crumb">The founder's half · NORTHSTAR instruments</div><h1>Life</h1></div>
+    <span class="chip">architect, not operator</span></div>
+  <div class="sub">“Alyssa should never become an operator trapped inside her own machine.” The system adapts to your capacity, protects deep work, and measures whether it is actually returning your time (docs/PERSONAL_OS.md · Freedom Index · Life ROI).</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: "high-functioning" },
+    { k: "Priority", v: "protect deep work" },
+    { k: "Owner", v: "you — the system serves" },
+    { k: "Blocked", v: "no" },
+    { k: "Approvals", v: `${svc.getApprovalRequests("pending").length} waiting (batch them, don't graze)` },
+    { k: "Revenue", v: "founder time IS the asset" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: "Dump everything on your mind below — the brain never loses it, and you stop carrying it.", cls: "decision" },
+  ])}
+  <div class="metrics">
+    <div class="metric goldline"><div class="l">Founder capacity</div><div class="v mono">72</div><div class="d up">high-functioning</div></div>
+    <div class="metric"><div class="l">Freedom index</div><div class="v mono">61<span style="font-size:15px;color:var(--mut)">/100</span></div><div class="d up">trending up since the OS</div></div>
+    <div class="metric"><div class="l">Approval load</div><div class="v mono">${svc.getApprovalRequests("pending").length}</div><div class="d neutral">one batch session/day</div></div>
+    <div class="metric"><div class="l">Deep work</div><div class="v mono">3.5h</div><div class="d neutral">today · protected</div></div>
+    <div class="metric"><div class="l">Life ROI</div><div class="v mono" style="font-size:19px">workdays returned</div><div class="d">measured monthly</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="cardhead"><span class="t">Brain dump · nothing gets lost</span></div><div class="pad">
+      <textarea id="dump-text" placeholder="Ideas, worries, follow-ups, half-thoughts — dump it all. Captured locally always; triaged into the live Executive Inbox when connected." style="width:100%;min-height:130px;padding:11px 13px;border:1px solid var(--line2);border-radius:10px;font-size:13px;font-family:var(--sans);background:var(--bg)"></textarea>
+      <div class="btns" style="margin-top:10px"><button class="btn gold" id="dump-go">Capture</button>
+        <span class="s" style="color:var(--mut);font-size:11px;align-self:center">→ knowledge brain → triage → only what needs you comes back</span></div>
+      <div class="rows-tight" style="margin-top:12px;border-top:1px solid var(--line)">
+        ${dumps.slice(0, 6).map((d) => `<div class="row"><div><div class="t" style="font-size:12.5px">${esc(d.text.slice(0, 90))}${d.text.length > 90 ? "…" : ""}</div><div class="s">${fmtTs(d.ts)}</div></div><span class="pill ${d.status === "synced_live" ? "green" : d.status === "syncing" ? "amber" : "gray"}">${esc(d.status.replace(/_/g, " "))}</span></div>`).join("") || '<div class="empty">Nothing captured yet — the brain is waiting.</div>'}
+      </div>
+    </div></div>
+    <div>
+      <div class="card"><div class="cardhead"><span class="t">How the system responds to you</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+          <div class="row"><span class="t">Surface strategic decisions only</span><span class="pill green">on</span></div>
+          <div class="row"><span class="t">Protect cash / legal / critical alerts</span><span class="pill gold">always</span></div>
+          <div class="row"><span class="t">Batch approvals into one session</span><span class="pill green">on</span></div>
+          <div class="row"><span class="t">Do-not-interrupt during deep work</span><span class="pill gray">off</span></div>
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Life dashboard</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+          <div class="row"><span class="t"><span class="dot green"></span>Energy · sleep · stress</span><span class="s">7/10 · 7.0h · 3/10</span></div>
+          <div class="row"><span class="t"><span class="dot green"></span>Relationships & family time</span><span class="s">protected this week</span></div>
+          <div class="row"><span class="t"><span class="dot amber"></span>Learning & creation time</span><span class="s">below target — the machine should absorb more ops</span></div>
+          <div class="row"><span class="t"><span class="dot green"></span>Founder freedom trend</span><span class="s">↑ as approvals batch + agents draft</span></div>
+        </div></div>
+      <div class="card" style="margin-top:16px"><div class="pad" style="font-family:var(--serif);font-size:14.5px;font-style:italic;color:var(--navy-soft)">
+        “The goal is not maximum automation. The goal is maximum human potential.” — NORTHSTAR.md
+      </div></div>
+    </div>
   </div>`;
 }
 

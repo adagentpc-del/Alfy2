@@ -1,5 +1,8 @@
+import { createAiFromEnv } from "@alfy2/core";
 import { InMemoryRunLedger, Scheduler } from "./scheduler.js";
 import { makeDailyBriefJob } from "./jobs/daily-brief.js";
+import { makePacketRunnerJob } from "./jobs/packet-runner.js";
+import { makeWeeklyOptimizeJob } from "./jobs/weekly-optimize.js";
 
 /**
  * Orchestrator v0 runtime: ticks the scheduler on an interval. Boot-safe by design — with no API
@@ -18,8 +21,18 @@ if (!apiBase || !token) {
   process.exit(0);
 }
 
+const ai = createAiFromEnv(process.env.AI_PROVIDER_API_KEY, {
+  daily_budget_cents: Number(process.env.ALFY_AI_DAILY_BUDGET_CENTS ?? 500),
+  onUsage: (u) => log({ level: "info", msg: "ai_usage", ...u }),
+});
+log({ level: "info", msg: ai ? "ai layer configured — hands + learning loop active" : "ai layer OFF — packet-runner and weekly-optimize run as labeled no-ops until AI_PROVIDER_API_KEY is set" });
+
 const scheduler = new Scheduler(
-  [makeDailyBriefJob({ apiBase, token })],
+  [
+    makeDailyBriefJob({ apiBase, token }),
+    makePacketRunnerJob({ apiBase, token, ai }),
+    makeWeeklyOptimizeJob({ apiBase, token, ai }),
+  ],
   new InMemoryRunLedger(),
   { onEvent: (e) => log({ level: e.kind === "period_exhausted" ? "error" : "info", ...e }) },
 );
@@ -30,7 +43,7 @@ const tick = async () => {
   log({ level: "info", msg: "tick", ran: report.ran, skipped: report.skipped, failed: report.failed });
 };
 
-log({ level: "info", msg: "orchestrator v0 up", intervalMs, jobs: ["daily-brief"] });
+log({ level: "info", msg: "orchestrator v0 up", intervalMs, jobs: ["daily-brief", "packet-runner", "weekly-optimize"] });
 void tick();
 const timer = setInterval(() => void tick(), intervalMs);
 process.on("SIGTERM", () => { clearInterval(timer); log({ level: "info", msg: "shutdown" }); process.exit(0); });

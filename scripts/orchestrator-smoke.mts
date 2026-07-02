@@ -71,4 +71,46 @@ const br = await boom.tick();
 assert.equal(br.failed, 1, "throw recorded as failed attempt");
 console.log("[5] thrown errors are contained as failed attempts ✔");
 
-console.log("\nORCHESTRATOR SMOKE OK — cadence jobs idempotent per period, bounded retries with an exhaustion alert, new periods re-run, daily-brief hits the gateway with the token exactly once per day.");
+// === 6. Packet runner: accepted packet → AI draft → report for HUMAN review (never self-approving). ===
+const { makePacketRunnerJob } = await import("../services/orchestrator/src/jobs/packet-runner.js");
+const { makeWeeklyOptimizeJob } = await import("../services/orchestrator/src/jobs/weekly-optimize.js");
+const { MeteredAi, AnthropicTransport } = await import("@alfy2/core");
+now = new Date("2026-07-06T09:00:00.000Z");
+const aiFetch = (async () => ({ ok: true, status: 200, json: async () => ({ content: [{ type: "text", text: "DRAFT DELIVERABLE: vendor outreach list v1..." }], usage: { input_tokens: 200, output_tokens: 150 } }) })) as unknown as typeof fetch;
+const fakeAi = new MeteredAi(new AnthropicTransport("k", { fetchImpl: aiFetch }), { clock, daily_budget_cents: 500 });
+const apiCalls: Array<{ url: string; body?: any }> = [];
+const apiFetch = (async (url: string, init?: RequestInit) => {
+  apiCalls.push({ url: String(url), body: init?.body ? JSON.parse(String(init.body)) : undefined });
+  if (String(url).endsWith("/org/packets")) return { ok: true, status: 200, json: async () => ({ packets: [{ id: "pkt-1", status: "accepted", assigned_agent: "Outreach Agent", objective: "Draft the 40-vendor outreach list", business: "divini_procure", prohibited_actions: ["sending anything external"] }] }) };
+  if (String(url).endsWith("/org/reports")) return { ok: true, status: 201, json: async () => ({ id: "rep-1" }) };
+  if (String(url).endsWith("/mission-control/brief")) return { ok: true, status: 200, json: async () => ({ brief: { headline: "Cash steady", priorities: ["Henderson quote"] } }) };
+  if (String(url).endsWith("/inbox/ingest")) return { ok: true, status: 201, json: async () => ({ id: "inb-1" }) };
+  return { ok: false, status: 404, json: async () => ({}) };
+}) as unknown as typeof fetch;
+const runnerSched = new Scheduler(
+  [makePacketRunnerJob({ apiBase: "https://api.test", token: "tok", ai: fakeAi, fetchImpl: apiFetch }),
+   makeWeeklyOptimizeJob({ apiBase: "https://api.test", token: "tok", ai: fakeAi, fetchImpl: apiFetch })],
+  new InMemoryRunLedger(), { clock },
+);
+const rr = await runnerSched.tick();
+assert.equal(rr.ran, 2, "both intelligence jobs ran");
+const report = apiCalls.find((c) => c.url.endsWith("/org/reports"))!.body;
+assert.equal(report.packet_id, "pkt-1");
+assert.equal(report.approval_needed, true, "runner output ALWAYS goes to human review");
+assert.ok(report.output_produced.includes("DRAFT DELIVERABLE"), "AI draft attached");
+const ingest = apiCalls.find((c) => c.url.endsWith("/inbox/ingest"))!.body;
+assert.equal(ingest.source, "orchestrator:weekly-optimize");
+assert.ok(ingest.content.includes("approval-first"), "recommendations are approval-first");
+console.log("[6] hands + learning loop: packet → AI draft → human-review report; brief → recommendations → inbox ✔");
+
+// === 7. Without an AI key both jobs are honest no-ops (never failures). ===
+const offSched = new Scheduler(
+  [makePacketRunnerJob({ apiBase: "https://api.test", token: "tok", ai: undefined, fetchImpl: apiFetch })],
+  new InMemoryRunLedger(), { clock },
+);
+const off = await offSched.tick();
+assert.equal(off.ran, 1);
+assert.ok(off.events[0].detail.includes("not configured"), "labeled no-op, not a fake success");
+console.log("[7] credential-gated: no key → labeled no-op ✔");
+
+console.log("\nORCHESTRATOR SMOKE OK — cadence jobs idempotent per period, bounded retries with an exhaustion alert, new periods re-run, daily-brief hits the gateway once per day; the packet-runner drafts deliverables for HUMAN review and the weekly-optimize loop files approval-first recommendations; both are honest no-ops until AI_PROVIDER_API_KEY is set.");
