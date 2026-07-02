@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { loadConfig } from "@alfy2/config";
+import { createAiFromEnv } from "@alfy2/core";
 import {
   DecisionEngine,
   ExecutiveInbox,
@@ -11,6 +12,7 @@ import {
   AdvisoryDecisionEngine,
   CapitalAllocationEngine,
   DelegationRuntime,
+  ModuleStateService,
 } from "@alfy2/core";
 import {
   Db,
@@ -26,6 +28,7 @@ import {
   PgCapitalRunwayRepository,
   PgDelegationPacketRepository,
   PgAgentReportRepository,
+  PgModuleStateRepository,
 } from "@alfy2/db";
 import { createApp } from "./app.js";
 import { makeJwksVerifier } from "./auth/jwks.js";
@@ -75,6 +78,7 @@ async function main(): Promise<void> {
           packets: new PgDelegationPacketRepository(q),
           reports: new PgAgentReportRepository(q),
         });
+        const moduleState = new ModuleStateService(new PgModuleStateRepository(q));
         const ctx: RequestRepos = {
           inbox,
           gate,
@@ -85,6 +89,7 @@ async function main(): Promise<void> {
           decisions,
           capital,
           delegation,
+          moduleState,
         };
         return fn(ctx);
       },
@@ -114,7 +119,14 @@ async function main(): Promise<void> {
     verifyToken = makeJwksVerifier(config.SUPABASE_URL);
   }
 
+  const ai = createAiFromEnv(config.AI_PROVIDER_API_KEY, {
+    daily_budget_cents: Number(process.env.ALFY_AI_DAILY_BUDGET_CENTS ?? 500),
+    onUsage: (u) => console.log(JSON.stringify({ at: u.at, svc: "api", msg: "ai_usage", ...u })),
+  });
+  console.log(JSON.stringify({ svc: "api", msg: ai ? "ai layer configured" : "ai layer OFF (no AI_PROVIDER_API_KEY)" }));
+
   const deps: AppDeps = {
+    ai,
     config: { defaultTenantId: config.ALFY_DEFAULT_TENANT_ID },
     verifyToken,
     scope,

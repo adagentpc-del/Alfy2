@@ -26,3 +26,4 @@ export {
   PgDelegationPacketRepository,
   PgAgentReportRepository,
 } from "./ai-org-delegation-repository.js";
+export { PgModuleStateRepository } from "./module-state-repository.js";

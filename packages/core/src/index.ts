@@ -520,6 +520,15 @@ export {
 export { InMemoryFounderCapacityRepository } from "./founder-capacity/in-memory-repository.js";
 export type { FounderCapacityRepository } from "./founder-capacity/repository.js";
 
+// Web module state + vault snapshots (server-side custody for the command-center module layer)
+export {
+  ModuleStateService,
+  type ModuleStateServiceOptions,
+  type SyncResult,
+} from "./module-state/service.js";
+export { InMemoryModuleStateRepository } from "./module-state/in-memory-repository.js";
+export type { ModuleStateRepository } from "./module-state/repository.js";
+
 // Model Router (provider-agnostic model selection by task type)
 export { ModelRouter } from "./model-router/router.js";
 export { DEFAULT_MODEL_CATALOG } from "./model-router/catalog.js";
@@ -956,3 +965,7 @@ export {
   type RunRecursiveDiagnosisInput,
   type RunBillionDollarCheckInput,
 } from "./oversight/engine.js";
+
+export { GtmFactory } from "./gtm-factory/engine.js";
+
+export { AnthropicTransport, MeteredAi, createAiFromEnv, type AiTransport, type MeteredAiOptions } from "./ai-adapter/adapter.js";
