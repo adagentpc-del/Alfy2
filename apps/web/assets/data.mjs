@@ -500,7 +500,55 @@ export const PORTFOLIO_AGENTS = [
   }),
 ];
 
+// --- The hierarchy above the cabinet -------------------------------------------------------------
+export const FOUNDER = {
+  id: "alyssa", name: "Alyssa DelTorre", title: "Founder / CEO / Chairwoman",
+  role: "Final authority. Every gated action — sends, publishes, money, contracts, likeness — ends at her desk.",
+};
+export const ALFY2_SYSTEM = {
+  id: "alfy2", name: "Alfy2", title: "Chief Operating Intelligence System", reports_to: "alyssa",
+  mission: "Run the holding company's operating system: route work through delegation packets, enforce the approval gates, keep the knowledge brain, measure everything, report up.",
+};
+
+// Reporting: every cabinet seat and portfolio agent reports into Alfy2, which reports to Alyssa.
+for (const a of CABINET_AGENTS) a.reports_to = "alfy2";
+const SPONSORS = {
+  "agent-move-mi": "chief-revenue", "agent-divini-procure": "chief-revenue",
+  "agent-stratalogic": "chief-strategy", "agent-founderos": "chief-product",
+  "agent-oralia": "chief-product", "agent-datingmodern": "chief-venture-architect",
+  "agent-divini-partner": "chief-sales", "agent-black-flag": "chief-finance",
+  "agent-decoded": "chief-media", "agent-ai-builder-pro": "chief-venture-architect",
+};
+for (const a of PORTFOLIO_AGENTS) { a.reports_to = "alfy2"; a.cabinet_sponsor = SPONSORS[a.id] ?? null; }
+
 export const AGENTS = [...CABINET_AGENTS, ...PORTFOLIO_AGENTS];
+
+// --- R&D intake bench (owner: Chief Technology; knowledge steward: Chief Knowledge) ----------------
+// External research systems are VETTED and referenced — never executed inside Alfy2's runtime.
+export const RND_ASSETS = [
+  {
+    id: "rnd-asi-arch",
+    name: "ASI-Arch (GAIR-NLP)",
+    source: "https://github.com/GAIR-NLP/ASI-Arch",
+    kind: "autonomous research framework",
+    license: "Apache-2.0",
+    what_it_is: "Multi-agent LLM system that autonomously discovers novel linear-attention architectures: planner/code-checker → trainer/debugger → analyzer pipeline, MongoDB+FAISS experiment memory, RAG 'cognition base' over a paper corpus. Reports 106 discovered SOTA architectures (~1.2k stars).",
+    why_it_matters: "Reference blueprint for Alfy2's own research loops: hypothesis → experiment → judge → memory. The candidate-manager + judger pattern maps to our agent-eval lab; the cognition base maps to the knowledge brain.",
+    safety_facts: "Executes generated code and trains models; runs MongoDB + FastAPI + Flask services; needs CUDA GPU.",
+    guardrails: [
+      "NEVER runs inside Alfy2's runtime — sandbox machine only, isolated network, no Alfy2 credentials",
+      "static review before any run (GitHub Intelligence pattern: vet, never execute in-place)",
+      "any experiment spend needs a budget approval (action class: other) before GPU time",
+      "findings enter Alfy2 as knowledge-brain items with source-of-truth provenance, not as code",
+    ],
+    disposition: "evaluate_in_sandbox",
+    owner: "chief-technology",
+    steward: "chief-knowledge",
+    status: "vetted_pending_sandbox",
+    vetted_at: "2026-07-02",
+    doc: "docs/RND_ASSET_ASI_ARCH.md",
+  },
+];
 
 // Derived registries (kept as their own collections so the API can serve them directly later).
 export const AGENT_ROLES = AGENTS.map((a) => ({

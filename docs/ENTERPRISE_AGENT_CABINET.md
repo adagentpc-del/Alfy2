@@ -11,8 +11,13 @@ accountability ledger). Contracts: `packages/shared/src/contracts/ai-org.ts`. Mi
 
 ## Structure
 
+The command-center layer (apps/web) seats a 16-title executive cabinet under **Alfy2 — Chief Operating
+Intelligence System**, which reports to Alyssa; each portfolio agent additionally carries a cabinet
+sponsor. Readiness of the whole chain is machine-verified (`/readiness`, `pnpm readiness:smoke` — 34
+checks). The deeper 78-role registry below remains the ai-org domain layer.
+
 ```
-Alyssa DelTorre (CEO — final authority, only human in the chain)
+Alyssa DelTorre (Founder / CEO / Chairwoman — final authority, only human in the chain)
 └── Executive layer (4): Executive Governor · Chief of Staff · Portfolio Strategist · Decision Log Manager
     └── Department leaders (11): CRO · Growth Strategist · Product Manager · Chief Systems Architect ·
         COO Agent · Onboarding Agent · CFO Agent · Chief Security & Compliance Officer ·

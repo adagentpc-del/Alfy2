@@ -88,6 +88,7 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `STATUS_CHIP_SYSTEM.md` | One status vocabulary: chip classes, canonical domain mappings (agents/companies/approvals/gates/avatar), color-semantics rules | states change |
 | `PORTFOLIO_COMPANY_VIEW.md` | The visual contract for companies: gallery card anatomy + Company OS Viewer layout + rules (fastest-path above fold, pre-revenue not $0) | portfolio view changes |
 | `ENTERPRISE_NAVIGATION_STRUCTURE.md` | The IA: two groups / eight items, route map, wayfinding rules, nav growth policy | navigation changes |
+| `RND_ASSET_ASI_ARCH.md` | R&D intake record for GAIR-NLP/ASI-Arch: verified facts, NEEDS-REVIEW verdict, sandbox-only guardrails, pattern mapping to Alfy2's research loops | asset re-vetted |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |

@@ -7,6 +7,7 @@
 import * as svc from "./services.mjs";
 import * as fac from "./factories.mjs";
 import * as studio from "./media-studio.mjs";
+import * as ready from "./readiness.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -37,6 +38,7 @@ const routes = [
   { re: /^\/studio$/, view: viewStudio, nav: "studio" },
   { re: /^\/studio\/episodes\/([\w-]+)$/, view: (m) => viewEpisode(m[1]), nav: "studio" },
   { re: /^\/studio\/avatar$/, view: viewAvatarCenter, nav: "avatar" },
+  { re: /^\/readiness$/, view: viewReadiness, nav: "readiness" },
 ];
 
 function currentPath() {
@@ -1143,6 +1145,75 @@ function viewAvatarCenter() {
           </div></div>`).join("") || '<div class="empty">No jobs — approve a script first.</div>'}</div>
     </div>
   </div>`;
+}
+
+// ---------- view: enterprise readiness ----------
+function orgNode(label, sub, cls = "") {
+  return `<div style="text-align:center;padding:10px 16px;background:${cls === "gold" ? "linear-gradient(135deg,var(--gold-bright),var(--gold))" : cls === "navy" ? "var(--navy)" : "var(--surface)"};
+    color:${cls === "gold" ? "var(--navy)" : cls === "navy" ? "#f2eddc" : "var(--ink)"};border:1px solid ${cls ? "transparent" : "var(--line)"};
+    border-radius:12px;box-shadow:var(--shadow);display:inline-block;min-width:210px">
+    <div style="font-family:var(--serif);font-size:${cls === "gold" ? "16px" : "14px"};font-weight:600">${esc(label)}</div>
+    <div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;font-weight:600;margin-top:1px">${esc(sub)}</div></div>`;
+}
+function viewReadiness() {
+  const report = ready.runReadinessCheck();
+  const org = ready.getOrgChart();
+  const rnd = ready.getRndAssets();
+  return `
+  <div class="head"><div><div class="crumb">Enterprise verification · runs live on every visit</div><h1>Readiness</h1></div>
+    <span class="chip">${report.passed}/${report.total} checks</span></div>
+  <div class="sub">Proof the command orchestration center is loaded, connected, and governed — hierarchy, dossiers, guardrails, approvals, KPIs, functional layers, avatar governance, and the R&D bench. Behavior is separately proven by the smoke suites.</div>
+  ${execStrip([
+    { k: "Status", v: report.ready ? "READY" : "NOT READY" },
+    { k: "Priority", v: "governance before growth" },
+    { k: "Owner", v: "Alfy2 — Chief Operating Intelligence System" },
+    { k: "Blocked", v: report.ready ? "no" : `${report.total - report.passed} failing checks` },
+    { k: "Approvals", v: `${svc.getApprovalRequests("pending").length} pending in the center` },
+    { k: "Revenue", v: "trust is the asset" },
+    { k: "Updated", v: fmtTs(report.at) },
+    { k: "Recommended decision", v: report.ready ? "The cabinet is seated and governed — proceed to live data (Render re-sync)." : "Fix the failing checks before anything else.", cls: "decision" },
+  ])}
+  <div class="nba"><div><div class="k">Verdict</div><div class="a">${report.ready ? `All ${report.total} checks green. Alyssa DelTorre commands 1 operating intelligence system, 16 cabinet seats, and 10 portfolio agents — every one reporting up, gated, and measured.` : "Failing checks below — the machine does not claim readiness it hasn't earned."}</div></div></div>
+
+  <div class="sec">Chain of command</div>
+  <div class="card"><div class="pad" style="text-align:center">
+    ${orgNode(org.founder.name, org.founder.title, "gold")}
+    <div style="width:1px;height:18px;background:var(--gold);margin:4px auto"></div>
+    ${orgNode(org.system.name, org.system.title, "navy")}
+    <div style="width:1px;height:18px;background:var(--line2);margin:4px auto"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
+      ${org.cabinet.map((a) => `<a data-nav="/agents/${a.id}" class="pill navy" style="cursor:pointer">${esc(a.title.replace(/ (Officer )?Agent$/, ""))}</a>`).join("")}
+    </div>
+    <div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700;margin:2px 0 8px">Executive cabinet · 16 seats</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+      ${org.portfolio.map((a) => `<a data-nav="/agents/${a.id}" class="pill gold" style="cursor:pointer">${esc(a.title.replace(/ Agent$/, ""))}</a>`).join("")}
+    </div>
+    <div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700;margin-top:8px">Portfolio agents · 10, each sponsored by a cabinet seat</div>
+  </div></div>
+
+  <div class="sec">Verification · ${report.passed}/${report.total}</div>
+  <div class="grid g2">
+    ${report.sections.map((s) => `<div class="card"><div class="cardhead"><span class="t">${esc(s.name)}</span>
+      <span class="pill ${s.checks.every((c) => c.pass) ? "green" : "red"}">${s.checks.filter((c) => c.pass).length}/${s.checks.length}</span></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+      ${s.checks.map((c) => `<div class="row"><div class="t" style="font-size:12.5px"><span class="dot ${c.pass ? "green" : "red"}"></span>${esc(c.label)}</div><span class="pill ${c.pass ? "green" : "red"}">${c.pass ? "pass" : "FAIL"}</span></div>`).join("")}
+      </div></div>`).join("")}
+  </div>
+
+  <div class="sec">R&D bench · vetted external research</div>
+  ${rnd.map((r) => `<div class="card"><div class="cardhead"><span class="t">${esc(r.name)}</span>
+      <div class="btns"><span class="pill gold">${esc(r.license)}</span><span class="pill amber">${esc(r.status.replace(/_/g, " "))}</span></div></div>
+    <div class="pad" style="font-size:12.5px">
+      <div>${esc(r.what_it_is)}</div>
+      <div class="dk" style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:10px 0 3px">Why the R&D department wants it</div>
+      <div>${esc(r.why_it_matters)}</div>
+      <div class="dk" style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-weight:700;margin:10px 0 3px">Safety facts · guardrails binding</div>
+      <div style="margin-bottom:5px">${esc(r.safety_facts)}</div>
+      <ul style="margin:0 0 8px 16px">${r.guardrails.map((g) => `<li style="margin:3px 0">${esc(g)}</li>`).join("")}</ul>
+      <div class="s" style="color:var(--mut)">Owner: <a data-nav="/agents/${esc(r.owner)}" style="color:var(--gold);font-weight:600">${esc(svc.getAgentById(r.owner)?.title ?? r.owner)}</a>
+        · Steward: <a data-nav="/agents/${esc(r.steward)}" style="color:var(--gold);font-weight:600">${esc(svc.getAgentById(r.steward)?.title ?? r.steward)}</a>
+        · Record: ${esc(r.doc)} · Source: ${esc(r.source)}</div>
+    </div></div>`).join("")}`;
 }
 
 // ---------- boot ----------

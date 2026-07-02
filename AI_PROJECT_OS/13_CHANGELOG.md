@@ -6,6 +6,13 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Readiness verification + R&D bench (ASI-Arch):** `/readiness` runs 34 live checks proving the
+  command center is loaded, connected, and governed — hierarchy (Alyssa → Alfy2 "Chief Operating
+  Intelligence System" → 16 cabinet → 10 sponsored portfolio agents), complete dossiers, guardrails +
+  approvals, all functional-layer surfaces (10 service + 10 factory + 20 studio fns, 22 studio data
+  objects), avatar governance, R&D bench. Tamper test proves checks have teeth. GAIR-NLP/ASI-Arch
+  vetted into R&D (`docs/RND_ASSET_ASI_ARCH.md`): Apache-2.0, verified live; **sandbox-only** (it
+  executes generated code + trains models), CTO owner / CKO steward. `pnpm readiness:smoke`.
 - **Orchestrator v0 + luxury UI polish + design system:** `services/orchestrator` is no longer a stub —
   scheduler with idempotent-per-period cadence jobs (daily-brief hits `GET /mission-control/brief` once
   per day, bounded retries → exhaustion alert; kill switch `ORCH_PAUSED`; boot-safe without env);

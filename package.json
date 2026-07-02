@@ -145,7 +145,8 @@
     "ui:smoke": "tsx scripts/enterprise-ui-smoke.mts",
     "factorymodes:smoke": "tsx scripts/factory-smoke.mts",
     "studio:smoke": "tsx scripts/media-studio-smoke.mts",
-    "orch:smoke": "tsx scripts/orchestrator-smoke.mts"
+    "orch:smoke": "tsx scripts/orchestrator-smoke.mts",
+    "readiness:smoke": "tsx scripts/readiness-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",
