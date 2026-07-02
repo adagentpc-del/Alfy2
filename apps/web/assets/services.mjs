@@ -136,6 +136,48 @@ export function resetLocalState() {
   saveOverlay("reports", OPERATING_REPORTS);
 }
 
+// --- live API bridge (Day-2 wiring) ----------------------------------------------------------------
+// When the operator has connected (alfie_api + alfie_token in localStorage), these talk to the real
+// gateway: GET /approvals, POST /approvals/:id/decide, GET /mission-control. Mock stays the fallback;
+// views render preview data instantly and overlay live data when it arrives.
+
+const liveCreds = () => {
+  try {
+    const api = globalThis.localStorage?.getItem("alfie_api");
+    const token = globalThis.localStorage?.getItem("alfie_token");
+    return api && token ? { api, token } : null;
+  } catch { return null; }
+};
+export function liveEnabled() { return liveCreds() !== null; }
+
+async function liveFetch(path, options = {}) {
+  const creds = liveCreds();
+  if (!creds) throw new Error("not connected");
+  const res = await fetch(creds.api + path, {
+    ...options,
+    headers: { Authorization: "Bearer " + creds.token, "Content-Type": "application/json", ...(options.headers ?? {}) },
+  });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
+}
+
+/** Live approval queue (ApprovalRequestSchema shape: summary/method/route/status/created_at…). */
+export async function getLiveApprovals(status = "pending") {
+  const data = await liveFetch(`/approvals?status=${encodeURIComponent(status)}`);
+  return data.approvals ?? [];
+}
+/** Decide a live approval — this consumes the real gate. */
+export async function decideLiveApproval(id, status, reason) {
+  return liveFetch(`/approvals/${encodeURIComponent(id)}/decide`, {
+    method: "POST",
+    body: JSON.stringify({ status, ...(reason ? { reason } : {}) }),
+  });
+}
+/** Live mission-control snapshot + alerts. */
+export async function getLiveMissionControl() {
+  return liveFetch("/mission-control");
+}
+
 // --- composition: weekly report + executive summary ------------------------------------------------
 
 const isoWeek = (d) => {

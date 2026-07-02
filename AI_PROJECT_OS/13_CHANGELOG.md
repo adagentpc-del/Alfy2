@@ -6,6 +6,13 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Four creation factories + live approval wiring:** `/factory` hub + 4 creation modes (company 14 /
+  software 12 / gtm 13 / media 17 deterministic editable sections) + `/factory/packets/:id` viewer
+  (edit→version, submit→Approval Center with correct action class, export markdown/Obsidian/agent JSON
+  incl. Fable/Claude/OpenClaw prompt packets); Approval Center now shows the **live gate queue**
+  (GET /approvals + decide) and command-center tiles update from the live API when connected.
+  `apps/web/assets/factories.mjs`, smoke `pnpm factorymodes:smoke`. *Risks:* factory state is
+  browser-local; live queue needs the Render API green. *Next:* Day-1 (Render re-sync + demo seed).
 - **Enterprise Command Center v2 (functional layer):** build-free static SPA (ADR-0127) with 8 screens —
   command center (8 cards + next-best-action), agent cabinet (16 execs + 10 portfolio agents, full
   dossiers), portfolio (11 companies) + Company OS Viewer, Approval Center (approve/deny work against

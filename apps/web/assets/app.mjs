@@ -5,6 +5,7 @@
  * All data flows through services.mjs; approve/deny mutate local preview state (docs/APPROVAL_CENTER_SPEC.md).
  */
 import * as svc from "./services.mjs";
+import * as fac from "./factories.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -29,6 +30,9 @@ const routes = [
   { re: /^\/approvals$/, view: viewApprovals, nav: "approvals" },
   { re: /^\/reports\/weekly$/, view: viewWeeklyReport, nav: "reports" },
   { re: /^\/brain$/, view: viewBrain, nav: "brain" },
+  { re: /^\/factory$/, view: viewFactoryHub, nav: "factory" },
+  { re: /^\/factory\/(company|software|gtm|media)$/, view: (m) => viewFactoryForm(m[1]), nav: "factory" },
+  { re: /^\/factory\/packets\/([\w-]+)$/, view: (m) => viewPacket(m[1]), nav: "factory" },
 ];
 
 function currentPath() {
@@ -124,7 +128,7 @@ function viewCommandCenter() {
 
   <div class="metrics">
     <div class="metric goldline"><div class="l">Portfolio revenue · MTD</div><div class="v mono" id="live-rev">${money(s.revenue_mtd)}</div><div class="d">target ${money(s.revenue_target)}</div></div>
-    <div class="metric"><div class="l">Needs you</div><div class="v mono">${s.pending_approvals.length}</div><div class="d warn">${s.pending_approvals.filter((r) => r.action_class === "send_contract" || r.action_class === "change_pricing").length} high-risk</div></div>
+    <div class="metric"><div class="l">Needs you</div><div class="v mono" id="live-needs">${s.pending_approvals.length}</div><div class="d warn">${s.pending_approvals.filter((r) => r.action_class === "send_contract" || r.action_class === "change_pricing").length} high-risk</div></div>
     <div class="metric"><div class="l">Companies green</div><div class="v mono">${green}<span class="thin" style="font-size:15px;color:var(--mut)">/${s.business_status.length}</span></div><div class="d">${esc(s.business_status.find((b) => b.status === "amber")?.name ?? "")} watch</div></div>
     <div class="metric"><div class="l">Agents on post</div><div class="v mono">${s.agent_counts.total - s.agent_counts.blocked}<span class="thin" style="font-size:15px;color:var(--mut)">/${s.agent_counts.total}</span></div><div class="d ${s.agent_counts.blocked ? "danger" : ""}">${s.agent_counts.blocked} blocked</div></div>
     <div class="metric"><div class="l">Blocked workflows</div><div class="v mono">${s.blocked_workflows.length}</div><div class="d">across the portfolio</div></div>
@@ -194,18 +198,59 @@ function wireLive() {
   loadLive();
 }
 async function loadLive() {
-  const api = localStorage.getItem("alfie_api"), token = localStorage.getItem("alfie_token");
   const slot = document.getElementById("live-banner");
-  if (!api || !token || !slot) return;
+  if (!svc.liveEnabled() || !slot) return;
   try {
-    const res = await fetch(api + "/mission-control", { headers: { Authorization: "Bearer " + token } });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json(); const s = data.snapshot || {};
+    const [{ snapshot: s = {} }, pending] = await Promise.all([
+      svc.getLiveMissionControl(),
+      svc.getLiveApprovals("pending"),
+    ]);
     const rev = document.getElementById("live-rev");
     if (rev && s.revenue_today != null) rev.textContent = money(s.revenue_today);
-    slot.innerHTML = `<div class="live-banner">Live · connected to ${esc(api)} — revenue tile is live; the rest is preview until Day-2 wiring.</div>`;
+    const needs = document.getElementById("live-needs");
+    if (needs) needs.textContent = pending.length;
+    slot.innerHTML = `<div class="live-banner">Live · connected to ${esc(localStorage.getItem("alfie_api"))} — revenue + needs-you tiles and the Approval Center queue are live; other cards are preview.</div>`;
   } catch (e) {
     slot.innerHTML = `<div class="preview-banner">Could not reach the API (${esc(e.message)}). Showing preview.</div>`;
+  }
+}
+
+// ---------- live approvals (the real gate) ----------
+function liveApprovalRow(r) {
+  return `<div class="apr">
+    <div class="body">
+      <div class="t">${esc(r.summary || `${r.method} ${r.route}`)}</div>
+      <div class="meta">${classPill(r.action_class ?? "other")} · <span class="mono">${esc(r.method)} ${esc(r.route)}</span> · requested by ${esc(r.requested_by)} · ${fmtTs(r.created_at)}</div>
+      <div class="impact">Deciding here consumes the real gate: an approval mints a one-time token bound to this exact route.</div>
+    </div>
+    <div class="btns">
+      <button class="btn danger" data-live-deny="${esc(r.id)}">Deny</button>
+      <button class="btn gold" data-live-approve="${esc(r.id)}">Approve</button>
+    </div>
+  </div>`;
+}
+async function mountLiveApprovals() {
+  const box = document.getElementById("live-apr");
+  if (!box) return;
+  if (!svc.liveEnabled()) {
+    box.innerHTML = `<div class="empty">Not connected — use “Connect live API” on the Command Center to decide real gate requests here.</div>`;
+    return;
+  }
+  try {
+    const pending = await svc.getLiveApprovals("pending");
+    box.innerHTML = pending.map(liveApprovalRow).join("") ||
+      '<div class="empty">Live queue clear — no parked gate requests.</div>';
+    box.querySelectorAll("[data-live-approve],[data-live-deny]").forEach((b) => b.addEventListener("click", async () => {
+      const approve = b.hasAttribute("data-live-approve");
+      const id = b.getAttribute(approve ? "data-live-approve" : "data-live-deny");
+      let reason;
+      if (!approve) { reason = window.prompt("Reason for denial:", ""); if (reason === null) return; }
+      b.disabled = true; b.textContent = "…";
+      try { await svc.decideLiveApproval(id, approve ? "approved" : "denied", reason); await mountLiveApprovals(); }
+      catch (e) { b.disabled = false; b.textContent = approve ? "Approve" : "Deny"; window.alert("Decision failed: " + e.message); }
+    }));
+  } catch (e) {
+    box.innerHTML = `<div class="empty">Could not load the live queue (${esc(e.message)}).</div>`;
   }
 }
 
@@ -363,13 +408,15 @@ function viewApprovals() {
   const pending = svc.getApprovalRequests("pending");
   const decided = svc.getApprovalRequests().filter((r) => r.status !== "pending")
     .sort((a, b) => ((a.decided_at ?? "") < (b.decided_at ?? "") ? 1 : -1));
-  onAfter(wireApprovalButtons);
+  onAfter(() => { wireApprovalButtons(); mountLiveApprovals(); });
   return `
   <div class="head"><div><div class="crumb">Approval Center · gate is deny-by-default</div><h1>Approvals</h1></div>
     <span class="chip">${pending.length} waiting</span></div>
   <div class="sub">Nothing external — sends, publishes, contracts, pricing — moves without your token (docs/APPROVAL_CENTER_SPEC.md).</div>
   ${preview}
-  <div class="sec">Waiting on you · money & contracts first</div>
+  <div class="sec">Live gate queue · from the connected API</div>
+  <div class="card" id="live-apr"><div class="empty">Checking the live queue…</div></div>
+  <div class="sec">Waiting on you · money & contracts first (preview)</div>
   <div class="card">${pending
     .sort((a, b) => (["send_contract", "change_pricing"].includes(b.action_class) ? 1 : 0) - (["send_contract", "change_pricing"].includes(a.action_class) ? 1 : 0))
     .map((r) => approvalRow(r, true)).join("") || '<div class="empty">Queue clear — the machine keeps working.</div>'}</div>
@@ -528,8 +575,159 @@ function mountBrain(canvasId, height) {
   canvas.addEventListener("mouseleave", () => { hover = -1; dragging = -1; });
 }
 
+// ---------- views: creation factories ----------
+const FACTORY_META = {
+  company: { icon: "◆", desc: "Idea → registered portfolio company: profile, model, ICP, offers, departments, SOPs, risks, launch plan.", sections: 14, generate: fac.generateCompanyPacket },
+  software: { icon: "⌘", desc: "Product → build-ready packet: brief, spec, schema, UI map, stack, plus Fable / Claude / OpenClaw prompt packets.", sections: 12, generate: fac.generateSoftwareBuildPacket },
+  gtm: { icon: "▲", desc: "Offer → launch: thesis, positioning, funnel, copy, sequences, calendar, KPIs, 30/60/90 — every send pre-gated.", sections: 13, generate: fac.generateGTMPacket },
+  media: { icon: "◉", desc: "Topic → episode engine: hooks, outline, clips, titles, SEO, repurposing map, avatar job placeholder.", sections: 17, generate: fac.generateMediaPacket },
+};
+const FACTORY_FORMS = {
+  company: [
+    { k: "name", label: "Company name", ph: "e.g. Oralia Retail" },
+    { k: "one_liner", label: "One-liner", ph: "what it does, for whom, in one sentence" },
+    { k: "industry", label: "Industry", ph: "e.g. consumer wellness" },
+    { k: "icp_hint", label: "Who is it for?", ph: "who feels the pain this week?" },
+    { k: "offer_hint", label: "Core offer", ph: "the wedge offer" },
+    { k: "price_hint", label: "Entry price", ph: "$—" },
+  ],
+  software: [
+    { k: "name", label: "Platform name", ph: "e.g. GrantTracker" },
+    { k: "purpose", label: "The job it does", ph: "one sentence" },
+    { k: "users_hint", label: "Day-one users", ph: "who uses it first?" },
+    { k: "platform", label: "Form factor", ph: "web / mobile / API" },
+    { k: "integrations_hint", label: "Integrations wishlist", ph: "optional" },
+  ],
+  gtm: [
+    { k: "offer_name", label: "Offer name", ph: "e.g. FounderOS Beta" },
+    { k: "promise", label: "The promise", ph: "the outcome, verbatim" },
+    { k: "icp_hint", label: "Target segment", ph: "role, situation, trigger" },
+    { k: "channels", label: "Channels (comma-sep)", ph: "email, social, podcast, partners, paid, community" },
+    { k: "price_point", label: "Price point", ph: "$—" },
+    { k: "revenue_target", label: "Revenue target", ph: "e.g. $10k MRR in 90 days" },
+    { k: "business_key", label: "Business key", ph: "e.g. founderos (optional)" },
+  ],
+  media: [
+    { k: "topic", label: "Topic", ph: "what is this piece about?" },
+    { k: "series_name", label: "Series", ph: "e.g. Decoded (or standalone)" },
+    { k: "audience_hint", label: "Audience", ph: "who must feel it was made for them?" },
+    { k: "sponsor_hint", label: "Sponsor / CTA", ph: "sponsor or house offer (optional)" },
+  ],
+};
+
+function packetRow(p) {
+  return `<div class="row"><div><a class="t" data-nav="/factory/packets/${p.id}" style="font-weight:600">${esc(p.name)}</a>
+    <div class="s">${esc(fac.FACTORY_KINDS[p.kind].factory)} · v${p.version} · ${p.sections.length} sections · ${fmtTs(p.created_at)}</div></div>
+    <span class="pill ${p.status === "submitted" ? "amber" : p.status === "draft" ? "gray" : "green"}">${esc(p.status)}</span></div>`;
+}
+
+function viewFactoryHub() {
+  const packets = fac.getPackets().slice().reverse();
+  return `
+  <div class="head"><div><div class="crumb">Creation modes · four factories</div><h1>Factory</h1></div>
+    <span class="chip">${packets.length} packet${packets.length === 1 ? "" : "s"}</span></div>
+  <div class="sub">Everything Alfy2 creates starts here: a structured, editable packet — deterministic templates now, AI generation later. Go-aheads route to the Approval Center; execution steps keep their own gates.</div>
+  ${preview}
+  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+    ${Object.entries(FACTORY_META).map(([kind, m]) => `<a class="acard" data-nav="/factory/${kind}">
+      <div class="top"><span style="font-size:22px;color:var(--gold)">${m.icon}</span><span class="pill navy">${esc(fac.FACTORY_KINDS[kind].factory)}</span></div>
+      <h3>${esc(fac.FACTORY_KINDS[kind].label)}</h3>
+      <div class="m" style="-webkit-line-clamp:3">${esc(m.desc)}</div>
+      <div class="na"><b>Produces</b>${m.sections}-section packet → Approval Center → export to agents/Obsidian</div></a>`).join("")}
+  </div>
+  <div class="sec">Recent packets</div>
+  <div class="card rows-tight">${packets.slice(0, 12).map(packetRow).join("") || '<div class="empty">Nothing created yet — pick a mode above.</div>'}</div>`;
+}
+
+function viewFactoryForm(kind) {
+  const meta = FACTORY_META[kind];
+  onAfter(() => {
+    document.getElementById("factory-generate").addEventListener("click", () => {
+      const input = {};
+      for (const f of FACTORY_FORMS[kind]) {
+        let v = document.getElementById("ff-" + f.k).value.trim();
+        if (f.k === "channels") v = v ? v.split(",").map((x) => x.trim()).filter(Boolean) : [];
+        if (v && v.length) input[f.k] = v;
+      }
+      const p = meta.generate(input);
+      go("/factory/packets/" + p.id);
+    });
+  });
+  return `
+  <div class="crumb"><a data-nav="/factory">Factory</a> / ${esc(fac.FACTORY_KINDS[kind].factory)}</div>
+  <div class="head"><h1>${esc(fac.FACTORY_KINDS[kind].label)}</h1><span class="chip">${meta.sections} sections</span></div>
+  <div class="sub">${esc(meta.desc)} Leave anything blank — it becomes an explicit “to answer” prompt, never an invented fact.</div>
+  <div class="card" style="max-width:660px"><div class="pad">
+    ${FACTORY_FORMS[kind].map((f) => `<div style="margin-bottom:13px">
+      <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;display:block;margin-bottom:4px">${esc(f.label)}</label>
+      <input id="ff-${f.k}" placeholder="${esc(f.ph)}" style="width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:9px;font-size:13.5px;font-family:var(--sans);background:var(--bg)" />
+    </div>`).join("")}
+    <div class="btns" style="margin-top:16px"><button class="btn gold" id="factory-generate">Generate packet</button>
+      <button class="btn" data-nav="/factory">Cancel</button></div>
+  </div></div>`;
+}
+
+function download(filename, content, type = "text/markdown") {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function viewPacket(id) {
+  const p = fac.getPacketById(id);
+  if (!p) return `<div class="empty">Unknown packet “${esc(id)}”. <a data-nav="/factory" style="color:var(--gold)">Back to the factory</a></div>`;
+  const meta = fac.FACTORY_KINDS[p.kind];
+  const versions = fac.getPacketVersions(id).slice().reverse();
+  const unresolved = fac.exportPacketForAgent(id).unresolved;
+  const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  onAfter(() => {
+    document.getElementById("pkt-submit")?.addEventListener("click", () => { fac.submitPacketForApproval(id); render(); });
+    document.getElementById("pkt-md").addEventListener("click", () => download(`${slug}.md`, fac.exportPacketToMarkdown(id)));
+    document.getElementById("pkt-obsidian").addEventListener("click", () => download(`${slug}.obsidian.md`, fac.exportPacketToObsidian(id)));
+    document.getElementById("pkt-agent").addEventListener("click", () => {
+      const target = window.prompt("Export for which runner? (fable / claude / openclaw)", "claude");
+      if (target === null) return;
+      download(`${slug}.${target}.packet.json`, JSON.stringify(fac.exportPacketForAgent(id, target), null, 2), "application/json");
+    });
+    outlet.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => {
+      const key = b.dataset.edit;
+      const box = document.getElementById("sec-" + key);
+      const ta = box.querySelector("textarea");
+      if (ta) { fac.updatePacketSection(id, key, ta.value); render(); return; }
+      const s = fac.getPacketById(id).sections.find((x) => x.key === key);
+      box.innerHTML = `<textarea style="width:100%;min-height:170px;padding:10px 12px;border:1px solid var(--gold);border-radius:9px;font-size:12.5px;font-family:var(--sans);background:#fffdf7">${esc(s.content)}</textarea>`;
+      b.textContent = "Save";
+    }));
+  });
+  return `
+  <div class="crumb"><a data-nav="/factory">Factory</a> / ${esc(meta.factory)}</div>
+  <div class="head"><h1>${esc(p.name)}</h1>
+    <div class="btns"><span class="pill navy">v${p.version}</span><span class="pill ${p.status === "submitted" ? "amber" : "gray"}">${esc(p.status)}</span></div></div>
+  <div class="sub">${esc(meta.label)} · ${p.sections.length} sections · created ${fmtTs(p.created_at)}${p.business_key ? ` · <a data-nav="/portfolio/${esc(p.business_key)}" style="color:var(--gold);font-weight:600">${esc(svc.getCompanyById(p.business_key)?.name ?? p.business_key)}</a>` : ""}</div>
+  <div class="nba"><div><div class="k">${p.status === "draft" ? "Go-ahead" : "Status"}</div>
+    <div class="a">${p.status === "draft" ? `Submit for approval — ${esc(meta.approval_note)}.` : `Submitted to the Approval Center (${esc(p.approval_id ?? "")}). Execution steps keep their own gates.`}</div></div>
+    <div class="go btns">
+      ${p.status === "draft" ? `<button class="btn gold" id="pkt-submit">Submit for approval</button>` : ""}
+      <button class="btn" id="pkt-md" style="background:transparent;color:#f4efe4;border-color:rgba(233,228,216,.35)">Markdown</button>
+      <button class="btn" id="pkt-obsidian" style="background:transparent;color:#f4efe4;border-color:rgba(233,228,216,.35)">Obsidian</button>
+      <button class="btn" id="pkt-agent" style="background:transparent;color:#f4efe4;border-color:rgba(233,228,216,.35)">Agent JSON</button>
+    </div></div>
+  ${unresolved.length ? `<div class="card" style="margin-top:14px;border-color:var(--gold)"><div class="cardhead"><span class="t">Open questions · ${unresolved.length}</span></div>
+    <ul class="list">${unresolved.map((q) => `<li><b>${esc(q.section)}</b>: ${esc(q.question)}</li>`).join("")}</ul></div>` : ""}
+  <div class="sec">Packet sections · click edit to refine (each save = new version)</div>
+  ${p.sections.map((s) => `<div class="card" style="margin-bottom:12px"><div class="cardhead"><span class="t">${esc(s.title)}</span>
+      <button class="btn" data-edit="${esc(s.key)}" style="padding:3px 11px;font-size:11px">Edit</button></div>
+    <div class="pad" id="sec-${esc(s.key)}" style="font-size:12.5px;white-space:pre-wrap;font-family:var(--sans)">${esc(s.content)}</div></div>`).join("")}
+  <div class="sec">Version history</div>
+  <div class="card rows-tight">${versions.map((v) => `<div class="row"><span class="t">v${v.version} — ${esc(v.note)}</span><span class="s">${fmtTs(v.created_at)}</span></div>`).join("")}</div>`;
+}
+
 // ---------- boot ----------
 document.getElementById("btn-reset")?.addEventListener("click", () => {
-  if (window.confirm("Reset all local demo decisions and logs to the seed state?")) { svc.resetLocalState(); render(); }
+  if (window.confirm("Reset all local demo decisions, logs, and factory packets to the seed state?")) {
+    svc.resetLocalState(); fac.resetFactoryState(); render();
+  }
 });
 render();
