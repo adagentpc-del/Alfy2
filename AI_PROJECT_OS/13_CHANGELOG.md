@@ -6,6 +6,15 @@ high-level rollup. After completing work, append an entry here AND a detailed on
 Format per entry: **what changed · why · files · risks · next recommendation.**
 
 ## Rollup (newest first)
+- **Sovereign Product Suite (directive: own the product, not the wrapper):** four native builds
+  replacing rented SaaS — **Divini Boards** (`/boards`, audited kanban, zero external deps),
+  **Divini CRM Phase 1** (`/crm`, consent-first contacts, validated pipelines, draft-only outreach
+  behind consent + send_message double gate, deal→Divini-Pay bridge), **Divini Social** (`/social`,
+  per-platform validation, publish_public-gated posts, official platform APIs with YOUR keys —
+  manual packets until keys, middleman SaaS eliminated), **Divini Avatar Engine** (self-hosted
+  4-stage render stack: XTTS → LivePortrait/SadTalker → ffmpeg → our GPU worker; likeness never
+  leaves our infrastructure; hash-bound packets). Honesty map + kill-list:
+  `docs/SOVEREIGN_PRODUCT_SUITE.md`; registry now 19 platforms. Smokes: boards/crm/social + studio §8.
 - **Data custody + Pg persistence + doc generator + blind-spot closers:** module state now has a
   Postgres home (migration 0244: upsert-only `web_module_state` KV + append-only `vault_snapshots`,
   RLS, server-side credential refusal; `/state/*` + `/vault/snapshots*` routes); **/vault** screen =

@@ -1,3 +1,35 @@
+### Added — Sovereign Product Suite: our own Trello, GoHighLevel, social scheduler, and HeyGen
+- **Directive (2026-07-03):** build our own versions — no other company's service in the path. Full
+  honesty map (what's 100% ours vs the irreducible pipes: platform APIs, carrier SMS wire, a GPU):
+  `docs/SOVEREIGN_PRODUCT_SUITE.md`.
+- **Divini Boards** (`/boards`, `apps/web/assets/boards.mjs`, `pnpm boards:smoke`): native kanban —
+  boards/lists/cards with labels, due dates, agent/founder assignees, checklists, comments, archive;
+  moves audited to the action log, Done-stamping, Command-Center rollup; seeded founder + Move Mi
+  boards. Zero external dependencies by design.
+- **Divini CRM, Phase 1** (`/crm`, `apps/web/assets/crm.mjs`, `pnpm crm:smoke`): contacts with
+  **consent as a first-class field** (recording requires a basis; no consent → outreach refuses),
+  pipelines with validated stages + history, deals, activities, follow-up queue, tags; outreach is
+  **drafts only** behind the double gate (consent, then `send_message` approval) with honest
+  transports — email via our own Postal relay (Forge P6), SMS via a rented carrier wire (regulated
+  pipe; the software is ours); won deals bridge to Divini Pay (ACH-first payment-link packet).
+- **Divini Social** (`/social`, `apps/web/assets/social.mjs`, `pnpm social:smoke`): composer with
+  per-platform validation (280 for X, media rules for IG/TikTok…), queue-slot rhythm, 7/14-day
+  calendar projection, Media-Studio import, results ledger; every post `publish_public`-gated with
+  the exact copy in the approval evidence; execution via **official platform APIs with your keys**
+  (vault refs) — until keys exist, approved posts export per-channel manual packets, never a fake
+  "posted". The middleman scheduler SaaS is eliminated; the platform key is the only external touch.
+- **Divini Avatar Engine** (`media-studio.mjs` §engine, Avatar Studio card, `pnpm studio:smoke`
+  scenario 8, `docs/AVATAR_RENDER_STACK.md`): the self-hosted HeyGen replacement — 4-stage
+  open-source pipeline (XTTS-v2/Piper TTS → LivePortrait/SadTalker → ffmpeg watermark+assembly →
+  our GPU worker); avatar jobs now default to `divini-avatar-engine (self-hosted)`;
+  `generateRenderWorkerPacket()` produces the worker's job spec under the same hash-bound approval
+  (edits kill it) with the sovereignty guardrail explicit: **likeness/voice assets never leave our
+  infrastructure; the worker env carries no provider keys**. Governance (consent, review gate,
+  usage log) unchanged — it was built vendor-agnostic for exactly this swap.
+- **Registry:** the four products are seeded as platforms 16–19 on the sovereign ledger (owners,
+  risks, next actions); readiness check updated (19 × 24 fields). Reset-demo now clears the new
+  modules; nav gains Boards / CRM / Social.
+
 ### Added — Data custody + Pg persistence + registry doc generator + blind-spot closers
 - **Postgres persistence for the module layer (migration `0244_web_module_state.sql`):** two tables —
   `web_module_state` (upsert-only KV: one row per namespaced module document, identity `(tenant_id,

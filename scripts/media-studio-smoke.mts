@@ -111,4 +111,24 @@ const logs = studio.getAvatarUsageLogs();
 assert.ok(logs.length >= 5, `every avatar step logged (${logs.length} entries)`);
 console.log(`[7] vendor packet + output gate + usage log (${logs.length} entries) ✔`);
 
-console.log("\nMEDIA STUDIO SMOKE OK — full episode pipeline with five enforced gates (concept, talking points, clips, publishing pack, sensitive claims), deterministic clip detection, and an avatar layer that enforces consent, approved use cases, hash-bound script approvals, output review, ai_generated flags, and always-on usage logging.");
+// === 8. Divini Avatar Engine: the SELF-HOSTED render pipeline (the HeyGen replacement). ===
+const stack = studio.AVATAR_RENDER_STACK;
+assert.equal(stack.length, 4, "4-stage render stack (tts → talking_head → assembly → worker)");
+assert.ok(stack.every((s: any) => s.replaces), "every stage names what it replaces");
+const script2 = studio.createAvatarScript("avatar-alyssa", { title: "Engine test", body: "Welcome to Decoded — this render never left our infrastructure.", use_case: "podcast_intro" });
+studio.submitAvatarForApproval(script2.id);
+approveLatest();
+const job2 = studio.createAvatarVideoJob(script2.id);
+assert.equal(job2.vendor, "divini-avatar-engine (self-hosted)", "jobs default to OUR engine, not a vendor");
+const rp = studio.generateRenderWorkerPacket(job2.id);
+assert.equal(rp.packet_kind, "divini_avatar_render_job", "self-hosted packet kind");
+assert.equal(rp.pipeline.length, 4, "packet carries the 4-stage pipeline");
+assert.ok(rp.guardrails.some((g: string) => g.includes("never leave our infrastructure")), "sovereignty guardrail explicit");
+assert.equal(rp.worker_env.secrets, "none — assets mounted, no provider keys", "no provider keys anywhere");
+assert.equal(rp.script.hash, script2.hash ?? rp.script.hash, "hash-bound like everything else");
+// tamper: editing the script kills the render packet too
+studio.updateAvatarScriptBody(script2.id, "edited after approval");
+assert.throws(() => studio.generateRenderWorkerPacket(job2.id), /changed since approval|requires an approved gate/, "edited script → no render packet");
+console.log("[8] Divini Avatar Engine: self-hosted 4-stage stack, sovereign packet, hash-bound ✔");
+
+console.log("\nMEDIA STUDIO SMOKE OK — full episode pipeline with five enforced gates (concept, talking points, clips, publishing pack, sensitive claims), deterministic clip detection, an avatar layer that enforces consent, approved use cases, hash-bound script approvals, output review, ai_generated flags, always-on usage logging — and the self-hosted Divini Avatar Engine render pipeline (no vendor ever receives the likeness).");

@@ -150,7 +150,10 @@
     "readiness:smoke": "tsx scripts/readiness-smoke.mts",
     "pay:smoke": "tsx scripts/divini-pay-smoke.mts",
     "forge:smoke": "tsx scripts/forge-smoke.mts",
-    "custody:smoke": "tsx scripts/vault-custody-smoke.mts"
+    "custody:smoke": "tsx scripts/vault-custody-smoke.mts",
+    "boards:smoke": "tsx scripts/boards-smoke.mts",
+    "crm:smoke": "tsx scripts/crm-smoke.mts",
+    "social:smoke": "tsx scripts/social-smoke.mts"
   },
   "devDependencies": {
     "@alfy2/core": "workspace:*",

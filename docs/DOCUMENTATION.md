@@ -100,6 +100,8 @@ How documentation itself is organized, so it stays trustworthy as the system gro
 | `OPERATOR_SECURITY.md` | Hardening the human front door: ordered hardening list (hardware keys first), token hygiene, standing code-enforced rules, act-now signals | the auth layer or threat model changes |
 | `INCIDENT_RUNBOOK.md` | The 2 a.m. page: pause → deny → rotate in five minutes, per-incident do/don't table, postmortem habit, quarterly drill calendar | an incident teaches something |
 | `IP_ENTITY_HYGIENE.md` | Who owns the machine: assignment target, license-down model per entity (foundation-aware), contributor coverage, trademark checklist — analysis-for-review, counsel-gated | after the counsel session |
+| `SOVEREIGN_PRODUCT_SUITE.md` | The own-the-product directive: Divini Boards/CRM/Social/Avatar Engine replacing Trello/GHL/schedulers/HeyGen — honest sovereignty map (what's 100% ours vs irreducible pipes), shared house rules, phase state, subscription kill-list | a product phase advances |
+| `AVATAR_RENDER_STACK.md` | The self-hosted HeyGen replacement: 4-stage open-source pipeline (XTTS → LivePortrait/SadTalker → ffmpeg → GPU worker), no-vendor guarantee, build order, governance unchanged | a stage is pinned or deployed |
 | `FIVE_DAY_COMPLETION_PLAN.md` | Five days from audit state to demonstrable OS: deploy → acting dashboard → real data flow → orchestrator v0 → hardening | plan revision |
 | `SECURITY.md` | Security baseline | security posture changes |
 | `GLOSSARY.md` | What terms mean | a term is added/redefined |
