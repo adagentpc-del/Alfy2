@@ -73,7 +73,7 @@ assert.ok(forge.SECTIONS.filter((s: any) => s.live).length >= 6 && forge.SECTION
 console.log("[5] 14-agent desk (8 fields each) · 17 sections with honest phase labels ✔");
 
 // === 6. Platform Registry (MVP feature #1): 15 platforms × 24 fields, switchable, plannable. ===
-assert.equal(forge.getRegistry().length, 15, "15 seed platforms");
+assert.equal(forge.getRegistry().length, 19, "19 seed platforms (15 + the sovereign product suite)");
 assert.equal(forge.REGISTRY_FIELDS.length, 24, "24 registry fields");
 for (const p of forge.getRegistry()) for (const f of forge.REGISTRY_FIELDS) assert.ok((p as any)[f] !== undefined && (p as any)[f] !== null, `${p.key}.${f} present`);
 const mm = forge.getRegistryPlatform("move_mi");

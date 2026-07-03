@@ -505,7 +505,7 @@ export function createAvatarVideoJob(scriptId, input = {}) {
   const job = put("avatar_jobs", {
     id: newId("avjob"), script_id: scriptId, avatar_profile_id: s.avatar_profile_id,
     voice_profile_id: s.voice_profile_id, episode_id: s.episode_id,
-    format: input.format ?? "9:16 · 60s max", vendor: input.vendor ?? "heygen-class (connector blueprint)",
+    format: input.format ?? "9:16 · 60s max", vendor: input.vendor ?? "divini-avatar-engine (self-hosted)",
     status: "approved_for_generation", ai_generated: true,
     output_ref: null, output_approval_id: null, created_at: clock().toISOString(),
   });
@@ -533,6 +533,50 @@ export function generateAvatarVendorPacket(jobId) {
       "consent is revocable — purge assets on revocation notice",
     ],
     disclosure: { ai_generated: true, internal_flag: "alfy2:ai_generated_content" },
+  };
+}
+
+// --- Divini Avatar Engine: the SELF-HOSTED render stack (the HeyGen replacement) -------------------
+// Directive (2026-07-03): own the product. The governance above (consent, hash-bound scripts, output
+// review, usage log) was built vendor-agnostic on purpose — this swaps the third-party vendor for
+// our own GPU worker running open-source models. Your likeness never leaves infrastructure you
+// control. Full stack + phased rollout: docs/AVATAR_RENDER_STACK.md.
+export const AVATAR_RENDER_STACK = [
+  { stage: "tts", tool: "XTTS-v2 (Coqui) or Piper", license: "open source", replaces: "ElevenLabs/HeyGen voice", note: "voice cloned from Alyssa's consent-recorded samples; models + weights live on our box" },
+  { stage: "talking_head", tool: "LivePortrait / SadTalker (evaluate both in R&D sandbox)", license: "open source", replaces: "HeyGen avatar render", note: "driven by the TTS audio + the consented likeness reference" },
+  { stage: "assembly", tool: "ffmpeg", license: "open source", replaces: "vendor post-processing", note: "captions burn-in, ai_generated watermark + metadata flag, format presets (9:16/1:1/16:9)" },
+  { stage: "worker", tool: "GPU job worker (queue → render → return)", license: "ours", replaces: "vendor cloud", note: "rented GPU box or local; jobs pulled from the queue, outputs returned for the review gate — deploy via Alfy Forge (Coolify, P3)" },
+];
+
+/**
+ * The self-hosted twin of the vendor packet: a complete render-job spec for OUR worker. Same
+ * hash-bound approval, same guardrails, plus the model pipeline. No third party ever receives the
+ * likeness, the voice, or the script.
+ */
+export function generateRenderWorkerPacket(jobId) {
+  const j = getAvatarJobById(jobId);
+  if (!j) throw new Error(`job ${jobId} not found`);
+  const s = getAvatarScriptById(j.script_id);
+  requireApproved(s.approval_id, "avatar generation (script gate)");
+  if (scriptHash(s.body) !== s.hash) throw new Error("script changed since approval — resubmit for a new token");
+  const p = getAvatarProfiles().find((x) => x.id === j.avatar_profile_id);
+  const v = getVoiceProfiles().find((x) => x.id === j.voice_profile_id);
+  logAvatarUsage(jobId, "Self-hosted render packet exported (Divini Avatar Engine)", j.avatar_profile_id);
+  return {
+    packet_kind: "divini_avatar_render_job", job_id: j.id, engine: "divini-avatar-engine",
+    pipeline: AVATAR_RENDER_STACK.map((x) => ({ stage: x.stage, tool: x.tool })),
+    persona: { likeness_ref: p.likeness_ref, voice_ref: v?.voice_ref ?? null, consent_ref: p.consent.document_ref },
+    script: { title: s.title, body: s.body, hash: s.hash, approval_id: s.approval_id },
+    format: j.format,
+    guardrails: [
+      "render only the approved script — hash-verified, no additions or ad-libs",
+      "likeness/voice assets never leave our infrastructure — no third-party upload, ever",
+      "ai_generated watermark + metadata flag embedded at assembly (non-optional)",
+      "output returns to the review gate before any publish",
+      "consent is revocable — purge weights, samples, and outputs on revocation notice",
+    ],
+    disclosure: { ai_generated: true, internal_flag: "alfy2:ai_generated_content" },
+    worker_env: { gpu: "1× 24GB-class (rented or owned)", secrets: "none — assets mounted, no provider keys", deploy: "Alfy Forge packet (Coolify)" },
   };
 }
 

@@ -11,6 +11,9 @@ import * as ready from "./readiness.mjs";
 import * as pay from "./divini-pay.mjs";
 import * as forge from "./forge.mjs";
 import * as vault from "./vault.mjs";
+import * as boards from "./boards.mjs";
+import * as crm from "./crm.mjs";
+import * as social from "./social.mjs";
 
 const outlet = document.getElementById("outlet");
 const HASH_MODE = location.protocol === "file:";
@@ -49,6 +52,10 @@ const routes = [
   { re: /^\/forge\/registry$/, view: viewForgeRegistry, nav: "forge" },
   { re: /^\/life$/, view: viewLife, nav: "life" },
   { re: /^\/vault$/, view: viewVault, nav: "vault" },
+  { re: /^\/boards$/, view: viewBoards, nav: "boards" },
+  { re: /^\/boards\/([\w-]+)$/, view: (m) => viewBoard(m[1]), nav: "boards" },
+  { re: /^\/crm$/, view: viewCrm, nav: "crm" },
+  { re: /^\/social$/, view: viewSocial, nav: "social" },
 ];
 
 function currentPath() {
@@ -1161,11 +1168,11 @@ function viewAvatarCenter() {
     on("[data-scr-submit]", (b) => studio.submitAvatarForApproval(b.dataset.scrSubmit));
     on("[data-scr-job]", (b) => studio.createAvatarVideoJob(b.dataset.scrJob));
     on("[data-job-packet]", (b) => {
-      const pkt = studio.generateAvatarVendorPacket(b.dataset.jobPacket);
-      download(`avatar-job-${pkt.job_id}.json`, JSON.stringify(pkt, null, 2), "application/json");
+      const pkt = studio.generateRenderWorkerPacket(b.dataset.jobPacket);
+      download(`divini-render-job-${pkt.job_id}.json`, JSON.stringify(pkt, null, 2), "application/json");
     });
     on("[data-job-output]", (b) => {
-      const ref = window.prompt("Output reference from the vendor (URL or asset id):", "vendor://render/");
+      const ref = window.prompt("Output reference from the render worker (URL or asset id):", "engine://render/");
       if (ref) studio.recordAvatarOutput(b.dataset.jobOutput, ref);
     });
     on("[data-job-review]", (b) => studio.submitAvatarOutputForReview(b.dataset.jobReview));
@@ -1201,6 +1208,11 @@ function viewAvatarCenter() {
         <span class="k">Use cases</span><span>${p.approved_use_cases.map((u) => `<span class="pill navy" style="margin:1px 3px 1px 0">${esc(u)}</span>`).join("")}</span>
         <span class="k">Hard rules</span><span>no third-party likeness/voice · no deceptive impersonation · every job logged · every output flagged AI-generated</span>
       </div></div>
+      <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">Divini Avatar Engine · self-hosted</span><span class="pill gold">ours</span></div>
+        <div class="rows-tight" style="padding-bottom:6px">
+          ${studio.AVATAR_RENDER_STACK.map((s) => `<div class="row"><div><div class="t">${esc(s.stage.replace(/_/g, " "))} · ${esc(s.tool)}</div><div class="s">${esc(s.note)}</div></div><span class="pill gray">${esc(s.license)}</span></div>`).join("")}
+          <div class="row" style="border-top:1px solid var(--line)"><span class="t"><b>Replaces HeyGen</b></span><span class="s">your likeness never leaves your infrastructure — docs/AVATAR_RENDER_STACK.md</span></div>
+        </div></div>
       <div class="card" style="margin-top:16px"><div class="cardhead"><span class="t">New script</span></div><div class="pad">
         <select id="scr-profile" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:12.5px">${profiles.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
         <select id="scr-usecase" style="width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;margin-bottom:8px;background:var(--bg);font-family:var(--sans);font-size:12.5px">${studio.APPROVED_USE_CASES.map((u) => `<option>${esc(u)}</option>`).join("")}</select>
@@ -1775,11 +1787,282 @@ function viewVault() {
   </div></div>`;
 }
 
+// ---------- views: Divini Boards (the native Trello — docs/SOVEREIGN_PRODUCT_SUITE.md) ----------
+const labelPill = (id) => {
+  const l = boards.LABELS.find((x) => x.id === id);
+  return l ? `<span class="pill ${l.color === "gold" ? "gold" : l.color === "navy" ? "navy" : l.color === "red" ? "red" : l.color === "amber" ? "amber" : l.color === "green" ? "green" : "gray"}">${esc(l.name)}</span>` : "";
+};
+function viewBoards() {
+  const all = boards.getBoards();
+  const sum = boards.boardSummary();
+  onAfter(() => {
+    document.getElementById("bd-new")?.addEventListener("click", () => tryDo(() => {
+      const name = window.prompt("Board name:", "");
+      if (!name) return;
+      const b = boards.createBoard(name);
+      go(`/boards/${b.id}`);
+    }));
+  });
+  return `
+  <div class="head"><div><div class="crumb">Divini Boards · ours, end to end</div><h1>Boards</h1></div>
+    <div class="btns"><button class="btn gold" id="bd-new">New board</button></div></div>
+  <div class="sub">The Trello replacement — kanban that lives inside the command center, linked to agents, companies, and the action log. No third-party service in the path, ever.</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `${sum.boards} boards · ${sum.open_cards} open cards` },
+    { k: "Priority", v: sum.overdue.length ? `${sum.overdue.length} overdue` : "nothing overdue" },
+    { k: "Owner", v: "Chief Operations Officer Agent" },
+    { k: "Blocked", v: `${sum.waiting.length} waiting on someone` },
+    { k: "Approvals", v: "none — internal work tracking" },
+    { k: "Revenue", v: "replaces: Trello subscription" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: sum.due_soon[0] ? `Next due: “${sum.due_soon[0].title}”` : "Work the Doing columns left to right.", cls: "decision" },
+  ])}
+  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
+    ${all.map((b) => {
+      const open = b.lists.flatMap((l) => l.cards).filter((c) => !c.completed_at).length;
+      const done = b.lists.flatMap((l) => l.cards).filter((c) => c.completed_at).length;
+      return `<div class="acard" data-nav="/boards/${b.id}" style="cursor:pointer">
+        <div class="top"><span class="pill navy">${b.lists.length} lists</span>${b.business_id ? `<span class="pill gold">${esc(svc.getCompanyById(b.business_id)?.name ?? b.business_id)}</span>` : `<span class="pill gray">founder</span>`}</div>
+        <h3>${esc(b.name)}</h3>
+        <div class="s" style="color:var(--mut)">${open} open · ${done} done</div>
+        <div style="font-size:11.5px;margin-top:8px;border-top:1px solid var(--line);padding-top:7px">
+          ${b.lists.map((l) => `<div style="display:flex;justify-content:space-between"><span>${esc(l.name)}</span><b class="mono">${l.cards.length}</b></div>`).join("")}
+        </div>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function viewBoard(id) {
+  const b = boards.getBoard(id);
+  if (!b) return `<div class="empty">Board not found. <a data-nav="/boards">Back to boards</a></div>`;
+  onAfter(() => {
+    outlet.querySelectorAll("[data-card-move]").forEach((sel) => sel.addEventListener("change", () => tryDo(() => {
+      if (sel.value) { boards.moveCard(id, sel.dataset.cardMove, sel.value); render(); }
+    })));
+    outlet.querySelectorAll("[data-add-card]").forEach((btn) => btn.addEventListener("click", () => tryDo(() => {
+      const title = window.prompt("Card title:", "");
+      if (!title) return;
+      boards.addCard(id, btn.dataset.addCard, title);
+      render();
+    })));
+    document.getElementById("bd-addlist")?.addEventListener("click", () => tryDo(() => {
+      const name = window.prompt("List name:", "");
+      if (!name) return;
+      boards.addList(id, name); render();
+    }));
+    outlet.querySelectorAll("[data-card-archive]").forEach((btn) => btn.addEventListener("click", () => tryDo(() => {
+      boards.archiveCard(id, btn.dataset.cardArchive); render();
+    })));
+    outlet.querySelectorAll("[data-chk]").forEach((cb) => cb.addEventListener("change", () => tryDo(() => {
+      boards.toggleChecklistItem(id, cb.dataset.card, cb.dataset.chk); render();
+    })));
+  });
+  return `
+  <div class="crumb"><a data-nav="/boards">Boards</a> / ${esc(b.name)}</div>
+  <div class="head"><h1>${esc(b.name)}</h1><div class="btns"><button class="btn" id="bd-addlist">Add list</button></div></div>
+  ${preview}
+  <div style="display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding-bottom:12px">
+    ${b.lists.map((l) => `
+      <div class="card" style="min-width:290px;max-width:290px;flex-shrink:0">
+        <div class="cardhead"><span class="t">${esc(l.name)}</span><span class="pill gray">${l.cards.length}</span></div>
+        <div class="pad" style="padding-top:6px">
+          ${l.cards.map((c) => `
+            <div style="border:1px solid var(--line2);border-radius:10px;padding:10px 12px;margin-bottom:9px;background:var(--bg)">
+              <div style="font-weight:600;font-size:12.5px;${c.completed_at ? "text-decoration:line-through;color:var(--mut)" : ""}">${esc(c.title)}</div>
+              ${c.description ? `<div class="s" style="font-size:11px;color:var(--mut);margin-top:3px">${esc(c.description)}</div>` : ""}
+              <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">${c.labels.map(labelPill).join("")}
+                ${c.assignee ? `<span class="pill gray">${esc(c.assignee === "alyssa" ? "Alyssa" : svc.getAgentById(c.assignee)?.title ?? c.assignee)}</span>` : ""}
+                ${c.due ? `<span class="pill amber">due ${esc(c.due.slice(0, 10))}</span>` : ""}</div>
+              ${c.checklist.length ? `<div style="margin-top:7px;font-size:11.5px">${c.checklist.map((it) => `<label style="display:block;cursor:pointer"><input type="checkbox" data-card="${c.id}" data-chk="${it.id}" ${it.done ? "checked" : ""}/> <span style="${it.done ? "text-decoration:line-through;color:var(--mut)" : ""}">${esc(it.text)}</span></label>`).join("")}</div>` : ""}
+              <div style="margin-top:8px;display:flex;gap:6px;align-items:center">
+                <select data-card-move="${c.id}" style="flex:1;font-size:10.5px;padding:3px 6px;border:1px solid var(--line2);border-radius:7px;background:var(--card)">
+                  <option value="">Move to…</option>
+                  ${b.lists.filter((x) => x.id !== l.id).map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}
+                </select>
+                <button class="btn" data-card-archive="${c.id}" style="padding:3px 8px;font-size:10px">Archive</button>
+              </div>
+            </div>`).join("") || '<div class="empty" style="padding:12px 0">Empty.</div>'}
+          <button class="btn" data-add-card="${l.id}" style="width:100%;padding:6px;font-size:11px">+ Add card</button>
+        </div>
+      </div>`).join("")}
+  </div>`;
+}
+
+// ---------- view: Divini CRM (the native GoHighLevel — Phase 1) ----------
+function viewCrm() {
+  const sum = crm.crmSummary();
+  const pipes = crm.getPipelines();
+  const contacts = crm.getContacts();
+  const followups = crm.getFollowUps();
+  onAfter(() => {
+    wireApprovalButtons();
+    document.getElementById("crm-addcontact")?.addEventListener("click", () => tryDo(() => {
+      const name = window.prompt("Contact name:", "");
+      if (!name) return;
+      crm.createContact({ name, source: "manual" });
+      render();
+    }));
+    outlet.querySelectorAll("[data-deal-stage]").forEach((sel) => sel.addEventListener("change", () => tryDo(() => {
+      if (sel.value) { crm.moveDealStage(sel.dataset.dealStage, sel.value); render(); }
+    })));
+    outlet.querySelectorAll("[data-compose]").forEach((btn) => btn.addEventListener("click", () => tryDo(() => {
+      const c = crm.getContact(btn.dataset.compose);
+      const channel = c.consent.email ? "email" : c.consent.sms ? "sms" : null;
+      if (!channel) { window.alert(`No recorded consent for ${c.name} — record consent (with its basis) before any outreach. This is the law of the CRM.`); return; }
+      const body = window.prompt(`Draft ${channel} to ${c.name} (parks as a send_message approval — nothing sends from here):`, "");
+      if (!body) return;
+      const d = crm.composeOutreach(c.id, channel, "", body);
+      window.alert(`Draft ${d.id} parked in the Approval Center. Transport when approved: ${d.transport}.`);
+      render();
+    })));
+    outlet.querySelectorAll("[data-consent]").forEach((btn) => btn.addEventListener("click", () => tryDo(() => {
+      const basis = window.prompt("How was consent given? (recorded as the basis — required)", "");
+      if (!basis) return;
+      crm.recordConsent(btn.dataset.consent, "email", true, basis);
+      render();
+    })));
+    outlet.querySelectorAll("[data-fu-done]").forEach((btn) => btn.addEventListener("click", () => tryDo(() => {
+      crm.completeFollowUp(btn.dataset.fuDone); render();
+    })));
+  });
+  return `
+  <div class="head"><div><div class="crumb">Divini CRM · ours, end to end</div><h1>CRM</h1></div>
+    <div class="btns"><button class="btn gold" id="crm-addcontact">Add contact</button></div></div>
+  <div class="sub">The GoHighLevel replacement, Phase 1: contacts with consent as law, pipelines, deals, follow-ups. Outreach only ever drafts here — email rides your own relay (Forge P6), SMS rents the carrier wire; the software is yours.</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `${sum.contacts} contacts · ${sum.open_deals} open deals` },
+    { k: "Priority", v: followups[0] ? `follow-up: ${crm.getContact(followups[0].contact_id)?.name}` : "pipeline is worked" },
+    { k: "Owner", v: "Chief Revenue Officer Agent" },
+    { k: "Blocked", v: sum.consent_gaps ? `${sum.consent_gaps} contacts lack consent — no outreach to them` : "no" },
+    { k: "Approvals", v: `${sum.drafts_pending} outreach drafts waiting` },
+    { k: "Revenue", v: `pipeline ${money(sum.pipeline_value_usd)} · replaces: GHL subscription` },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: sum.drafts_pending ? "Approve or revise the outreach drafts — speed wins deals." : "Move the oldest Quoted deal to Follow-up.", cls: "decision" },
+  ])}
+  ${pipes.map((p) => {
+    const deals = crm.getDeals({ pipeline_id: p.id });
+    return `<div class="sec">${esc(p.name)}</div>
+    <div style="display:flex;gap:12px;align-items:flex-start;overflow-x:auto;padding-bottom:8px">
+      ${p.stages.map((stage) => {
+        const inStage = deals.filter((d) => d.stage === stage);
+        return `<div class="card" style="min-width:230px;max-width:230px;flex-shrink:0">
+          <div class="cardhead"><span class="t" style="font-size:11px">${esc(stage)}</span><span class="pill gray">${inStage.length}</span></div>
+          <div class="pad" style="padding-top:4px">
+            ${inStage.map((d) => `<div style="border:1px solid var(--line2);border-radius:9px;padding:8px 10px;margin-bottom:7px;background:var(--bg)">
+              <div style="font-weight:600;font-size:12px">${esc(d.title)}</div>
+              <div class="s" style="font-size:10.5px;color:var(--mut)">${esc(crm.getContact(d.contact_id)?.name ?? "")} · <b class="mono">${money(d.value_usd)}</b></div>
+              <select data-deal-stage="${d.id}" style="width:100%;margin-top:6px;font-size:10px;padding:2px 5px;border:1px solid var(--line2);border-radius:6px;background:var(--card)">
+                <option value="">Move stage…</option>
+                ${p.stages.filter((s) => s !== stage).map((s) => `<option>${esc(s)}</option>`).join("")}
+              </select>
+            </div>`).join("") || '<div class="empty" style="padding:8px 0;font-size:11px">—</div>'}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("")}
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="cardhead"><span class="t">Contacts</span></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+        ${contacts.map((c) => `<div class="row"><div><div class="t">${esc(c.name)}</div>
+          <div class="s">${esc(c.source)} · ${c.tags.map((t) => `#${esc(t)}`).join(" ")}${c.business_id ? ` · ${esc(svc.getCompanyById(c.business_id)?.name ?? c.business_id)}` : ""}</div></div>
+          <span style="display:flex;gap:5px;align-items:center">
+            ${c.consent.email || c.consent.sms ? `<span class="pill green">consent ✓</span><button class="btn" data-compose="${c.id}" style="padding:3px 9px;font-size:10px">Draft</button>` : `<span class="pill red">no consent</span><button class="btn" data-consent="${c.id}" style="padding:3px 9px;font-size:10px">Record</button>`}
+          </span></div>`).join("")}
+      </div></div>
+    <div class="card"><div class="cardhead"><span class="t">Follow-ups due</span></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+        ${followups.map((f) => `<div class="row"><div><div class="t">${esc(f.note)}</div><div class="s">${esc(crm.getContact(f.contact_id)?.name ?? "")} · due ${esc(f.due.slice(0, 10))}</div></div>
+          <button class="btn" data-fu-done="${f.id}" style="padding:3px 9px;font-size:10px">Done</button></div>`).join("") || '<div class="empty">Nothing due — the ball is not being dropped.</div>'}
+      </div></div>
+  </div>`;
+}
+
+// ---------- view: Divini Social (the native scheduler) ----------
+function viewSocial() {
+  const sum = social.socialSummary();
+  const channels = social.getChannels();
+  const cal = social.getCalendar(7);
+  const posts = social.getPosts();
+  onAfter(() => {
+    document.getElementById("so-compose")?.addEventListener("click", () => tryDo(() => {
+      const text = document.getElementById("so-text").value;
+      const picked = [...outlet.querySelectorAll("[data-so-ch]:checked")].map((x) => x.dataset.soCh);
+      const p = social.composePost({ brand: "decoded", text, channels: picked });
+      window.alert(`Draft ${p.id} created for ${picked.join(", ")}. Submit it for the publish gate when ready.`);
+      render();
+    }));
+    outlet.querySelectorAll("[data-so-submit]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
+      social.submitPostForApproval(b.dataset.soSubmit); render();
+    })));
+    outlet.querySelectorAll("[data-so-publish]").forEach((b) => b.addEventListener("click", () => tryDo(() => {
+      const r = social.publishApprovedPost(b.dataset.soPublish);
+      window.alert(r.status === "ready_manual"
+        ? `No platform keys yet — ${r.publish_results.length} manual packet(s) ready below (exact approved copy per channel). Paste vault key refs to automate.`
+        : "Queued to the official APIs.");
+      render();
+    })));
+  });
+  return `
+  <div class="head"><div><div class="crumb">Divini Social · ours, end to end</div><h1>Social</h1></div>
+    <span class="chip">official APIs only — no middleman</span></div>
+  <div class="sub">The Buffer/Hootsuite replacement: composer, queue rhythm, calendar, and the publish gate are all yours. Publishing goes through each platform's official API with your keys — the scheduler subscription is gone, the platform key is the only external touch physics allows.</div>
+  ${preview}
+  ${execStrip([
+    { k: "Status", v: `${sum.drafts} drafts · ${sum.pending_approval} at the gate · ${sum.ready} ready` },
+    { k: "Priority", v: "keep the queue rhythm full" },
+    { k: "Owner", v: "Chief Marketing Officer Agent" },
+    { k: "Blocked", v: sum.channels_live === 0 ? "0/6 channels automated (keys pending — manual packets work today)" : `${sum.channels_live}/6 live` },
+    { k: "Approvals", v: "every post is publish_public-gated" },
+    { k: "Revenue", v: "replaces: scheduler subscription" },
+    { k: "Updated", v: lastUpdated() },
+    { k: "Recommended decision", v: sum.pending_approval ? "Decide the posts at the gate — exact copy is in each request." : "Compose against the next queue slot.", cls: "decision" },
+  ])}
+  <div class="grid g2">
+    <div class="card"><div class="cardhead"><span class="t">Compose</span></div><div class="pad">
+      <textarea id="so-text" placeholder="Write once — validated per channel (280 for X, media rules for IG/TikTok…) before it can schedule." style="width:100%;min-height:90px;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;font-size:13px;font-family:var(--sans);background:var(--bg)"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">
+        ${channels.map((c) => `<label style="font-size:11.5px;cursor:pointer"><input type="checkbox" data-so-ch="${c.id}" ${["x", "linkedin"].includes(c.id) ? "checked" : ""}/> ${esc(c.name)}</label>`).join("")}
+      </div>
+      <div class="btns"><button class="btn gold" id="so-compose">Create draft</button>
+        <span class="s" style="color:var(--mut);font-size:11px;align-self:center">draft → publish gate → your keys or manual packet</span></div>
+    </div></div>
+    <div class="card"><div class="cardhead"><span class="t">Channels · official APIs, your keys</span></div>
+      <div class="rows-tight" style="padding-bottom:6px">
+        ${channels.map((c) => `<div class="row"><div><div class="t">${esc(c.name)}</div><div class="s">${esc(c.api)} · <code style="font-size:10px">${esc(c.key_ref)}</code></div></div>
+          <span class="pill ${c.status === "live" ? "green" : "amber"}">${c.status === "live" ? "live" : "key needed"}</span></div>`).join("")}
+      </div></div>
+  </div>
+  <div class="sec">Pipeline</div>
+  <div class="card"><div class="rows-tight" style="padding-bottom:6px">
+    ${posts.map((p) => `<div class="row"><div><div class="t">${esc(p.text.slice(0, 90))}${p.text.length > 90 ? "…" : ""}</div>
+      <div class="s">${esc(p.brand)} · ${p.channels.join(", ")} · ${esc(p.source)}${p.scheduled_for ? ` · ${esc(p.scheduled_for.slice(0, 10))}` : ""}</div></div>
+      <span style="display:flex;gap:6px;align-items:center">
+        <span class="pill ${p.status === "ready_manual" || p.status === "publishing" ? "green" : p.status === "pending_approval" ? "amber" : "gray"}">${esc(p.status.replace(/_/g, " "))}</span>
+        ${p.status === "draft" ? `<button class="btn" data-so-submit="${p.id}" style="padding:3px 9px;font-size:10px">Submit</button>` : ""}
+        ${p.status === "pending_approval" ? `<button class="btn gold" data-so-publish="${p.id}" style="padding:3px 9px;font-size:10px">Publish</button>` : ""}
+      </span></div>`).join("") || '<div class="empty">Nothing in the pipeline — compose above or import from the Media Studio.</div>'}
+  </div></div>
+  <div class="sec">Next 7 days</div>
+  <div class="cards" style="grid-template-columns:repeat(7,1fr)">
+    ${cal.map((d) => `<div class="card" style="min-width:0"><div class="pad" style="padding:10px 12px">
+      <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:700">${esc(d.weekday)} ${esc(d.date.slice(5))}</div>
+      ${d.slots.map((s) => `<div style="font-size:10.5px;margin-top:6px;padding:4px 7px;background:var(--bg);border-radius:7px;border:1px solid var(--line)">${esc(s.label)}<br/><span class="s" style="color:var(--mut)">${esc(s.time)} · ${s.channels.length} ch</span></div>`).join("")}
+      ${d.posts.map((p) => `<div style="font-size:10.5px;margin-top:6px;padding:4px 7px;background:var(--amberbg);border-radius:7px">${esc(p.text.slice(0, 40))}…</div>`).join("")}
+      ${!d.slots.length && !d.posts.length ? '<div class="s" style="color:var(--mut);font-size:10px;margin-top:6px">—</div>' : ""}
+    </div></div>`).join("")}
+  </div>`;
+}
+
 // ---------- boot ----------
 window.__alfyBooted = true;
 document.getElementById("btn-reset")?.addEventListener("click", () => {
   if (window.confirm("Reset all local demo decisions, logs, factory packets, and studio state to the seed?")) {
-    svc.resetLocalState(); fac.resetFactoryState(); studio.resetStudioState(); render();
+    svc.resetLocalState(); fac.resetFactoryState(); studio.resetStudioState();
+    boards.resetBoardsState(); crm.resetCrmState(); social.resetSocialState(); render();
   }
 });
 render();
