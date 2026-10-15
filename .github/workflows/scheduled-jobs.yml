@@ -1,0 +1,41 @@
+name: Scheduled jobs
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry: { description: 'Dry run (no writes, no network)', type: boolean, default: true }
+      force: { description: 'Ignore schedules', type: boolean, default: false }
+      job: { description: 'Run only this job id', type: string, default: '' }
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: scheduled-jobs
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run jobs
+        env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          PROXY_TOKEN: ${{ secrets.PROXY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY: ${{ inputs.dry }}
+          FORCE: ${{ inputs.force }}
+          JOB: ${{ inputs.job }}
+        run: |
+          set -- 
+          [ "$DRY" = "true" ] && set -- "$@" --dry
+          [ "$FORCE" = "true" ] && set -- "$@" --force
+          [ -n "$JOB" ] && set -- "$@" --job "$JOB"
+          node scheduler/run.mjs "$@"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scheduler-out
+          path: scheduler/out/
+          if-no-files-found: ignore

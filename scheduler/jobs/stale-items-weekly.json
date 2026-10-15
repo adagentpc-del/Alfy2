@@ -1,0 +1,9 @@
+{
+  "id": "stale-items-weekly",
+  "title": "Weekly stale items check",
+  "schedule": "weekly@fri@08",
+  "kind": "stale_check",
+  "params": { "file": "scheduler/data/items.json", "itemsKey": "items", "days": 14, "dateField": "updated", "labelField": "name" },
+  "requiresApproval": false,
+  "enabled": false
+}

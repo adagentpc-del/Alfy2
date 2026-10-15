@@ -1,0 +1,9 @@
+{
+  "id": "substack-research",
+  "title": "Weekly Substack topic research",
+  "schedule": "weekly@mon@06",
+  "kind": "fetch_digest",
+  "params": { "queries": ["small business AI automation news this week", "bookkeeping software trends"], "urls": [] },
+  "requiresApproval": false,
+  "enabled": false
+}
