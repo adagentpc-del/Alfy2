@@ -1,0 +1,8 @@
+name = "alfy-proxy"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Hosts the proxy may fetch (subdomains included). Empty = fetch disabled.
+ALLOWED_HOSTS = "substack.com,anthropic.com,github.com,raw.githubusercontent.com"
+# Secrets (never commit): wrangler secret put PROXY_TOKEN ; wrangler secret put BRAVE_API_KEY
