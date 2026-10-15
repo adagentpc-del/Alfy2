@@ -1,0 +1,9 @@
+{
+  "id": "ledger-backup-reminder",
+  "title": "Ledger backup reminder",
+  "schedule": "daily@07",
+  "kind": "heartbeat",
+  "params": { "message": "Reminder: export and back up the ledger today. Draft only; a human sends any message." },
+  "requiresApproval": true,
+  "enabled": false
+}
